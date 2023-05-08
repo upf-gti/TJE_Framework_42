@@ -236,13 +236,30 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 	enableBuffers(shader);
 
 	//draw call
-	drawCall(primitive, submesh_id, num_instances);
+	if (submesh_id == -1 && materials.size() > 0) // if there's mesh mtl
+	{
+		for (int i = 0; i < submeshes.size(); ++i) {
+			sSubmeshInfo& submesh = submeshes[i];
+			for (int j = 0; j < submesh.num_draw_calls; ++j) {
+				const sSubmeshDrawCallInfo& dc = submesh.draw_calls[j];
+				if (materials.count(dc.material) > 0) {
+					shader->setUniform("u_Ka", materials[dc.material].Ka);
+					shader->setUniform("u_Kd", materials[dc.material].Kd);
+					shader->setUniform("u_Ks", materials[dc.material].Ks);
+				}
+				drawCall(primitive, i, j, num_instances);
+			}
+		}
+	}
+	else {
+		drawCall(primitive, submesh_id, 0, num_instances);
+	}
 
 	//unbind them
 	disableBuffers(shader);
 }
 
-void Mesh::drawCall(unsigned int primitive, int submesh_id, int num_instances)
+void Mesh::drawCall(unsigned int primitive, int submesh_id, int draw_call_id, int num_instances)
 {
 	int start = 0; //in primitives
 	int size = (int)vertices.size();
@@ -255,8 +272,9 @@ void Mesh::drawCall(unsigned int primitive, int submesh_id, int num_instances)
 	{
 		assert(submesh_id < submeshes.size() && "this mesh doesnt have as many submeshes");
 		sSubmeshInfo& submesh = submeshes[submesh_id];
-		start = submesh.start;
-		size = submesh.start + submesh.length;
+		sSubmeshDrawCallInfo& dc = submesh.draw_calls[draw_call_id];
+		start = dc.start;
+		size = dc.length;
 	}
 
 	//DRAW
@@ -839,6 +857,19 @@ bool Mesh::readBin(const char* filename)
 		pos += sizeof(sSubmeshInfo) * info.num_submeshes;
 	}
 
+	// if the mtl is not specified in the obj but it's needed
+	if (!materials.size()) {
+		std::string mesh_name = filename;
+		mesh_name = mesh_name.substr(0, mesh_name.size() - 5);
+
+		std::string ext = mesh_name.substr(mesh_name.find_last_of(".") + 1);
+		if (ext == "obj" || ext == "OBJ") {
+			replace(mesh_name, ".obj", ".mtl");
+			if (!parseMTL(mesh_name.c_str()))
+				std::cerr << "MTL file not found: " << mesh_name.c_str() << std::endl;
+		}
+	}
+
 	createCollisionModel();
 	return true;
 }
@@ -984,7 +1015,7 @@ bool Mesh::loadASE(const char* filename)
 		vertices[count*3 + 1] = unique_vertices[bId];
 		vertices[count*3 + 2] = unique_vertices[cId];
 
-		t.seek("*MESH_MTLID");
+		/*t.seek("*MESH_MTLID");
 		int current_mat = t.getint();
 		if (current_mat != prev_mat)
 		{
@@ -993,11 +1024,11 @@ bool Mesh::loadASE(const char* filename)
 			memset(&submesh, 0, sizeof(submesh));
 			submesh.start = count * 3;
 			prev_mat = current_mat;
-		}
+		}*/
 	}
 
-	submesh.length = count * 3 - submesh.start;
-	submeshes.push_back(submesh);
+	/*submesh.length = count * 3 - submesh.start;
+	submeshes.push_back(submesh);*/
 
 	t.seek("*MESH_NUMTVERTEX");
 	nVtx = t.getint();
@@ -1050,6 +1081,81 @@ bool Mesh::loadASE(const char* filename)
 	return true;
 }
 
+bool Mesh::parseMTL(const char* filename)
+{
+	struct stat stbuffer;
+
+	FILE* f = fopen(filename, "rb");
+	if (f == NULL)
+		return false;
+
+	stat(filename, &stbuffer);
+
+	unsigned int size = stbuffer.st_size;
+	char* data = new char[size + 1];
+	fread(data, size, 1, f);
+	fclose(f);
+	data[size] = 0;
+
+	char* pos = data;
+	char line[255];
+	int i = 0;
+
+	bool parsingMaterial = false;
+	std::string material_name;
+
+	sMaterialInfo info;
+
+	//parse file
+	while (*pos != 0)
+	{
+		if (*pos == '\n') pos++;
+		if (*pos == '\r') pos++;
+
+		//read one line
+		i = 0;
+		while (i < 255 && pos[i] != '\n' && pos[i] != '\r' && pos[i] != 0) i++;
+		memcpy(line, pos, i);
+		line[i] = 0;
+		pos = pos + i;
+
+		//std::cout << "Line: \"" << line << "\"" << std::endl;
+		if (*line == '#' || *line == 0) continue; //comment
+
+		//tokenize line
+		std::vector<std::string> tokens = tokenize(line, " ");
+
+		if (tokens.empty()) continue;
+
+		if (tokens[0] == "Ka")
+		{
+			info.Ka = Vector3((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()));
+		}
+		else if (tokens[0] == "Kd")
+		{
+			info.Kd = Vector3((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()));
+		}
+		else if (tokens[0] == "Ks")
+		{
+			info.Ks = Vector3((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()));
+		}
+		else if (tokens[0] == "newmtl") //material file
+		{
+			if (parsingMaterial) {
+				materials[material_name] = info;
+			}
+			parsingMaterial = true;
+			material_name = tokens[1];
+		}
+	}
+
+	materials[material_name] = info;
+
+	std::cout << "[MTL] ";
+
+	return true;
+}
+
 bool Mesh::loadOBJ(const char* filename)
 {
 	struct stat stbuffer;
@@ -1084,10 +1190,15 @@ bool Mesh::loadOBJ(const char* filename)
 	aabb_max.set(min_float,min_float,min_float);
 
 	unsigned int vertex_i = 0;
+	unsigned int submesh_draw_calls = 0;
 
 	sSubmeshInfo submesh_info;
-	int last_submesh_vertex = 0;
 	memset(&submesh_info, 0, sizeof(submesh_info));
+
+	sSubmeshDrawCallInfo submesh_dc_info;
+	memset(&submesh_dc_info, 0, sizeof(submesh_dc_info));
+	submesh_dc_info.start = 0;
+	int last_submesh_vertex = 0;
 
 	//parse file
 	while(*pos != 0)
@@ -1110,7 +1221,15 @@ bool Mesh::loadOBJ(const char* filename)
 
 		if (tokens.empty()) continue;
 
-		if (tokens[0] == "v")
+		if (tokens[0] == "mtllib") //material file
+		{
+			std::string mesh_path = filename;
+			size_t lastPath = mesh_path.find_last_of('/');
+			std::string path = mesh_path.substr(0, lastPath) + '/' + tokens[1];
+			if (!parseMTL(path.c_str()))
+				std::cerr << "MTL file not found: " << path.c_str() << std::endl;
+		}
+		else if (tokens[0] == "v")
 		{
 			Vector3 v((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()) );
 			indexed_positions.push_back(v);
@@ -1133,37 +1252,49 @@ bool Mesh::loadOBJ(const char* filename)
 			Vector3 v((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()) );
 			indexed_normals.push_back(v);
 		}
-		else if (tokens[0] == "s") //surface? it appears one time before the faces
+		else if (tokens[0] == "o") // submesh
 		{
-			//process mesh: ????
-			//if (uvs.size() == 0 && indexed_uvs.size() )
-			//	uvs.resize(1);
+			if (submesh_draw_calls > 0)
+			{
+				// Store last submesh drawcall
+				submesh_dc_info.length = vertices.size() - submesh_dc_info.start;
+				last_submesh_vertex = vertices.size();
+				submesh_info.draw_calls[submesh_draw_calls] = submesh_dc_info;
+				submesh_dc_info.start = last_submesh_vertex;
+
+				// Store submesh
+				submesh_info.num_draw_calls = submesh_draw_calls + 1;
+				submeshes.push_back(submesh_info);
+
+				// New submesh
+				memset(&submesh_info, 0, sizeof(submesh_info));
+				strcpy(submesh_info.name, tokens[1].c_str());
+				submesh_draw_calls = 0;
+			}
+			else
+				strcpy(submesh_info.name, tokens[1].c_str());
 		}
 		else if (tokens[0] == "usemtl") //surface? it appears one time before the faces
 		{
 			if (last_submesh_vertex != vertices.size())
 			{
-				submesh_info.length = vertices.size() - submesh_info.start;
+				// Store draw call
+				submesh_dc_info.length = vertices.size() - submesh_dc_info.start;
 				last_submesh_vertex = vertices.size();
-				submeshes.push_back(submesh_info);
-				memset(&submesh_info, 0, sizeof(submesh_info));
-				strcpy(submesh_info.name, tokens[1].c_str());
-				submesh_info.start = last_submesh_vertex;
+				submesh_info.draw_calls[submesh_draw_calls] = submesh_dc_info;
+				submesh_draw_calls++;
+
+				// New draw call
+				memset(&submesh_dc_info, 0, sizeof(submesh_dc_info));
+				strcpy(submesh_dc_info.material, tokens[1].c_str());
+				submesh_dc_info.start = last_submesh_vertex;
 			}
 			else
-				strcpy(submesh_info.material, tokens[1].c_str());
+				strcpy(submesh_dc_info.material, tokens[1].c_str());
 		}
 		else if (tokens[0] == "g") //surface? it appears one time before the faces
 		{
-			if (last_submesh_vertex != vertices.size())
-			{
-				submesh_info.length = vertices.size() - submesh_info.start;
-				last_submesh_vertex = vertices.size();
-				submeshes.push_back(submesh_info);
-				memset(&submesh_info, 0, sizeof(submesh_info));
-				strcpy( submesh_info.name, tokens[1].c_str());
-				submesh_info.start = last_submesh_vertex;
-			}
+			
 		}
 		else if (tokens[0] == "f" && tokens.size() >= 4)
 		{
@@ -1205,11 +1336,21 @@ bool Mesh::loadOBJ(const char* filename)
 		}
 	}
 
+	// if the mtl is not specified in the obj but it's needed
+	if (!materials.size()) {
+		std::string mesh_name = filename;
+		replace(mesh_name, ".obj", ".mtl");
+		if (!parseMTL(mesh_name.c_str()))
+			std::cerr << "MTL file not found: " << mesh_name.c_str() << std::endl;
+	}
+
 	box.center = (aabb_max + aabb_min) * 0.5;
 	box.halfsize = (aabb_max - box.center);
 	radius = (float)fmax( aabb_max.length(), aabb_min.length() );
 
-	submesh_info.length = vertices.size() - last_submesh_vertex;
+	submesh_dc_info.length = vertices.size() - last_submesh_vertex;
+	submesh_info.draw_calls[submesh_draw_calls] = submesh_dc_info;
+	submesh_info.num_draw_calls = submesh_draw_calls + 1;
 	submeshes.push_back(submesh_info);
 	return true;
 }

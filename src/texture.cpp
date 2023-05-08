@@ -224,6 +224,61 @@ bool Texture::load(const char* filename, bool mipmaps, bool wrap, unsigned int t
 	return true;
 }
 
+bool Texture::loadCubemap(const char* name, std::vector<std::string> faces, bool mipmaps, bool wrap, unsigned int type)
+{
+	long time = getTime();
+	std::vector <Uint8*> imageData;
+
+	Image* image = NULL;
+
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		std::string str = faces[i].c_str();
+		std::string ext = str.substr(str.size() - 4, 4);
+
+		std::cout << " + Cubemap Face loading: " << faces[i].c_str() << "\n";
+
+		image = new Image();
+		bool found = false;
+
+		if (ext == ".tga" || ext == ".TGA")
+			found = image->loadTGA(faces[i].c_str());
+		else if (ext == ".png" || ext == ".PNG")
+			found = image->loadPNG(faces[i].c_str());
+		else
+		{
+			std::cout << "[ERROR]: unsupported format" << std::endl;
+			return false; //unsupported file type
+		}
+
+		if (!found) //file not found
+		{
+			std::cout << " [ERROR]: Texture not found " << std::endl;
+			return false;
+		}
+
+		imageData.push_back(image->data);
+	}
+
+	unsigned int internal_format = 0;
+
+	if (type == GL_FLOAT)
+		internal_format = (image->bytes_per_pixel == 3 ? GL_RGB32F : GL_RGBA32F);
+
+	// Upload to VRAM
+	createCubemap(image->width, image->height, imageData.data(), (image->bytes_per_pixel == 3 ? GL_RGB : GL_RGBA), type, mipmaps, 0);
+
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_S, this->mipmaps && wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	glTexParameteri(this->texture_type, GL_TEXTURE_WRAP_T, this->mipmaps && wrap ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+	if (mipmaps)
+		generateMipmaps();
+
+	this->image.clear();
+	std::cout << "[OK] Size: " << width << "x" << height << " Time: " << (getTime() - time) * 0.001 << "sec" << std::endl;
+	setName(name);
+	return true;
+}
+
 void Texture::upload(Image* img)
 {
 	create(img->width, img->height, img->bytes_per_pixel == 3 ? GL_RGB : GL_RGBA, GL_UNSIGNED_BYTE, true, img->data);

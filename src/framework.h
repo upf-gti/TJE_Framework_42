@@ -40,6 +40,7 @@ public:
 
 	Vector2() { x = y = 0.0f; }
 	Vector2(float x, float y) { this->x = x; this->y = y; }
+	Vector2(float v) { this->x = v; this->y = v; }
 
 	double length() { return sqrt(x*x + y*y); }
 	double length() const { return sqrt(x*x + y*y); }
@@ -93,6 +94,7 @@ public:
 
 	Vector3() { x = y = z = 0.0f; }
 	Vector3(float x, float y, float z) { this->x = x; this->y = y; this->z = z;	}
+	Vector3(float v) { this->x = v; this->y = v; this->z = v; }
 
 	double length();
 	double length() const;
@@ -140,6 +142,7 @@ public:
 
 	Vector4() { x = y = z = w = 0.0f; }
 	Vector4(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
+	Vector4(float v) { this->x = v; this->y = v; this->z = v; this->w = v; }
 	Vector4(const Vector3& v, float w) { x = v.x; y = v.y; z = v.z; this->w = w; }
 	Vector4(const float* v) { x = v[0]; x = v[1]; x = v[2]; x = v[3]; }
     void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }

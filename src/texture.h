@@ -112,6 +112,7 @@ public:
 
 	//load without using the manager
 	bool load(const char* filename, bool mipmaps = true, bool wrap = true, unsigned int type = GL_UNSIGNED_BYTE);
+	bool loadCubemap(const char* name, std::vector<std::string> faces, bool mipmaps = true, bool wrap = true, unsigned int type = GL_UNSIGNED_BYTE);
 
 	//load using the manager (caching loaded ones to avoid reloading them)
 	static Texture* Get(const char* filename, bool mipmaps = true, bool wrap = true);

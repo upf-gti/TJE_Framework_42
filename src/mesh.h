@@ -14,17 +14,32 @@ class Skeleton; //for skinned meshes
 //version from 11/5/2020
 #define MESH_BIN_VERSION 11 //this is used to regenerate bins if the format changes
 
+#define MAX_SUBMESH_DRAW_CALLS 16
+
 struct BoneInfo {
 	char name[32]; //max 32 chars per bone name
 	Matrix44 bind_pose;
 };
 
-struct sSubmeshInfo
-{
-	char name[64];
-	char material[64];
+struct sSubmeshDrawCallInfo {
+
+	char material[32];
 	int start;//in primitive
 	int length;//in primitive
+};
+
+struct sSubmeshInfo
+{
+	unsigned int num_draw_calls;
+	char name[32];
+	sSubmeshDrawCallInfo draw_calls[MAX_SUBMESH_DRAW_CALLS];
+};
+
+struct sMaterialInfo
+{
+	Vector3 Ka;
+	Vector3 Kd;
+	Vector3 Ks;
 };
 
 class Mesh
@@ -40,6 +55,7 @@ public:
 	std::string name;
 
 	std::vector<sSubmeshInfo> submeshes; //contains info about every submesh
+	std::map<std::string, sMaterialInfo> materials; //contains info about every material
 
 	std::vector< Vector3 > vertices; //here we store the vertices
 	std::vector< Vector3 > normals;	 //here we store the normals
@@ -93,7 +109,7 @@ public:
 	void renderAnimated(unsigned int primitive, Skeleton *sk);
 
 	void enableBuffers(Shader* shader);
-	void drawCall(unsigned int primitive, int submesh_id, int num_instances);
+	void drawCall(unsigned int primitive, int submesh_id, int draw_call_id, int num_instances);
 	void disableBuffers(Shader* shader);
 
 	bool readBin(const char* filename);
@@ -132,6 +148,7 @@ public:
 private:
 	bool loadASE(const char* filename);
 	bool loadOBJ(const char* filename);
+	bool parseMTL(const char* filename);
 	bool loadMESH(const char* filename); //personal format used for animations
 };
 

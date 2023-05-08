@@ -30,6 +30,7 @@ std::vector<std::string> tokenize(const std::string& source, const char* delimit
 std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
 std::string join(std::vector<std::string>& strings, const char* delim);
+bool replace(std::string& str, const std::string& from, const std::string& to);
 
 std::string getGPUStats();
 void drawGrid();
