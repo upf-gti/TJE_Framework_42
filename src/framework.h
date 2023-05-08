@@ -117,16 +117,16 @@ public:
 	void operator *= (float v) { x *= v; y *= v; z *= v; }
 };
 
+Vector3 normalize(Vector3 n);
+float dot( const Vector3& a, const Vector3& b);
+Vector3 cross(const Vector3&a, const Vector3& b);
+Vector3 lerp(const Vector3& a, const Vector3& b, float v);
+
 inline Vector3 operator + (const Vector3& a, const Vector3& b) { return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline Vector3 operator - (const Vector3& a, const Vector3& b) { return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
 inline Vector3 operator * (const Vector3& a, const Vector3& b) { return Vector3(a.x * b.x, a.y * b.y, a.z * b.z); }
 inline Vector3 operator * (const Vector3& a, float v) { return Vector3(a.x * v, a.y * v, a.z * v); }
 inline Vector3 operator * (float v, const Vector3& a) { return Vector3(a.x * v, a.y * v, a.z * v); }
-
-inline Vector3 normalize(Vector3 n) { return n.normalize(); }
-inline float dot(const Vector3& a, const Vector3& b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-inline Vector3 cross(const Vector3& a, const Vector3& b) { return Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
-inline Vector3 lerp(const Vector3& a, const Vector3& b, float v) { return a * (1.0f - v) + b * v; }
 
 class Vector4
 {
@@ -135,7 +135,7 @@ public:
 	{
 		struct { float x,y,z,w; };
 		float v[4];
-		//struct { Vector3 xyz; };
+		struct { Vector3 xyz; } sV4Data;
 	};
 
 	Vector4() { x = y = z = w = 0.0f; }
@@ -143,11 +143,9 @@ public:
 	Vector4(const Vector3& v, float w) { x = v.x; y = v.y; z = v.z; this->w = w; }
 	Vector4(const float* v) { x = v[0]; x = v[1]; x = v[2]; x = v[3]; }
     void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
-	Vector3 xyz() const { return Vector3(x,y,z); }
 };
 
 inline Vector4 operator * (const Vector4& a, float v) { return Vector4(a.x * v, a.y * v, a.z * v, a.w * v); }
-inline Vector4 operator * (const Vector4& a, const Vector4& b) { return Vector4(a.x * b.x, a.y * b.y, a.z * b.z, a.w * b.w); }
 inline Vector4 operator + (const Vector4& a, const Vector4& b) { return Vector4(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w); }
 inline Vector4 lerp(const Vector4& a, const Vector4& b, float v) { return a*(1.0f - v) + b*v; }
 
@@ -367,11 +365,11 @@ int planeBoxOverlap( const Vector4& plane, const Vector3& center, const Vector3&
 float ComputeSignedAngle( Vector2 a, Vector2 b); //returns the angle between both vectors in radians
 inline float ease(float f) { return f*f*f*(f*(f*6.0f - 15.0f) + 10.0f); }
 Vector3 RayPlaneCollision( const Vector3& plane_pos, const Vector3& plane_normal, const Vector3& ray_origin, const Vector3& ray_dir );
-bool RaySphereCollision(const Vector3& center, const float& radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& coll, float &t );
+bool RaySphereCollision(const Vector3& center, const float& radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& coll);
 Vector3 reflect(const Vector3& I, const Vector3& N);
 
 //value between 0 and 1
-inline float random(float range = 1.0f, int offset = 0) { return ((rand() % 10000) / (10000.0f)) * range + offset; }
+inline float random(float range = 1.0f, int offset = 0) { return ((rand() % 10000) / (10000.0)) * range + offset; }
 
 
 typedef Vector3 vec2;

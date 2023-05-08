@@ -42,7 +42,6 @@
 #endif
 
 #ifdef __APPLE__
-    #include <OpenGL/glext.h>
     #include "OpenGL/glu.h"
 #endif
 

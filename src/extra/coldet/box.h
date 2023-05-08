@@ -28,8 +28,6 @@
 #include "math3d.h"
 #include "sysdep.h"
 
-#include <cstddef>
-
 __CD__BEGIN
 
 /** Stores rotation vectors used in the intersection tests, 

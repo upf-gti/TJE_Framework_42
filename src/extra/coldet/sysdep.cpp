@@ -23,7 +23,7 @@
  */
 #include "sysdep.h"
 
-#ifdef GCC
+#ifdef __GNUC__
 
 #include <sys/time.h>
 

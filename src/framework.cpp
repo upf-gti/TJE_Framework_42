@@ -166,6 +166,17 @@ void Vector3::parseFromText(const char* text, const char separator)
 	}
 };
 
+float dot(const Vector3& a, const Vector3& b)
+{
+	return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
+Vector3 cross(const Vector3& a, const Vector3& b)
+{
+	return Vector3(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
+}
+
+
 //*********************************
 const Matrix44 Matrix44::IDENTITY;
 
@@ -212,7 +223,7 @@ void Matrix44::transpose()
 
 Vector3 Matrix44::rotateVector(const Vector3& v) const
 {
-	return (*this * Vector4(v,0.0)).xyz();
+	return (*this * Vector4(v,0.0)).sV4Data.xyz;
 }
 
 void Matrix44::translateGlobal(float x, float y, float z)
@@ -1190,7 +1201,7 @@ Vector3 RayPlaneCollision(const Vector3& plane_pos, const Vector3& plane_normal,
 	return ray_origin + ray_dir * t;
 }
 
-bool RaySphereCollision(const Vector3& center, const float& radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& coll, float& t)
+bool RaySphereCollision(const Vector3& center, const float& radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& coll)
 {
 	Vector3 m = ray_origin - center;
 	float b = dot(m, ray_dir);
@@ -1206,7 +1217,7 @@ bool RaySphereCollision(const Vector3& center, const float& radius, const Vector
 		return false;
 
 	// Ray now found to intersect sphere, compute smallest t value of intersection
-	t = -b - sqrt(discr);
+	float t = -b - sqrt(discr);
 
 	// If t is negative, ray started inside sphere so clamp t to zero 
 	if (t < 0.0f)
@@ -1216,9 +1227,14 @@ bool RaySphereCollision(const Vector3& center, const float& radius, const Vector
 	return true;
 }
 
+Vector3 normalize(Vector3 n)
+{
+	return n.normalize();
+}
+
 int planeBoxOverlap( const Vector4& plane, const Vector3& center, const Vector3& halfsize )
 {
-	Vector3 n = plane.xyz();
+	Vector3 n = plane.sV4Data.xyz;
 	float d = plane.w;
 	float radius = abs(halfsize.x * n[0]) + abs(halfsize.y * n[1]) + abs(halfsize.z * n[2]);
 	float distance = dot(n, center) + d;
@@ -1231,7 +1247,7 @@ int planeBoxOverlap( const Vector4& plane, const Vector3& center, const Vector3&
 
 float signedDistanceToPlane( const Vector4& plane, const Vector3& point )
 {
-	return dot(plane.xyz(), point) + plane.w;
+	return dot(plane.sV4Data.xyz, point) + plane.w;
 }
 
 const Vector3 corners[] = { {1,1,1},  {1,1,-1},  {1,-1,1},  {1,-1,-1},  {-1,1,1},  {-1,1,-1},  {-1,-1,1},  {-1,-1,-1} };
@@ -1253,10 +1269,4 @@ BoundingBox transformBoundingBox(const Matrix44 m, const BoundingBox& box)
 
 	Vector3 halfsize = (box_max - box_min) * 0.5;
 	return BoundingBox(box_max - halfsize, halfsize );
-}
-
-//I - 2.0 * dot(N, I) * N.
-Vector3 reflect(const Vector3& I, const Vector3& N)
-{
-	return I - (2.0 * N.dot(I)) * N;
 }
