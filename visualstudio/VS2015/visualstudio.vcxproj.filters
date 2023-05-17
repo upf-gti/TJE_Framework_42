@@ -61,6 +61,15 @@
     <ClCompile Include="..\..\src\animation.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\extra\pathfinder\AStar.cpp">
+      <Filter>extra\pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extra\pathfinder\Dijkstra.cpp">
+      <Filter>extra\pathfinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\extra\pathfinder\Node.cpp">
+      <Filter>extra\pathfinder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\camera.h" />
@@ -119,6 +128,21 @@
     <ClInclude Include="..\..\src\animation.h">
       <Filter>gfx</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\extra\pathfinder\AStar.h">
+      <Filter>extra\pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\pathfinder\Dijkstra.h">
+      <Filter>extra\pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\pathfinder\Node.h">
+      <Filter>extra\pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\pathfinder\PathAlgorithm.h">
+      <Filter>extra\pathfinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\extra\pathfinder\PathFinder.h">
+      <Filter>extra\pathfinder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="extra">
@@ -132,6 +156,9 @@
     </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{feb78646-9d96-43df-8d00-2397429ea3ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extra\pathfinder">
+      <UniqueIdentifier>{26f60276-ff2b-44e2-9d0d-4c97df149036}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

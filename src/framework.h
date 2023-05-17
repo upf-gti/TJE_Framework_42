@@ -117,6 +117,8 @@ public:
 
 	float& operator [] (int n) { return v[n]; }
 	void operator *= (float v) { x *= v; y *= v; z *= v; }
+	void operator += (const Vector3& v) { x += v.x; y += v.y; z += v.z; }
+	void operator -= (const Vector3& v) { x -= v.x; y -= v.y; z -= v.z; }
 };
 
 Vector3 normalize(Vector3 n);
@@ -247,6 +249,8 @@ class Matrix44
 		Vector3 getTranslation();
 
 		bool getXYZ(float* euler) const;
+
+		float getYawRotationToAimTo(const Vector3& position);
 
 		void lookAt(Vector3& eye, Vector3& center, Vector3& up);
 		void perspective(float fov, float aspect, float near_plane, float far_plane);

@@ -14,3 +14,8 @@ visualstudio/VS2015/Release
 *.ipch
 *.db
 *.exe
+*.pdb
+*.ipdb
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/

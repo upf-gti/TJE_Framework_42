@@ -136,6 +136,9 @@
     <ClCompile Include="..\..\src\extra\coldet\mytritri.cpp" />
     <ClCompile Include="..\..\src\extra\coldet\sysdep.cpp" />
     <ClCompile Include="..\..\src\extra\coldet\tritri.c" />
+    <ClCompile Include="..\..\src\extra\pathfinder\AStar.cpp" />
+    <ClCompile Include="..\..\src\extra\pathfinder\Dijkstra.cpp" />
+    <ClCompile Include="..\..\src\extra\pathfinder\Node.cpp" />
     <ClCompile Include="..\..\src\extra\picopng.cpp" />
     <ClCompile Include="..\..\src\extra\textparser.cpp" />
     <ClCompile Include="..\..\src\fbo.cpp" />
@@ -158,6 +161,11 @@
     <ClInclude Include="..\..\src\extra\coldet\math3d.h" />
     <ClInclude Include="..\..\src\extra\coldet\mytritri.h" />
     <ClInclude Include="..\..\src\extra\coldet\sysdep.h" />
+    <ClInclude Include="..\..\src\extra\pathfinder\AStar.h" />
+    <ClInclude Include="..\..\src\extra\pathfinder\Dijkstra.h" />
+    <ClInclude Include="..\..\src\extra\pathfinder\Node.h" />
+    <ClInclude Include="..\..\src\extra\pathfinder\PathAlgorithm.h" />
+    <ClInclude Include="..\..\src\extra\pathfinder\PathFinder.h" />
     <ClInclude Include="..\..\src\extra\picopng.h" />
     <ClInclude Include="..\..\src\extra\textparser.h" />
     <ClInclude Include="..\..\src\fbo.h" />
