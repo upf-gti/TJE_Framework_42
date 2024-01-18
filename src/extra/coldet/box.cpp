@@ -24,6 +24,7 @@
 #include "sysdep.h"
 #include "box.h"
 #include "mytritri.h"
+#include "tritri.h"
 
 __CD__BEGIN
 ////////////////////////////////////////////////////
@@ -224,11 +225,6 @@ bool Box::intersect(const Box& b, RotationState& rs)
 
   return true;
 }
-
-extern "C" { 
-int tri_tri_intersect(float V0[3],float V1[3],float V2[3],
-                      float U0[3],float U1[3],float U2[3]);
-};
 
 Triangle::Triangle(const Vector3D& _1, const Vector3D& _2, const Vector3D& _3)
 : v1(_1), v2(_2), v3(_3), center((1.0f/3.0f)*(_1+_2+_3)) 

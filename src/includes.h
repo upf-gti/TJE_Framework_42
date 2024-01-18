@@ -19,14 +19,7 @@
 	#define USE_GLEW
 	#define GLEW_STATIC
 	#include <GL/glew.h>
-	#pragma comment(lib, "glew32s.lib")
 #endif
-
-
-//SDL
-//#pragma comment(lib, "SDL2.lib")
-//#pragma comment(lib, "SDL2main.lib")
-
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -34,10 +27,9 @@
 #include <SDL2/SDL_opengl.h>
 
 
-
 //GLUT
 #ifdef WIN32
-    #include <GL/glext.h>
+    //#include <GL/glext.h>
     #include "GL/GLU.h"
 #endif
 
@@ -53,13 +45,6 @@
 #define REGISTER_GLEXT(RET, FUNCNAME, ...) typedef RET ( * FUNCNAME ## _func)(__VA_ARGS__); FUNCNAME ## _func FUNCNAME = NULL; 
 #define IMPORT_GLEXT(FUNCNAME) FUNCNAME = (FUNCNAME ## _func) SDL_GL_GetProcAddress(#FUNCNAME); if (FUNCNAME == NULL) { std::cout << "ERROR: This Graphics card doesnt support " << #FUNCNAME << std::endl; }
 
-
 //OPENGL EXTENSIONS
-
-
-
-
-
-
 
 #endif
