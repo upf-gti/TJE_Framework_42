@@ -34,7 +34,7 @@ endmacro()
 set(DIR_ROOT       ${CMAKE_CURRENT_LIST_DIR})
 set(DIR_SOURCES    "${DIR_ROOT}/src")
 
-project (TJE_Framework CXX)
+project (TJE_Framework_42 CXX)
 
 find_package(OpenGL REQUIRED)
 
@@ -68,6 +68,7 @@ CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/coldet)
 CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/pathfinder)
 CG_SOURCES_APPEND(${DIR_SOURCES}/graphics)
 CG_SOURCES_APPEND(${DIR_SOURCES}/game)
+CG_SOURCES_APPEND(${DIR_SOURCES}/game/entities)
 
 add_executable(${PROJECT_NAME} ${CG_SOURCES})
 

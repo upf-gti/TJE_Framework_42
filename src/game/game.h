@@ -6,7 +6,6 @@
 #define GAME_H
 
 #include "framework/includes.h"
-#include "framework/camera.h"
 #include "framework/utils.h"
 
 class Game
@@ -27,7 +26,6 @@ public:
 	bool must_exit;
 
 	//some vars
-	Camera* camera; //our global camera
 	bool mouse_locked; //tells if the mouse is locked (not seen)
 
 	Game( int window_width, int window_height, SDL_Window* window );
@@ -45,8 +43,6 @@ public:
 	void onGamepadButtonDown(SDL_JoyButtonEvent event);
 	void onGamepadButtonUp(SDL_JoyButtonEvent event);
 	void onResize(int width, int height);
-
 };
-
 
 #endif 

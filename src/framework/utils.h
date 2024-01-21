@@ -11,6 +11,11 @@
 #include "includes.h"
 #include "framework.h"
 
+class Camera;
+class Mesh;
+class Texture;
+class Shader;
+
 //General functions **************
 long getTime();
 bool readFile(const std::string& filename, std::string& content);
@@ -18,6 +23,7 @@ bool readFile(const std::string& filename, std::string& content);
 //generic purposes fuctions
 void drawGrid();
 bool drawText(float x, float y, std::string text, Vector3 c, float scale = 1);
+void drawMesh(Camera* camera, Matrix44 model, Mesh* mesh, Vector4 color, Texture* texture = nullptr, Shader* shader = nullptr);
 
 //check opengl errors
 bool checkGLErrors();

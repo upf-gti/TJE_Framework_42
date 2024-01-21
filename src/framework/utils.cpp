@@ -202,6 +202,39 @@ bool drawText(float x, float y, std::string text, Vector3 c, float scale )
 	return true;
 }
 
+void drawMesh(Camera* camera, Matrix44 model, Mesh* mesh, Vector4 color, Texture* texture, Shader* shader)
+{
+	if (!mesh) return;
+
+	// Compute bounding sphere center in world coords
+	Vector3 sphere_center = model * mesh->box.center;
+	Vector3 halfsize = model * mesh->box.halfsize;
+
+	// Discard objects whose bounding sphere is not inside the camera frustum
+	/*if (!camera->testBoxInFrustum(sphere_center, halfsize) || camera->eye.distance(sphere_center) > 5000.0f)
+		return;*/
+
+	if (!shader) {
+		shader = Shader::Get("data/shaders/basic.vs", texture ? "data/shaders/texture.fs" : "data/shaders/flat.fs");
+	}
+
+	// Enable shader
+	shader->enable();
+
+	// Upload uniforms
+	shader->setUniform("u_color", color);
+	shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+	shader->setUniform("u_background_color", Vector4(0.1, 0.1, 0.1, 1.f));
+	shader->setUniform("u_camera_position", camera->eye);
+	shader->setUniform("u_tiling", 1.f);
+	shader->setUniform("u_model", model);
+	if (texture) shader->setUniform("u_texture", texture, 0);
+
+	mesh->render(GL_TRIANGLES);
+
+	shader->disable();
+}
+
 std::vector<std::string> tokenize(const std::string& source, const char* delimiters, bool process_strings)
 {
 	std::vector<std::string> tokens;
