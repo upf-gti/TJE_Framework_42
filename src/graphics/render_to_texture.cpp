@@ -1,4 +1,4 @@
-#include "rendertotexture.h"
+#include "render_to_texture.h"
 #include <iostream>
 
 //typedef void (APIENTRY * glGenFramebuffers_func)(GLsizei n, GLuint *framebuffers); glGenFramebuffers_func glGenFramebuffersEXT = NULL;
