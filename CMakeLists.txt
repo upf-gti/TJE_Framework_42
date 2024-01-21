@@ -62,9 +62,12 @@ macro(CG_SOURCES_APPEND)
 endmacro()
 
 CG_SOURCES_APPEND(${DIR_SOURCES})
-CG_SOURCES_APPEND(${DIR_SOURCES}/extra)
-CG_SOURCES_APPEND(${DIR_SOURCES}/extra/coldet)
-CG_SOURCES_APPEND(${DIR_SOURCES}/extra/pathfinder)
+CG_SOURCES_APPEND(${DIR_SOURCES}/framework)
+CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra)
+CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/coldet)
+CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/pathfinder)
+CG_SOURCES_APPEND(${DIR_SOURCES}/graphics)
+CG_SOURCES_APPEND(${DIR_SOURCES}/game)
 
 add_executable(${PROJECT_NAME} ${CG_SOURCES})
 

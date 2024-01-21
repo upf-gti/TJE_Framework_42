@@ -7,14 +7,14 @@
 	 + It takes all the events from SDL and redirect them to the game
 */
 
-#include "includes.h"
+#include "framework/includes.h"
 
-#include "framework.h"
-#include "mesh.h"
-#include "camera.h"
-#include "utils.h"
-#include "input.h"
-#include "game.h"
+#include "framework/framework.h"
+#include "graphics/mesh.h"
+#include "framework/camera.h"
+#include "framework/utils.h"
+#include "framework/input.h"
+#include "game/game.h"
 
 #include <iostream> //to output
 
