@@ -300,7 +300,7 @@ void Matrix44::setTranslation(const Vector3& new_translation)
 	m[14] = new_translation.z;
 }
 
-Vector3 Matrix44::getTranslation()
+Vector3 Matrix44::getTranslation() const
 {
 	return Vector3(m[12],m[13],m[14]);
 }

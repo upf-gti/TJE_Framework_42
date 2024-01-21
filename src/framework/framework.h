@@ -129,9 +129,12 @@ Vector3 lerp(const Vector3& a, const Vector3& b, float v);
 
 inline Vector3 operator + (const Vector3& a, const Vector3& b) { return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline Vector3 operator - (const Vector3& a, const Vector3& b) { return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
+inline Vector3 operator - (const Vector3& a) { return Vector3(-a.x, -a.y, -a.z); }
 inline Vector3 operator * (const Vector3& a, const Vector3& b) { return Vector3(a.x * b.x, a.y * b.y, a.z * b.z); }
 inline Vector3 operator * (const Vector3& a, float v) { return Vector3(a.x * v, a.y * v, a.z * v); }
 inline Vector3 operator * (float v, const Vector3& a) { return Vector3(a.x * v, a.y * v, a.z * v); }
+inline Vector3 operator / (const Vector3& a, float v) { return Vector3(a.x / v, a.y / v, a.z / v); }
+inline Vector3 operator / (float v, const Vector3& a) { return Vector3(a.x / v, a.y / v, a.z / v); }
 
 class Vector4
 {
@@ -254,7 +257,7 @@ class Matrix44
 		void setRotation( float angle_in_rad, const Vector3& axis );
 		void setScale(float x, float y, float z);
 
-		Vector3 getTranslation();
+		Vector3 getTranslation() const;
 
 		bool getXYZ(float* euler) const;
 
