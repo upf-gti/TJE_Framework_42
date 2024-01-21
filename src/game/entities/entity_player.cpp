@@ -11,11 +11,11 @@
 EntityPlayer::EntityPlayer(Mesh* mesh, const Material& material, const std::string& name) :
 	EntityMesh(mesh, material, name)
 {
-	anim_states.addAnimationState("data/animations/timmy/timmy_idle.skanim", ePlayerStates::PLAYER_IDLE);
-	anim_states.addAnimationState("data/animations/timmy/timmy_walk.skanim", ePlayerStates::PLAYER_WALK);
-	anim_states.addAnimationState("data/animations/timmy/timmy_run.skanim", ePlayerStates::PLAYER_RUN);
+	//anim_states.addAnimationState("data/animations/timmy/timmy_idle.skanim", ePlayerStates::PLAYER_IDLE);
+	//anim_states.addAnimationState("data/animations/timmy/timmy_walk.skanim", ePlayerStates::PLAYER_WALK);
+	//anim_states.addAnimationState("data/animations/timmy/timmy_run.skanim", ePlayerStates::PLAYER_RUN);
 
-	anim_states.goToState(ePlayerStates::PLAYER_IDLE);
+	//anim_states.goToState(ePlayerStates::PLAYER_IDLE);
 }
 
 void EntityPlayer::render(Camera* camera)
@@ -59,7 +59,8 @@ void EntityPlayer::render(Camera* camera)
 	material.shader->setUniform("u_Kd", material.Kd);
 	material.shader->setUniform("u_Ks", material.Ks);
 
-	mesh->renderAnimated(GL_TRIANGLES, &anim_states.getCurrentSkeleton());
+	//mesh->renderAnimated(GL_TRIANGLES, &anim_states.getCurrentSkeleton());
+	mesh->render(GL_TRIANGLES);
 
 	// Disable shader
 	material.shader->disable();
@@ -97,13 +98,13 @@ void EntityPlayer::update(float seconds_elapsed)
 	move_dir.normalize();
 	move_dir *= speed_mult;
 
-	float move_speed = move_dir.length();
-	if (move_speed < 0.1f)
-		anim_states.goToState(ePlayerStates::PLAYER_IDLE, 0.5f);
-	else if (move_speed < 2.0f)
-		anim_states.goToState(ePlayerStates::PLAYER_WALK, 0.5f);
-	else
-		anim_states.goToState(ePlayerStates::PLAYER_RUN, 0.5f);
+	//float move_speed = move_dir.length();
+	//if (move_speed < 0.1f)
+	//	anim_states.goToState(ePlayerStates::PLAYER_IDLE, 0.5f);
+	//else if (move_speed < 2.0f)
+	//	anim_states.goToState(ePlayerStates::PLAYER_WALK, 0.5f);
+	//else
+	//	anim_states.goToState(ePlayerStates::PLAYER_RUN, 0.5f);
 
 	velocity += move_dir;
 
@@ -158,5 +159,5 @@ void EntityPlayer::update(float seconds_elapsed)
 	model.rotate(camera_yaw, Vector3(0, 1, 0));
 
 	// Update animation system
-	anim_states.update(seconds_elapsed);
+	//anim_states.update(seconds_elapsed);
 }

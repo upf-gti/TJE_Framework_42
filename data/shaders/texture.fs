@@ -7,10 +7,10 @@ varying vec4 v_color;
 
 uniform vec4 u_color;
 uniform sampler2D u_texture;
-uniform float u_time;
+uniform float u_tiling;
 
 void main()
 {
 	vec2 uv = v_uv;
-	gl_FragColor = u_color * texture2D( u_texture, uv );
+	gl_FragColor = u_color * texture2D( u_texture, uv * u_tiling );
 }

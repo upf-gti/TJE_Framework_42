@@ -34,48 +34,26 @@ World::World()
 	camera2D->setOrthographic(0, width, height, 0, -1.f, 1.f);
 
 	Material player_mat;
-	player_mat.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.fs");
-	player_mat.diffuse = Texture::Get("data/meshes/timmy/diffuse.png");
-	player_mat.normals = Texture::Get("data/meshes/timmy/normals.png");
+	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	player_mat.diffuse = Texture::Get("data/textures/texture.tga");
 	player_mat.Ks = Vector3(0.5);
-
-	Material enemy_mat;
-	enemy_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	enemy_mat.diffuse = Texture::Get("data/meshes/doozy/Diffuse.png");
-
-	Material level_mat;
-	level_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	level_mat.diffuse = Texture::Get("data/textures/mario_kart.tga", false);
-
-	Material car_mat;
-	car_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-
-	Material sky_mat;
-	sky_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-	sky_mat.diffuse = Texture::Get("data/meshes/cielo/cielo.tga");
-
-	Material grass_mat;
-	grass_mat.shader = Shader::Get("data/shaders/grass.vs", "data/shaders/phong.fs");
-	grass_mat.diffuse = Texture::Get("data/textures/grass.png");
-	grass_mat.transparent = true;
-	grass_mat.Ks.set(0.f);
 
 	Material landscape_cubemap;
 	landscape_cubemap.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/cubemap.fs");
 	landscape_cubemap.diffuse = new Texture();
 	landscape_cubemap.diffuse->loadCubemap("landscape",
 		{
-			"data/textures/skybox/right.tga",
-			"data/textures/skybox/left.tga",
-			"data/textures/skybox/bottom.tga",
-			"data/textures/skybox/top.tga",
-			"data/textures/skybox/front.tga",
-			"data/textures/skybox/back.tga"
+			"data/textures/skybox/right.png",
+			"data/textures/skybox/left.png",
+			"data/textures/skybox/bottom.png",
+			"data/textures/skybox/top.png",
+			"data/textures/skybox/front.png",
+			"data/textures/skybox/back.png"
 		});
 
 	{
 		player = new EntityPlayer(
-			Mesh::Get("data/meshes/timmy/timmy_sk.MESH"),
+			Mesh::Get("data/box.ASE"),
 			player_mat
 		);
 
@@ -85,7 +63,7 @@ World::World()
 		);
 	}
 
-	parseScene("data/myscene.scene");
+	//parseScene("data/myscene.scene");
 
 	std::sort(root.children.begin(), root.children.end(), [](const Entity* lhs, const Entity* rhs)
 	{

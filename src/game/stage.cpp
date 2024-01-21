@@ -160,7 +160,7 @@ void PlayStage::render()
 	glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// renderSky();
+	renderSky();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
