@@ -10,10 +10,10 @@
 #include <stdlib.h>
 
 #ifndef PI
-	#define PI 3.14159265359
+	#define PI 3.14159265359f
 #endif
-#define DEG2RAD 0.0174532925
-#define RAD2DEG 57.295779513
+#define DEG2RAD 0.0174532925f
+#define RAD2DEG 57.295779513f
 
 //more standard type definition
 typedef char int8;
@@ -151,6 +151,10 @@ public:
     void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
 	void set(float v) { this->x = v; this->y = v; this->z = v; this->w = v; }
 
+	static Vector4 WHITE;
+	static Vector4 RED;
+	static Vector4 GREEN;
+	static Vector4 BLUE;
 };
 
 inline Vector4 operator * (const Vector4& a, float v) { return Vector4(a.x * v, a.y * v, a.z * v, a.w * v); }
@@ -380,7 +384,7 @@ bool RaySphereCollision(const Vector3& center, const float& radius, const Vector
 Vector3 reflect(const Vector3& I, const Vector3& N);
 
 //value between 0 and 1
-inline float random(float range = 1.0f, int offset = 0) { return ((rand() % 10000) / (10000.0)) * range + offset; }
+inline float random(float range = 1.0f, float offset = 0.0f) { return static_cast<float>(((rand() % 10000) / (10000.0))) * range + offset; }
 
 
 typedef Vector3 vec2;

@@ -76,7 +76,7 @@ void Game::render(void)
    
 	//create model matrix for cube
 	Matrix44 m;
-	m.rotate(angle*DEG2RAD, Vector3(0, 1, 0));
+	m.rotate(angle*DEG2RAD, Vector3(0.0f, 1.0f, 0.0f));
 
 	if(shader)
 	{
@@ -172,7 +172,7 @@ void Game::onMouseButtonUp(SDL_MouseButtonEvent event)
 
 void Game::onMouseWheel(SDL_MouseWheelEvent event)
 {
-	mouse_speed *= event.y > 0 ? 1.1 : 0.9;
+	mouse_speed *= event.y > 0 ? 1.1f : 0.9f;
 }
 
 void Game::onResize(int width, int height)

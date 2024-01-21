@@ -109,8 +109,8 @@ bool FBO::setTextures(std::vector<Texture*> textures, Texture* depth_texture, in
 	}
 	else
 	{
-		width = depth_texture->width;
-		height = depth_texture->height;
+		width = static_cast<int>(depth_texture->width);
+		height = static_cast<int>(depth_texture->height);
 	}
 
 	//create and bind FBO

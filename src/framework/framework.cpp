@@ -9,6 +9,11 @@
     #define M_PI_2 1.57079632679489661923
 #endif
 
+Vector4 Vector4::WHITE(1.f, 1.f, 1.f, 1.f);
+Vector4 Vector4::RED(1.f, 0.f, 0.f, 1.f);
+Vector4 Vector4::GREEN(0.f, 1.f, 0.f, 1.f);
+Vector4 Vector4::BLUE(0.f, 0.f, 1.f, 1.f);
+
 //**************************************
 float Vector2::distance(const Vector2& v)
 {
@@ -643,7 +648,7 @@ void Matrix44::loadGL()
 
 
 
-Quaternion::Quaternion()
+Quaternion::Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f)
 {
 }
 
@@ -1222,7 +1227,7 @@ Vector3 RayPlaneCollision(const Vector3& plane_pos, const Vector3& plane_normal,
 	double numer = plane_normal.dot(ray_origin) + D;
 	double denom = plane_normal.dot(ray_dir);
 	double t = -(numer / denom);
-	return ray_origin + ray_dir * t;
+	return ray_origin + ray_dir * static_cast<float>(t);
 }
 
 bool RaySphereCollision(const Vector3& center, const float& radius, const Vector3& ray_origin, const Vector3& ray_dir, Vector3& coll)

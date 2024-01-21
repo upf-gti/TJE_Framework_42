@@ -80,8 +80,8 @@ public:
 	unsigned int texture_type; //GL_TEXTURE_2D, GL_TEXTURE_CUBE, GL_TEXTURE_2D_ARRAY
 	bool mipmaps;
 
-	unsigned int wrapS;
-	unsigned int wrapT;
+	unsigned int wrapS = GL_CLAMP_TO_EDGE;
+	unsigned int wrapT = GL_CLAMP_TO_EDGE;
 
 	//original data info
 	Image image;

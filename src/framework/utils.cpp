@@ -94,7 +94,7 @@ bool readFile(const std::string& filename, std::string& content)
 	content.resize(count);
 	if (count > 0)
 	{
-		count = fread(&content[0], sizeof(char), count, fp);
+		fread(&content[0], sizeof(char), count, fp);
 	}
 	fclose(fp);
 
@@ -292,8 +292,8 @@ void drawGrid()
 	Shader* grid_shader = Shader::getDefaultShader("grid");
 	grid_shader->enable();
 	Matrix44 m;
-	m.translate(floor(Camera::current->eye.x / 100.0)*100.0f, 0.0f, floor(Camera::current->eye.z / 100.0f)*100.0f);
-	grid_shader->setUniform("u_color", Vector4(0.7, 0.7, 0.7, 0.7));
+	m.translate(floor(Camera::current->eye.x / 100.0f) * 100.0f, 0.0f, floor(Camera::current->eye.z / 100.0f) * 100.0f);
+	grid_shader->setUniform("u_color", Vector4(0.7f, 0.7f, 0.7f, 0.7f));
 	grid_shader->setUniform("u_model", m);
 	grid_shader->setUniform("u_camera_position", Camera::current->eye);
 	grid_shader->setUniform("u_viewprojection", Camera::current->viewprojection_matrix);
@@ -318,7 +318,7 @@ char* fetchFloat(char* data, float& v)
 {
 	char w[255];
 	data = fetchWord(data,w);
-	v = atof(w);
+	v = static_cast<float>(atof(w));
 	return data;
 }
 
@@ -328,7 +328,7 @@ char* fetchMatrix44(char* data, Matrix44& m)
 	for (int i = 0; i < 16; ++i)
 	{
 		data = fetchWord(data, word);
-		m.m[i] = atof(word);
+		m.m[i] = static_cast<float>(atof(word));
 	}
 	return data;
 }
@@ -350,9 +350,9 @@ char* fetchBufferFloat(char* data, std::vector<float>& vector, int num )
 	else //read size with the first number
 	{
 		data = fetchWord(data, word);
-		float v = atof(word);
+		double v = atof(word);
 		assert(v);
-		vector.resize(v);
+		vector.resize(static_cast<size_t>(v));
 	}
 
 	int index = 0;
@@ -365,7 +365,7 @@ char* fetchBufferFloat(char* data, std::vector<float>& vector, int num )
 				continue;
 			}
 			word[pos] = 0;
-			float v = atof(word);
+			float v = static_cast<float>(atof(word));
 			vector[index++] = v;
 			if (*data == '\n' || *data == 0)
 			{
@@ -415,7 +415,7 @@ char* fetchBufferVec3u(char* data, std::vector<Vector3u>& vector)
 	data = fetchBufferFloat(data, floats);
 	vector.resize(floats.size() / 3);
 	for (int i = 0; i < floats.size(); i += 3)
-		vector[i / 3].set(floats[i], floats[i + 1], floats[i + 2]);
+		vector[i / 3].set(static_cast<unsigned int>(floats[i]), static_cast<unsigned int>(floats[i + 1]), static_cast<unsigned int>(floats[i + 2]));
 	return data;
 }
 
@@ -426,7 +426,7 @@ char* fetchBufferVec4ub(char* data, std::vector<Vector4ub>& vector)
 	data = fetchBufferFloat(data, floats);
 	vector.resize(floats.size() / 4);
 	for (int i = 0; i < floats.size(); i += 4)
-		vector[i / 4].set(floats[i], floats[i + 1], floats[i + 2], floats[i + 3]);
+		vector[i / 4].set(static_cast<uint8>(floats[i]), static_cast<uint8>(floats[i + 1]), static_cast<uint8>(floats[i + 2]), static_cast<uint8>(floats[i + 3]));
 	return data;
 }
 

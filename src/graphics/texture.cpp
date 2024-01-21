@@ -18,8 +18,8 @@ Color Image::getPixelInterpolated(float x, float y, bool repeat) {
 	if (iy < 0) iy += height;
 	float fx = (x - (int)x);
 	float fy = (y - (int)y);
-	int ix2 = ix < width - 1 ? ix + 1 : 0;
-	int iy2 = iy < height - 1 ? iy + 1 : 0;
+	int ix2 = ix < static_cast<int>(width) - 1 ? ix + 1 : 0;
+	int iy2 = iy < static_cast<int>(height) - 1 ? iy + 1 : 0;
 	Color top = lerp( getPixel(ix, iy), getPixel(ix2, iy), fx );
 	Color bottom = lerp( getPixel(ix, iy2), getPixel(ix2, iy2), fx);
 	return lerp(top, bottom, fy);
@@ -32,8 +32,8 @@ Vector4 Image::getPixelInterpolatedHigh(float x, float y, bool repeat) {
 	if (iy < 0) iy += height;
 	float fx = (x - (int)x);
 	float fy = (y - (int)y);
-	int ix2 = ix < width - 1 ? ix + 1 : 0;
-	int iy2 = iy < height - 1 ? iy + 1 : 0;
+	int ix2 = ix < static_cast<int>(width) - 1 ? ix + 1 : 0;
+	int iy2 = iy < static_cast<int>(height) - 1 ? iy + 1 : 0;
 	Vector4 top = lerp( getPixel(ix, iy).toVector4(), getPixel(ix2, iy).toVector4(), fx);
 	Vector4 bottom = lerp(getPixel(ix, iy2).toVector4(), getPixel(ix2, iy2).toVector4(), fx);
 	return lerp(top, bottom, fy);
@@ -55,6 +55,9 @@ Texture::Texture()
 	format = 0;
 	type = 0;
 	texture_type = GL_TEXTURE_2D;
+	wrapS = GL_CLAMP_TO_EDGE;
+	wrapT = GL_CLAMP_TO_EDGE;
+	internal_format = 0;
 }
 
 Texture::Texture(unsigned int width, unsigned int height, unsigned int format, unsigned int type, bool mipmaps, Uint8* data, unsigned int internal_format)
@@ -535,8 +538,8 @@ void Image::fromTexture(Texture* texture)
 
 	if (!data)
 	{
-		width = texture->width;
-		height = texture->height;
+		width = static_cast<unsigned int>(texture->width);
+		height = static_cast<unsigned int>(texture->height);
 		data = new uint8[width * height * 4];
 	}
 	
@@ -550,7 +553,6 @@ bool Image::loadTGA(const char* filename)
     GLubyte TGAheader[12] = {0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     GLubyte TGAcompare[12];
     GLubyte header[6];
-    GLuint bytesPerPixel;
     GLuint imageSize;
     //GLuint type = GL_RGBA;
 
@@ -670,7 +672,6 @@ bool Image::saveTGA(const char* filename, bool flip_y)
 	FILE *file = fopen(filename, "wb");
 	if (file == NULL)
 	{
-		fclose(file);
 		return false;
 	}
 
@@ -678,7 +679,7 @@ bool Image::saveTGA(const char* filename, bool flip_y)
 	header_short[0] = width;
 	header_short[1] = height;
 	unsigned char* header = (unsigned char*)header_short;
-	header[4] = 32; //bitsperpixel
+	header[4] = 32; //bitsperpi1xel
 	header[5] = 0;
 
 	fwrite(TGAheader, 1, sizeof(TGAheader), file);
