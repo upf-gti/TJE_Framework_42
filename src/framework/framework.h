@@ -100,6 +100,7 @@ public:
 	double length() const;
 
 	void set(float x, float y, float z) { this->x = x; this->y = y; this->z = z; }
+	void set(float v) { this->x = v; this->y = v; this->z = v; }
 
 	void setMin(const Vector3 & v);
 	void setMax(const Vector3 & v);
@@ -148,6 +149,8 @@ public:
 	Vector4(const Vector3& v, float w) { x = v.x; y = v.y; z = v.z; this->w = w; }
 	Vector4(const float* v) { x = v[0]; x = v[1]; x = v[2]; x = v[3]; }
     void set(float x, float y, float z, float w) { this->x = x; this->y = y; this->z = z; this->w = w; }
+	void set(float v) { this->x = v; this->y = v; this->z = v; this->w = v; }
+
 };
 
 inline Vector4 operator * (const Vector4& a, float v) { return Vector4(a.x * v, a.y * v, a.z * v, a.w * v); }
