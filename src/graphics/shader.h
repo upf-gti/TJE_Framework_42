@@ -59,7 +59,7 @@ public:
 	void setUniform(const char* varname, const Vector3& input) { assert(current == this); setUniform3(varname, input.x, input.y, input.z); }
 	void setUniform(const char* varname, const Vector4& input) { assert(current == this); setUniform4(varname, input.x, input.y, input.z, input.w); }
 	void setUniform(const char* varname, const Matrix44& input) { assert(current == this); setMatrix44(varname, input); }
-	void setUniform(const char* varname, std::vector<Matrix44>& m_vector) { assert(current == this && m_vector.size()); setMatrix44Array(varname, &m_vector[0], m_vector.size()); }
+	void setUniform(const char* varname, std::vector<Matrix44>& m_vector) { assert(current == this && m_vector.size()); setMatrix44Array(varname, &m_vector[0], static_cast<int>(m_vector.size())); }
 	
 	//for textures you must specify an slot (a number from 0 to 16) where this texture is stored in the shader
 	void setUniform(const char* varname, Texture* texture, int slot) { assert(current == this); setTexture(varname, texture, slot); }

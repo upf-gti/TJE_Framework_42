@@ -135,7 +135,7 @@ void Input::updateGamepadState(SDL_Joystick* joystick, GamepadState& state)
 		}
 		//if(value) std::cout << "B: " << int(i) << "->" << int(num) << std::endl;
 		if(num >= 0)
-			state.button[num] = value;
+			state.button[num] = static_cast<char>(value);
 	}
 	state.hat = (HATState)(SDL_JoystickGetHat((::SDL_Joystick*) joystick, 0) - SDL_HAT_CENTERED); //one hat is enough
 	memcpy(state.prev_button, prev_button, 16); //copy prev buttons state
@@ -143,7 +143,7 @@ void Input::updateGamepadState(SDL_Joystick* joystick, GamepadState& state)
 	Vector2 axis_direction(state.axis[LEFT_ANALOG_X], state.axis[LEFT_ANALOG_Y]);
 	state.prev_direction = prev_direction;
 	state.direction = 0;
-	float limit = 0.6;
+	float limit = 0.6f;
 	if (axis_direction.x < -limit)
 		state.direction |= PAD_LEFT;
 	else if (axis_direction.x > limit)

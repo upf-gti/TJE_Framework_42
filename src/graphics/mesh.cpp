@@ -240,7 +240,7 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 	{
 		for (int i = 0; i < submeshes.size(); ++i) {
 			sSubmeshInfo& submesh = submeshes[i];
-			for (int j = 0; j < submesh.num_draw_calls; ++j) {
+			for (uint32_t j = 0; j < submesh.num_draw_calls; ++j) {
 				const sSubmeshDrawCallInfo& dc = submesh.draw_calls[j];
 				if (materials.count(dc.material) > 0) {
 					shader->setUniform("u_Ka", materials[dc.material].Ka);
@@ -261,12 +261,12 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 
 void Mesh::drawCall(unsigned int primitive, int submesh_id, int draw_call_id, int num_instances)
 {
-	int start = 0; //in primitives
-	int size = (int)vertices.size();
+	size_t start = 0; //in primitives
+	size_t size = vertices.size();
 	if (indices.size())
-		size = (int)indices.size();
+		size = indices.size();
 	else if (interleaved.size())
-		size = (int)interleaved.size();
+		size = interleaved.size();
 
 	if (submesh_id > -1)
 	{
@@ -307,7 +307,7 @@ void Mesh::drawCall(unsigned int primitive, int submesh_id, int draw_call_id, in
 			glDrawArrays(primitive, start, size);
 	}
 
-	num_triangles_rendered += (size / 3) * (num_instances ? num_instances : 1);
+	num_triangles_rendered += static_cast<long>((size / 3) * (num_instances ? num_instances : 1));
 	num_meshes_rendered++;
 }
 
@@ -721,23 +721,23 @@ bool Mesh::interleaveBuffers()
 	return true;
 }
 
-typedef struct 
+struct sMeshInfo
 {
-	int version;
-	int header_bytes;
-	int size;
-	int num_indices;
+	int version = 0;
+	int header_bytes = 0;
+	size_t size = 0;
+	size_t num_indices = 0;
 	Vector3 aabb_min;
 	Vector3	aabb_max;
 	Vector3	center;
 	Vector3	halfsize;
-	float radius;
-	int num_bones;
-	int num_submeshes;
+	float radius = 0.0;
+	size_t num_bones = 0;
+	size_t num_submeshes = 0;
 	Matrix44 bind_matrix;
 	char streams[8]; //Vertex/Interlaved|Normal|Uvs|Color|Indices|Bones|Weights|Extra|Uvs1
 	char extra[32]; //unused
-} sMeshInfo;
+};
 
 bool Mesh::readBin(const char* filename)
 {
@@ -1198,7 +1198,7 @@ bool Mesh::loadOBJ(const char* filename)
 	sSubmeshDrawCallInfo submesh_dc_info;
 	memset(&submesh_dc_info, 0, sizeof(submesh_dc_info));
 	submesh_dc_info.start = 0;
-	int last_submesh_vertex = 0;
+	size_t last_submesh_vertex = 0;
 
 	//parse file
 	while(*pos != 0)
@@ -1410,7 +1410,7 @@ bool Mesh::loadMESH(const char* filename)
 			if (str == "bones")
 			{
 				pos = fetchWord(pos, word);
-				bones_info.resize(atof(word));
+				bones_info.resize(static_cast<size_t>(atof(word)));
 				for (int j = 0; j < bones_info.size(); ++j)
 				{
 					pos = fetchWord(pos, word);
@@ -1531,9 +1531,9 @@ void Mesh::createPlane(float size)
 
 void Mesh::createSubdividedPlane(float size, int subdivisions, bool centered )
 {
-	double isize = size / (double)(subdivisions);
+	float isize = static_cast<float>(size / (double)(subdivisions));
 	//float hsize = centered ? size * -0.5f : 0.0f;
-	double iuv = 1 / (double)(subdivisions * size);
+	float iuv = static_cast<float>(1 / (double)(subdivisions * size));
 	float sub_size = 1.0f / subdivisions;
 	vertices.clear();
 
@@ -1568,7 +1568,7 @@ void Mesh::createSubdividedPlane(float size, int subdivisions, bool centered )
 		box.center.set(size*0.5f, 0.0f, size*0.5f);
 
 	box.halfsize.set(size*0.5f, 0.0f, size*0.5f);
-	radius = box.halfsize.length();
+	radius = static_cast<float>(box.halfsize.length());
 }
 
 void Mesh::displace(Image* heightmap, float altitude)
@@ -1591,7 +1591,7 @@ void Mesh::displace(Image* heightmap, float altitude)
 	}
 	box.center.y += altitude*0.5f;
 	box.halfsize.y += altitude*0.5f;
-	radius = box.halfsize.length();
+	radius = static_cast<float>(box.halfsize.length());
 }
 
 

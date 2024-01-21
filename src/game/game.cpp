@@ -30,8 +30,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	mouse_locked = true;
 
 	//OpenGL flags
-	glEnable( GL_CULL_FACE ); //render both sides of every triangle
-	glEnable( GL_DEPTH_TEST ); //check the occlusions using the Z buffer
+	glEnable(GL_CULL_FACE); //render both sides of every triangle
+	glEnable(GL_DEPTH_TEST); //check the occlusions using the Z buffer
 
 	// set initial stage
 	StageManager::get_instance()->goTo("menuStage");
@@ -59,17 +59,17 @@ void Game::update(double seconds_elapsed)
 }
 
 //Keyboard event handler (sync input)
-void Game::onKeyDown( SDL_KeyboardEvent event )
+void Game::onKeyDown(SDL_KeyboardEvent event)
 {
-	switch(event.keysym.sym)
+	switch (event.keysym.sym)
 	{
-		case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
+	case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
 	}
 
 	StageManager::get_instance()->onKeyDown(event);
 }
 
-void Game::onMouseButtonDown( SDL_MouseButtonEvent event )
+void Game::onMouseButtonDown(SDL_MouseButtonEvent event)
 {
 	if (event.button == SDL_BUTTON_MIDDLE) //middle mouse
 	{
@@ -92,8 +92,8 @@ void Game::onMouseWheel(SDL_MouseWheelEvent event)
 
 void Game::onResize(int width, int height)
 {
-    std::cout << "Window resized: " << width << "," << height << std::endl;
-	glViewport( 0,0, width, height );
+	std::cout << "Window resized: " << width << "," << height << std::endl;
+	glViewport(0, 0, width, height);
 	window_width = width;
 	window_height = height;
 

@@ -11,8 +11,8 @@ class Shader; //for binding
 class Image; //for displace
 class Skeleton; //for skinned meshes
 
-//version from 11/5/2020
-#define MESH_BIN_VERSION 11 //this is used to regenerate bins if the format changes
+//version from 21/01/2024
+#define MESH_BIN_VERSION 12 //this is used to regenerate bins if the format changes
 
 #define MAX_SUBMESH_DRAW_CALLS 16
 
@@ -24,8 +24,8 @@ struct BoneInfo {
 struct sSubmeshDrawCallInfo {
 
 	char material[32];
-	int start;//in primitive
-	int length;//in primitive
+	size_t start;//in primitive
+	size_t length;//in primitive
 };
 
 struct sSubmeshInfo

@@ -115,7 +115,7 @@ void mainLoop()
 				break;
 			case SDL_MOUSEWHEEL:
 				Input::mouse_wheel += sdlEvent.wheel.y;
-				Input::mouse_wheel_delta = sdlEvent.wheel.y;
+				Input::mouse_wheel_delta = static_cast<float>(sdlEvent.wheel.y);
 				game->onMouseWheel(sdlEvent.wheel);
 				break;
 			case SDL_KEYDOWN:
@@ -149,7 +149,7 @@ void mainLoop()
 		double elapsed_time = (now - last_time) * 0.001; //0.001 converts from milliseconds to seconds
 		double last_time_seconds = game->time;
         game->time = float(now * 0.001);
-		game->elapsed_time = elapsed_time;
+		game->elapsed_time = static_cast<float>(elapsed_time);
 		game->frame++;
 		frames_this_second++;
 		if (int(last_time_seconds *2) != int(game->time*2)) //next half second

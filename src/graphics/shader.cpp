@@ -223,7 +223,7 @@ bool Shader::LoadAtlas(const char* filename)
 		int pos2 = line.find_first_of(' ',pos+1);
 		int pos3 = line.find_first_of(' ',pos2+1);
 		if(pos3 == -1)
-			pos3 = std::string::npos;
+			pos3 = static_cast<int>(std::string::npos);
 		std::string name = line.substr(0,pos);
 		std::string vs_filename = trim(line.substr(pos+1,pos2 - pos));
 		std::string fs_filename = trim(line.substr(pos2+1,pos3 - pos2));
