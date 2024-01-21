@@ -148,7 +148,7 @@ void Vector3::parseFromText(const char* text, const char separator)
 			strncpy(num, start, current - start);
 			num[current - start] = '\0';
 			start = current + 1;
-			if (num[0] != 'x') //¿?
+			if (num[0] != 'x')
 				switch(pos)
 				{
 					case 0: x = (float)atof(num); break;
@@ -285,6 +285,14 @@ void Matrix44::setTranslation(float x, float y, float z)
 	m[12] = x;
 	m[13] = y;
 	m[14] = z;
+}
+
+void Matrix44::setTranslation(const Vector3& new_translation)
+{
+	setIdentity();
+	m[12] = new_translation.x;
+	m[13] = new_translation.y;
+	m[14] = new_translation.z;
 }
 
 Vector3 Matrix44::getTranslation()
@@ -1223,7 +1231,7 @@ bool RaySphereCollision(const Vector3& center, const float& radius, const Vector
 	float b = dot(m, ray_dir);
 	float c = dot(m, m) - radius * radius;
 
-	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0) 
+	// Exit if r's origin outside s (c > 0) and r pointing away from s (b > 0)
 	if (c > 0.0f && b > 0.0f)
 		return false;
 	float discr = b * b - c;
