@@ -104,8 +104,6 @@ PlayStage::PlayStage()
 
 	vignetting = new RenderToTexture();
 	vignetting->create(Game::instance->window_width, Game::instance->window_height);
-
-	emitter.setTexture("data/textures/clouds/clouds.tga");
 }
 
 void PlayStage::onEnter(Stage* previousStage)
@@ -172,8 +170,6 @@ void PlayStage::render()
 
 	// Render all scene tree
 	world->root.render(camera);
-
-	emitter.render();
 
 	pixelate->disable();
 
