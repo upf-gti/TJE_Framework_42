@@ -171,8 +171,7 @@ Texture* Texture::Get(const char* filename, bool mipmaps, bool wrap)
 	Texture* texture = new Texture();
 	if (!texture->load(filename, mipmaps,wrap))
 	{
-		delete texture;
-		return NULL;
+		texture = Texture::Get("data/textures/missing.tga");
 	}
 
 	return texture;
