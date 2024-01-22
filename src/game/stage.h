@@ -58,8 +58,6 @@ class PlayStage : public Stage {
 public:
 	PlayStage();
 
-	bool use_first_person = false;
-
 	RenderToTexture* pixelate = nullptr;
 	RenderToTexture* vignetting = nullptr;
 

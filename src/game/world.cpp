@@ -52,7 +52,7 @@ World::World()
 
 	{
 		player = new EntityPlayer(
-			Mesh::Get("data/box.ASE"),
+			Mesh::Get("data/sphere.obj"),
 			player_mat
 		);
 
@@ -98,11 +98,13 @@ void World::updateCamera(float seconds_elapsed)
 	else {
 
 		// Get mouse deltas
-		camera_yaw -= Input::mouse_delta.x * seconds_elapsed * 10.f * DEG2RAD;
-		camera_pitch -= Input::mouse_delta.y * seconds_elapsed * 10.f * DEG2RAD;
+		camera_yaw_target += Input::mouse_delta.x * camera_speed;
+		camera_pitch_target += Input::mouse_delta.y * camera_speed;
 
-		// Restrict pitch angle
-		camera_pitch = clamp(camera_pitch, -M_PI * 0.3f, M_PI * 0.3f);
+		camera_pitch_target = clamp(camera_pitch_target, -M_PI * 0.2f, M_PI * 0.2f);
+
+		camera_yaw += camera_yaw_target - camera_yaw * 0.5f;
+		camera_pitch += camera_pitch_target - camera_pitch * 0.5f;
 	}
 }
 

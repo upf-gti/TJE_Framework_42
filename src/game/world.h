@@ -34,6 +34,9 @@ public:
 
 	float camera_yaw = 0.f;
 	float camera_pitch = 0.7f;
+	float camera_yaw_target = 0.f;
+	float camera_pitch_target = 0.7f;
+	float camera_speed = 0.001f;
 
 	bool freeCam = false;
 

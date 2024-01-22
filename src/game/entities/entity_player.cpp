@@ -34,7 +34,7 @@ void EntityPlayer::render(Camera* camera)
 		return;
 
 	if (!material.shader) {
-		material.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.fs");
+		material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 	}
 
 	// Enable shader
