@@ -14,7 +14,7 @@ It contains the basics to do something nice:
 
 Clone and initialize the repository:
 ```
-git clone --recurse-submodules -j8 https://github.com/upf-gti/TJE_Framework.git
+git clone --recurse-submodules -j8 https://github.com/upf-gti/TJE_Framework_42.git
 ```
 
 The framework provided is compatible with all operating systems.
