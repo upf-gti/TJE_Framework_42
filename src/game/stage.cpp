@@ -110,6 +110,9 @@ void PlayStage::onEnter(Stage* previousStage)
 {
 	bool freeCam = World::get_instance()->freeCam;
 	SDL_ShowCursor(freeCam);
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	Game::instance->mouse_locked = !freeCam;
 }
 
@@ -133,17 +136,8 @@ void PlayStage::render()
 		Vector3 eye;
 		Vector3 center;
 
-		if (use_first_person) {
-			eye = current_player->getGlobalMatrix() * Vector3(0.f, 1.4f, 0.5f);
-			center = eye + front;
-		}
-		else {
-			float orbit_dist = 5.f;
-			eye = current_player->model.getTranslation() - front * orbit_dist;
-			center = current_player->getGlobalMatrix() * Vector3(0.f, 2.f, 0.5f);
-
-			world->checkCameraCollisions(eye);
-		}
+		eye = current_player->getGlobalMatrix() * Vector3(0.f, 1.4f, 0.5f);
+		center = eye + front;
 
 		camera->lookAt(
 			eye,
@@ -191,11 +185,6 @@ void PlayStage::render()
 
 void PlayStage::update(float seconds_elapsed)
 {
-	if (Input::wasKeyPressed(SDL_SCANCODE_T))
-		std::cout << "pressed" << std::endl;
-
-	use_first_person = Input::isMousePressed(SDL_BUTTON_RIGHT);
-
 	World* world = World::get_instance();
 	world->update(seconds_elapsed);
 

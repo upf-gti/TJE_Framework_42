@@ -93,7 +93,6 @@ public:
 
 	//mouse
 	static bool isMousePressed(int button) { return mouse_state & SDL_BUTTON(button); } //button could be SDL_BUTTON_LEFT
-	static void centerMouse();
 
 	static void init( SDL_Window* window );
 	static void update();

@@ -52,10 +52,6 @@ void Game::render(void)
 void Game::update(double seconds_elapsed)
 {
 	StageManager::get_instance()->update(seconds_elapsed);
-
-	//to navigate with the mouse fixed in the middle
-	if (mouse_locked)
-		Input::centerMouse();
 }
 
 //Keyboard event handler (sync input)
@@ -75,6 +71,7 @@ void Game::onMouseButtonDown(SDL_MouseButtonEvent event)
 	{
 		mouse_locked = !mouse_locked;
 		SDL_ShowCursor(!mouse_locked);
+		SDL_SetRelativeMouseMode((SDL_bool)(mouse_locked));
 	}
 
 	StageManager::get_instance()->onMouseButtonDown(event);

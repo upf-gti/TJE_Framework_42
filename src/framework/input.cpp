@@ -42,27 +42,11 @@ void Input::update()
 	memcpy((void*)&Input::prev_keystate, Input::keystate, SDL_NUM_SCANCODES);
 	Input::keystate = SDL_GetKeyboardState(NULL);
 
-	//get mouse position and delta (do after pump events)
-	int x, y;
-	Input::mouse_state = SDL_GetMouseState(&x, &y);
-	Input::mouse_delta.set(Input::mouse_position.x - x, Input::mouse_position.y - y);
-	Input::mouse_position.set((float)x, (float)y);
+	Input::mouse_delta.set(0.0f, 0.0f);
 
 	//gamepads
 	for (int i = 0; i < 4; ++i)
 		updateGamepadState(_joy[i], gamepads[i]);
-}
-
-void Input::centerMouse()
-{
-	int window_width, window_height;
-	SDL_GetWindowSize(window, &window_width, &window_height);
-
-	int center_x = (int)floor(window_width*0.5f);
-	int center_y = (int)floor(window_height*0.5f);
-	SDL_WarpMouseInWindow(window, center_x, center_y); //put the mouse back in the middle of the screen
-	Input::mouse_position.x = (float)center_x;
-	Input::mouse_position.y = (float)center_y;
 }
 
 SDL_Joystick* Input::openGamepad(int index)

@@ -96,9 +96,6 @@ void mainLoop()
 	{
 		Input::update();
 
-		//render frame
-		game->render();
-
 		//update events
 		while(SDL_PollEvent(&sdlEvent))
 		{
@@ -117,6 +114,10 @@ void mainLoop()
 				Input::mouse_wheel += sdlEvent.wheel.y;
 				Input::mouse_wheel_delta = static_cast<float>(sdlEvent.wheel.y);
 				game->onMouseWheel(sdlEvent.wheel);
+				break;
+			case SDL_MOUSEMOTION:
+				Input::mouse_position.set((float)sdlEvent.motion.x, (float)sdlEvent.motion.y);
+				Input::mouse_delta = Input::mouse_delta + Vector2((float)sdlEvent.motion.xrel, (float)sdlEvent.motion.yrel);
 				break;
 			case SDL_KEYDOWN:
 				game->onKeyDown(sdlEvent.key);
@@ -161,6 +162,9 @@ void mainLoop()
 		//update game logic
 		game->update(elapsed_time); 
 
+		//render frame
+		game->render();
+
 		//check errors in opengl only when working in debug
 		#ifdef _DEBUG
 			checkGLErrors();
@@ -182,7 +186,7 @@ int main(int argc, char **argv)
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	bool fullscreen = false; //change this to go fullscreen
-	Vector2 size(800,600);
+	Vector2 size(1280, 720);
 
 	if(fullscreen)
 		size = getDesktopSize(0);
