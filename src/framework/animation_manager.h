@@ -4,13 +4,16 @@
 
 enum ePlayerStates { PLAYER_IDLE, PLAYER_WALK, PLAYER_RUN };
 
-class AnimStates {
+class AnimationManager {
 
 public:
 
-	AnimStates() {};
+	AnimationManager() {};
 
 	void update(float seconds_elapsed);
+
+	void playAnimation(const char* path);
+	void stopAnimation();
 	void addAnimationState(const char* path, int state);
 	void goToState(int state, float time = 0.f);
 
@@ -18,6 +21,7 @@ public:
 
 private:
 
+	Animation* current_animation = nullptr;
 	std::map<int, Animation*> animation_states;
 
 	int current_state = -1;
