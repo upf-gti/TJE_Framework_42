@@ -10,7 +10,7 @@
 #include "framework/particles.h"
 #include "game/entities/entity_player.h"
 
-#include "entities/entity_gui_element.h"
+#include "framework/entities/entity_gui_element.h"
 
 ParticleEmitter emitter;
 

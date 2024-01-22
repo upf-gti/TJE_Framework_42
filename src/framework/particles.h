@@ -1,7 +1,7 @@
 #pragma once
 #include "includes.h"
 #include "framework.h"
-#include "game/entities/entity.h"
+#include "framework/entities/entity.h"
 
 class Texture;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity_mesh.h"
+#include "framework/entities/entity_mesh.h"
 #include "framework/anim_states.h"
 
 class EntityPlayer : public EntityMesh {

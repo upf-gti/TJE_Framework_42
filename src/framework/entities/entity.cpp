@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "game/stage.h"
 #include "framework/animation.h"
-#include "entity_enemy.h"
+#include "game/entities/entity_enemy.h"
 
 sEntityType Entity::entityTypes[32];
 

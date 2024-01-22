@@ -4,9 +4,9 @@
 #include "graphics/shader.h"
 #include "framework/camera.h"
 #include "framework/input.h"
+#include "framework/entities/entity_collider.h"
 #include "game/game.h"
 #include "game/world.h"
-#include "entity_collider.h"
 
 EntityPlayer::EntityPlayer(Mesh* mesh, const Material& material, const std::string& name) :
 	EntityMesh(mesh, material, name)

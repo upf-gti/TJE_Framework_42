@@ -7,7 +7,7 @@
 #include "graphics/shader.h"
 #include "framework/input.h"
 #include "framework/animation.h"
-#include "entities/entity.h"
+#include "framework/entities/entity.h"
 
 #include "stage.h"
 

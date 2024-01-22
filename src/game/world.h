@@ -1,5 +1,5 @@
 #pragma once
-#include "entities/entity.h"
+#include "framework/entities/entity.h"
 #include <map>
 
 #include "graphics/mesh.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entity_mesh.h"
+#include "framework/entities/entity_mesh.h"
 
 enum eEnemyStates { ENEMY_IDLE, ENEMY_WALK, ENEMY_RUN, ENEMY_SHOOT };
 

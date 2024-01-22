@@ -6,11 +6,10 @@
 #include "graphics/shader.h"
 #include "framework/input.h"
 #include "game.h"
-#include "entities/entity_mesh.h"
+#include "framework/entities/entity_collider.h"
+#include "framework/entities/entity_mesh.h"
 #include "entities/entity_player.h"
 #include "entities/entity_enemy.h"
-#include "entities/entity_collider.h"
-
 #include <algorithm>
 #include <fstream>
 

@@ -50,7 +50,7 @@ vec4 applyLight()
 {
 	vec4 Kd = vec4(u_Kd, 1.0);
 
-	if( u_maps.x ) {
+	if(u_maps.x > 0.0) {
 		Kd = texture2D( u_Kd_texture, v_uv * u_tiling );
 	}
 
@@ -58,17 +58,17 @@ vec4 applyLight()
 	vec3 V = normalize(u_camera_position - v_world_position);
 
 	vec3 N = normalize(v_normal);
-	if( u_maps.y ) {
-		vec3 normals_texture = texture2D( u_normals_texture, v_uv * u_tiling );
+	if(u_maps.y > 0.0) {
+		vec3 normals_texture = texture2D( u_normals_texture, v_uv * u_tiling ).xyz;
 		N = perturbNormal( normalize(v_normal), -V, v_uv * u_tiling, normals_texture );
 	}
 
 	//ambient
-	vec3 light = u_Ka * Kd;
+	vec3 light = u_Ka * Kd.xyz;
 	//direct
 	float NdotL = max(0.0,dot(L,N));
 
-	light += Kd * u_light_color * NdotL;
+	light += Kd.xyz * u_light_color * NdotL;
 
 	vec3 R = reflect(-L, N);	
 	float RdotV = pow(max(0.0,dot(R,V)), 20);
