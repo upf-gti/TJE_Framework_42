@@ -266,3 +266,8 @@ bool World::parseScene(const char* filename)
 	std::cout << "Scene [OK]" << " Meshes added: " << mesh_count << std::endl;
 	return true;
 }
+
+void World::addEntity(Entity* entity)
+{
+	root.addChild(entity);
+}

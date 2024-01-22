@@ -44,6 +44,8 @@ public:
 	std::map<std::string, sRenderData> meshes_to_load;
 	bool parseScene(const char* filename);
 
+	void addEntity(Entity* entity);
+
 	// AI
 	std::vector<Vector3> waypoints;
 	void addWayPointFromScreenPos(const Vector2& coord);
