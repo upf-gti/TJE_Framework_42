@@ -63,6 +63,7 @@ endmacro()
 
 CG_SOURCES_APPEND(${DIR_SOURCES})
 CG_SOURCES_APPEND(${DIR_SOURCES}/framework)
+CG_SOURCES_APPEND(${DIR_SOURCES}/framework/entities)
 CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra)
 CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/coldet)
 CG_SOURCES_APPEND(${DIR_SOURCES}/framework/extra/pathfinder)

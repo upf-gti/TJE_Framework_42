@@ -63,7 +63,7 @@ World::World()
 		);
 	}
 
-	//parseScene("data/myscene.scene");
+	parseScene("data/myscene.scene");
 
 	std::sort(root.children.begin(), root.children.end(), [](const Entity* lhs, const Entity* rhs)
 	{
