@@ -289,7 +289,7 @@ void PlayStage::onMouseButtonUp(SDL_MouseButtonEvent event)
 	switch (event.button)
 	{
 	case SDL_BUTTON_LEFT:
-		World::get_instance()->addWayPointFromScreenPos(Input::mouse_position);
+		// ...
 		break;
 	}
 }

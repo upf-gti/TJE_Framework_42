@@ -5,10 +5,12 @@
 #include "game/entities/entity_player.h"
 #include "game/world.h"
 
-EntityAI::EntityAI(Mesh* mesh, const Material& material, const std::string& name) :
+EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
 
 	setLayer(eCollisionFilter::ENEMY);
+
+	this->type = type;
 
 	// animated = true;
 
@@ -37,7 +39,7 @@ void EntityAI::update(float delta_time)
 	}
 	else if (type == AI_BREAKER)
 	{
-		
+		moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
 	}
 	// GOOD GUY
 	else
@@ -89,4 +91,17 @@ void EntityAI::shoot(float delta_time)
 	// Generate entity to shoot
 
 	world->addProjectile(origin, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO);
+}
+
+void EntityAI::moveTo(const Vector3& target, float delta_time)
+{
+	World* world = World::get_instance();
+
+	// Set rotation first...
+
+	lookAtTarget(target, delta_time);
+
+	// Check if we can shoot ..
+
+	model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
 }
