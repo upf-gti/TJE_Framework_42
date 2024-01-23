@@ -64,7 +64,7 @@ public:
 	// Game
 
 	EntityCollider* wall_entity = nullptr;
-	uint16_t		wall_health = 1;
+	uint16_t		wall_health = MAX_HEALTH;
 
 	void updateWall(const float delta_time);
 
