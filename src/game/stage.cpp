@@ -129,7 +129,7 @@ void PlayStage::render()
 	if (!freeCam) {
 
 		Matrix44 mYaw;
-		mYaw.setRotation(camera_yaw, Vector3(0, 1, 0));
+		mYaw.setRotation(camera_yaw, Vector3::UP);
 		Matrix44 mPitch;
 		mPitch.setRotation(camera_pitch, Vector3(-1, 0, 0));
 		Vector3 front = (mPitch * mYaw).frontVector();
@@ -142,7 +142,7 @@ void PlayStage::render()
 		camera->lookAt(
 			eye,
 			center,
-			Vector3(0, 1, 0)
+			Vector3::UP
 		);
 	}
 
@@ -222,7 +222,7 @@ void PlayStage::renderMinimap()
 	Entity* current_player = world->player;
 
 	Matrix44 mYaw;
-	mYaw.setRotation(camera_yaw, Vector3(0, 1, 0));
+	mYaw.setRotation(camera_yaw, Vector3::UP);
 	Vector3 eye = current_player->model.getTranslation();
 	// don't use height
 	eye.y = 0;

@@ -15,8 +15,8 @@ public:
 	int layer = eCollisionFilter::SCENARIO;
 
 	bool isStatic = true;
-	float sphereRadius = 0.75f;
-	float playerHeight = 1.4f;
+	float sphereRadius = 1.0f;
+	float playerHeight = 0.0f;
 
 	void getCollisions(const Vector3& target_position, std::vector<sCollisionData>& collisions, eCollisionFilter filter = ALL);
 };

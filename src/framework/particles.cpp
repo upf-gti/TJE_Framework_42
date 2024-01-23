@@ -63,7 +63,7 @@ void ParticleEmitter::render()
 		Camera* camera = Camera::current;
 		
 		Vector3 right = camera->getLocalVector(Vector3(1, 0, 0));
-		Vector3 top = camera->getLocalVector(Vector3(0, 1, 0));
+		Vector3 top = camera->getLocalVector(Vector3::UP);
 
 		/*Matrix44 rot;
 		Vector3 front = camera->getLocalVector(Vector3(0, 0, 1));

@@ -74,7 +74,7 @@ void EntityPlayer::update(float seconds_elapsed)
 {
 	float camera_yaw = World::get_instance()->camera_yaw;
 	Matrix44 mYaw;
-	mYaw.setRotation(camera_yaw, Vector3(0, 1, 0));
+	mYaw.setRotation(camera_yaw, Vector3::UP);
 	Vector3 front = mYaw.frontVector();
 	Vector3 right = mYaw.rightVector();
 	Vector3 position = model.getTranslation();
@@ -108,8 +108,6 @@ void EntityPlayer::update(float seconds_elapsed)
 
 	velocity += move_dir;
 
-	bool isOnFloor = false;
-
 	// Fill collisions
 	std::vector<sCollisionData> collisions;
 
@@ -122,30 +120,17 @@ void EntityPlayer::update(float seconds_elapsed)
 	}
 
 	for (const sCollisionData& collision : collisions) {
-		// If normal is pointing upwards, it means we are on the floor
-		float up_factor = collision.colNormal.dot(Vector3(0, 1, 0));
+		
+		// If normal is pointing upwards, it means it's a floor collision
+		float up_factor = collision.colNormal.dot(Vector3::UP);
 		if (up_factor > 0.8) {
-			isOnFloor = true;
+			continue;
 		}
-		else {
-			// Move along wall when colliding
-			Vector3 newDir = velocity.dot(collision.colNormal) * collision.colNormal;
-			velocity.x -= newDir.x;
-			velocity.z -= newDir.z;
-		}
-	}
-
-	if (!isOnFloor) {
-		velocity.y += -9.8 * seconds_elapsed;
-	}
-	else {
-		// Jump
-		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-			velocity.y = jump_speed;
-		}
-		else {
-			velocity.y = 0.0f;
-		}
+		
+		// Move along wall when colliding
+		Vector3 newDir = velocity.dot(collision.colNormal) * collision.colNormal;
+		velocity.x -= newDir.x;
+		velocity.z -= newDir.z;
 	}
 
 	// Update player's position
@@ -156,7 +141,7 @@ void EntityPlayer::update(float seconds_elapsed)
 	velocity.z *= 0.5f;
 
 	model.setTranslation(position);
-	model.rotate(camera_yaw, Vector3(0, 1, 0));
+	model.rotate(camera_yaw, Vector3::UP);
 
 	// Update animation system
 	//anim_states.update(seconds_elapsed);

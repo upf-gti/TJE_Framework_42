@@ -86,6 +86,9 @@ public:
 class Vector3
 {
 public:
+
+	static Vector3 UP;
+
 	union
 	{
 		struct { float x,y,z; };

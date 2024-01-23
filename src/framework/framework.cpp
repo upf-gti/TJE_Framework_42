@@ -74,6 +74,8 @@ Vector2 operator - (const Vector2& a, const Vector2& b) { return Vector2(a.x - b
 
 // **************************************
 
+Vector3 Vector3::UP(0.f, 1.f, 0.f);
+
 double Vector3::length() 
 {
 	return sqrt(x*x + y*y + z*z);

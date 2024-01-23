@@ -1,7 +1,8 @@
 #include "audio.h"
 
 // Called each frame in order to get the audio samples to play
-static void _audio_play_callback(void* userdata, uint8_t* stream, int32_t len) {
+static void _audio_play_callback(void* userdata, uint8_t* stream, int32_t len)
+{
 	std::unordered_map<uint32_t, AudioTrack>* playing_tracks = (std::unordered_map<uint32_t, AudioTrack>*) userdata;
 
 	// First, clean the stream sample buffer (it will probably have teh prev sample inside)
@@ -38,7 +39,8 @@ static void _audio_play_callback(void* userdata, uint8_t* stream, int32_t len) {
 	}
 }
 
-inline uint32_t Audio::play_audio(const char* audio_dir, const bool repeat_sound) {
+uint32_t Audio::play(const char* audio_dir, const bool repeat_sound)
+{
 	std::string audio_string = std::string(audio_dir);
 
 	uint32_t track_id = track_id_counter++;
@@ -82,11 +84,13 @@ inline uint32_t Audio::play_audio(const char* audio_dir, const bool repeat_sound
 }
 
 
-inline void	Audio::stop_audio(const uint32_t track_id) {
+void Audio::stop(const uint32_t track_id)
+{
 	playing_tracks.erase(track_id);
 }
 
-inline void Audio::clean() {
+void Audio::clean()
+{
 	SDL_CloseAudio();
 	loaded_tracks.clear();
 	playing_tracks.clear();
