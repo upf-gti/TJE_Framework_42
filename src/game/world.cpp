@@ -33,11 +33,6 @@ World::World()
 	camera2D->view_matrix.setIdentity();
 	camera2D->setOrthographic(0, width, height, 0, -1.f, 1.f);
 
-	Material player_mat;
-	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-	player_mat.diffuse = Texture::Get("data/textures/texture.tga");
-	player_mat.Ks = Vector3(0.5);
-
 	Material landscape_cubemap;
 	landscape_cubemap.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/cubemap.fs");
 	landscape_cubemap.diffuse = new Texture();
@@ -52,7 +47,7 @@ World::World()
 		});
 
 	{
-		player = new EntityPlayer(Mesh::Get("data/sphere.obj"), player_mat, "player");
+		player = new EntityPlayer();
 		landscape = new EntityMesh(Mesh::Get("data/meshes/cubemap/cubemap.ASE"), landscape_cubemap, "landscape");
 	}
 

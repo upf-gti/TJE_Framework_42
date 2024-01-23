@@ -74,7 +74,6 @@ void RenderToTexture::enable()
 	glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, fbo);
 	glPushAttrib(GL_VIEWPORT_BIT);
 	glViewport(0,0, (int)width, (int)height);
-
 }
 
 void RenderToTexture::disable()

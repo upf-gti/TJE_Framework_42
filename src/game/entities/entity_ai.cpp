@@ -40,7 +40,7 @@ void EntityAI::shoot(float delta_time)
 {
 	World* world = World::get_instance();
 
-	Vector3 projectile_offset = Vector3(0.0f, 2.0f, 0.0f);
+	Vector3 projectile_offset = Vector3(0.0f, 3.0f, 0.0f);
 	Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
 
 	lookAtTarget(target, delta_time);
@@ -56,17 +56,15 @@ void EntityAI::shoot(float delta_time)
 
 	shoot_timer = 0.0f;
 
-	Vector3 origin = model.getTranslation() + Vector3::UP;
+	Vector3 origin = model.getTranslation() + projectile_offset;
 	Vector3 direction = (target - origin);
 
 	// Get projectile direction and speed (combined in velocity)
 
-	float speed = 1.f;
+	float speed = 2.f;
 	Vector3 velocity = direction * speed;
 
 	// Generate entity to shoot
 
 	world->addProjectile(origin, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO);
-
-	std::cout << "SHOOT!!" << std::endl;
 }

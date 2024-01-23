@@ -1,6 +1,6 @@
 # Blender 4.0.2
 # www.blender.org
-mtllib enemy_1.mtl
+mtllib player.mtl
 o characterMedium
 v 0.410747 3.453011 0.200817
 v 0.176929 3.516045 -0.492870

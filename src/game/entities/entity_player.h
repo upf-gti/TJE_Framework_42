@@ -6,7 +6,7 @@
 class EntityPlayer : public EntityCollider {
 
 public:
-	EntityPlayer() {};
+	EntityPlayer();
 	EntityPlayer(Mesh* mesh, const Material& material, const std::string& name = "");
 	~EntityPlayer() {};
 

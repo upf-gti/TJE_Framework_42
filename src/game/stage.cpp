@@ -136,7 +136,7 @@ void PlayStage::render()
 		Vector3 eye;
 		Vector3 center;
 
-		eye = current_player->getGlobalMatrix() * Vector3(0.f, 3.5f, 0.5f);
+		eye = current_player->getGlobalMatrix() * Vector3(0.f, 3.0f, 0.3f);
 		center = eye + front;
 
 		camera->lookAt(
@@ -201,9 +201,6 @@ void PlayStage::renderMinimap()
 	glViewport(width - size - margin, height - size - margin, size, size);
 
 	World* world = World::get_instance();
-	bool freeCam = world->freeCam;
-	float camera_yaw = world->camera_yaw;
-	float camera_pitch = world->camera_pitch;
 
 	Camera cam;
 	cam.setPerspective(60.f, 1.f, 0.1, 100.f);
@@ -211,10 +208,9 @@ void PlayStage::renderMinimap()
 	Entity* current_player = world->player;
 
 	Matrix44 mYaw;
-	mYaw.setRotation(camera_yaw, Vector3::UP);
+	mYaw.setRotation(world->camera_yaw, Vector3::UP);
 	Vector3 eye = current_player->model.getTranslation();
-	// don't use height
-	eye.y = 0;
+	eye.y = 0; // Don't use height
 	Vector3 center = eye;
 	Vector3 up(0, 0, 1);
 
@@ -226,7 +222,7 @@ void PlayStage::renderMinimap()
 
 	cam.enable();
 	
-	World::get_instance()->root.render(&cam);
+	world->root.render(&cam);
 
 	// reset viewport
 	glViewport(0, 0, width, height);

@@ -1,10 +1,25 @@
 #include "entity_player.h"
 #include "graphics/mesh.h"
 #include "graphics/shader.h"
+#include "graphics/texture.h"
 #include "framework/camera.h"
 #include "framework/input.h"
 #include "game/game.h"
 #include "game/world.h"
+
+EntityPlayer::EntityPlayer()
+{
+	Material player_mat;
+	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	player_mat.diffuse = Texture::Get("data/textures/texture.tga");
+	player_mat.Ks = Vector3(0.0f);
+
+	name = "player";
+	mesh = Mesh::Get("data/meshes/player/player.obj");
+	material = player_mat;
+
+	setLayer(eCollisionFilter::PLAYER);
+}
 
 EntityPlayer::EntityPlayer(Mesh* mesh, const Material& material, const std::string& name) :
 	EntityCollider(mesh, material, name)
@@ -50,10 +65,6 @@ void EntityPlayer::render(Camera* camera)
 	material.shader->setUniform("u_light_position", Vector3(50.0f, 100.0f, 0.0f));
 	material.shader->setUniform("u_tiling", material.tiling);
 	material.shader->setUniform("u_time", Game::instance->time);
-	material.shader->setUniform("u_maps", Vector2(!!material.diffuse, !!material.normals));
-
-	if (material.diffuse) material.shader->setUniform("u_texture", material.diffuse, 0);
-	if (material.normals) material.shader->setUniform("u_normals_texture", material.normals, 1);
 
 	material.shader->setUniform("u_Ka", material.Ka);
 	material.shader->setUniform("u_Kd", material.Kd);
