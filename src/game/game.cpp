@@ -49,9 +49,9 @@ void Game::render(void)
 	SDL_GL_SwapWindow(this->window);
 }
 
-void Game::update(double seconds_elapsed)
+void Game::update(double delta_time)
 {
-	StageManager::get_instance()->update(seconds_elapsed);
+	StageManager::get_instance()->update(delta_time);
 }
 
 //Keyboard event handler (sync input)

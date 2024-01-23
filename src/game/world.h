@@ -7,6 +7,7 @@
 class Camera;
 class EntityMesh;
 class EntityPlayer;
+class EntityCollider;
 
 class World {
 
@@ -40,13 +41,14 @@ public:
 
 	bool freeCam = false;
 
-	void update(float seconds_elapsed);
-	void updateCamera(float seconds_elapsed);
+	void render();
+
+	void update(float delta_time);
+	void updateCamera(float delta_time);
 
 	// Scene
 	std::map<std::string, sRenderData> meshes_to_load;
 	bool parseScene(const char* filename);
-
 	void addEntity(Entity* entity);
 
 	// AI
@@ -55,8 +57,21 @@ public:
 
 	// Collisions
 	EntityMesh* collision_entity = nullptr;
-	std::vector<Vector3> debug_col_positions;
-
 	void checkCameraCollisions(Vector3& newEye);
 	bool testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest = false, float max_ray_dist = 3.4e+38F, bool in_object_space = false);
+
+	// Game
+
+	struct Projectile {
+		EntityCollider* collider = nullptr;
+		Vector3 velocity;
+		float mass = 0.0f;
+		float radius = 0.0f;
+	} ;
+
+	std::vector<Projectile> projectiles;
+	void addProjectile(EntityCollider* collider, const Vector3& velocity, float radius);
+	void renderProjectiles();
+	void updateProjectiles(float delta_time);
+	void onProjectileCollision(EntityCollider* collider, int projectile_index);
 };

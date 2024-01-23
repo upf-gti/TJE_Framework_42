@@ -6,18 +6,18 @@
 
 #include <iostream>
 
-void AIBehavior::update(float seconds_elapsed)
+void AIBehavior::update(float delta_time)
 {
     if (state == SEARCH)
     {
-        searchTarget(seconds_elapsed);
+        searchTarget(delta_time);
 
         if (canSeeTarget()) {
             std::cout << "target spotted!" << std::endl;
             state = ATTACK;
         }
         else {
-            searchTarget(seconds_elapsed);
+            searchTarget(delta_time);
         }
     }
     else if (state == ATTACK)
@@ -25,7 +25,7 @@ void AIBehavior::update(float seconds_elapsed)
         World* world = World::get_instance();
         Vector3 target = world->player->model.getTranslation();
 
-        lookAtTarget(target, seconds_elapsed);
+        lookAtTarget(target, delta_time);
 
         if (!canSeeTarget()) {
             std::cout << "target missed!" << std::endl;
@@ -70,7 +70,7 @@ bool AIBehavior::canSeeTarget()
     return false;
 }
 
-void AIBehavior::searchTarget(float seconds_elapsed)
+void AIBehavior::searchTarget(float delta_time)
 {
     if (path.size() && path.size() == World::get_instance()->waypoints.size())
     {
@@ -80,8 +80,8 @@ void AIBehavior::searchTarget(float seconds_elapsed)
 
         float toTargetLength = (target - origin).length();
 
-        lookAtTarget(target, seconds_elapsed);
-        ref->model.translate(0.f, 0.f, seconds_elapsed * 2.f);
+        lookAtTarget(target, delta_time);
+        ref->model.translate(0.f, 0.f, delta_time * 2.f);
 
         if (toTargetLength < 0.1f) {
 
@@ -137,12 +137,12 @@ void AIBehavior::searchTarget(float seconds_elapsed)
     }
 }
 
-void AIBehavior::lookAtTarget(const Vector3& target, float seconds_elapsed)
+void AIBehavior::lookAtTarget(const Vector3& target, float delta_time)
 {
     Vector3 origin = ref->model.getTranslation();
     origin.y = 0.f;
     float delta_yaw = ref->model.getYawRotationToAimTo(target);
-    ref->model.rotate(delta_yaw * seconds_elapsed * 4, Vector3(0.f, 1.f, 0.f));
+    ref->model.rotate(delta_yaw * delta_time * 4, Vector3(0.f, 1.f, 0.f));
 }
 
 bool AIBehavior::hasAmmo()

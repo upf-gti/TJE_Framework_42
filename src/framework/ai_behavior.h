@@ -31,11 +31,11 @@ class AIBehavior {
 public:
 
 	AIBehavior(EntityEnemy* e) { ref = e; };
-	void update(float seconds_elapsed);
+	void update(float delta_time);
 
 	bool canSeeTarget();
-	void searchTarget(float seconds_elapsed);
-	void lookAtTarget(const Vector3& target, float seconds_elapsed);
+	void searchTarget(float delta_time);
+	void lookAtTarget(const Vector3& target, float delta_time);
 	bool hasAmmo();
 	void shoot();
 

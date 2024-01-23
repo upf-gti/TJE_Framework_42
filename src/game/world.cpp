@@ -75,12 +75,12 @@ World::World()
 	// Audio::Play3D("data/audio/shot.wav", Vector3(), 1.f, true);
 }
 
-void World::updateCamera(float seconds_elapsed)
+void World::updateCamera(float delta_time)
 {
 	if (freeCam)
 	{
 		float mouse_speed = 5.0f;
-		float speed = seconds_elapsed * mouse_speed; //the speed is defined by the seconds_elapsed so it goes constant
+		float speed = delta_time * mouse_speed; //the speed is defined by the delta_time so it goes constant
 
 		//mouse input to rotate the cam
 		if (Input::isMousePressed(SDL_BUTTON_RIGHT)) //is left button pressed?
@@ -118,14 +118,28 @@ void World::checkCameraCollisions(Vector3& newEye)
 	testRayToScene(camera->center, direction.normalize(), newEye, normal, true, direction.length());
 }
 
-void World::update(float seconds_elapsed)
+void World::render()
 {
-	updateCamera(seconds_elapsed);
+	// Render entity players
+	player->render(camera);
 
-	root.update(seconds_elapsed);
+	// Render all scene tree
+	root.render(camera);
+
+	// Render projectiles
+	renderProjectiles();
+}
+
+void World::update(float delta_time)
+{
+	updateCamera(delta_time);
+
+	root.update(delta_time);
 
 	if (!freeCam)
-		player->update(seconds_elapsed);
+		player->update(delta_time);
+
+	updateProjectiles(delta_time);
 } 
 
 void World::addWayPointFromScreenPos(const Vector2& coord)
@@ -148,7 +162,7 @@ bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& c
 
 	auto resolve_closest = [&](EntityCollider* ec) {
 
-		std::cout << ec->name << std::endl;
+		// std::cout << ec->name << std::endl;
 
 		has_collided = true;
 		float new_distance = tmpCol.distance(ray_origin);
@@ -156,7 +170,6 @@ bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& c
 			collision = tmpCol;
 			closest_dist = new_distance;
 		}
-
 	};
 
 	for (auto e : root.children)
@@ -285,4 +298,69 @@ bool World::parseScene(const char* filename)
 void World::addEntity(Entity* entity)
 {
 	root.addChild(entity);
+}
+
+void World::addProjectile(EntityCollider* collider, const Vector3& velocity, float radius)
+{
+	Projectile p;
+
+	p.collider = collider;
+	p.velocity = velocity;
+	p.radius = radius;
+
+	projectiles.push_back(p);
+}
+
+void World::renderProjectiles()
+{
+	for (int i = 0; i < projectiles.size(); ++i)
+	{
+		Projectile& p = projectiles[i];
+		p.collider->render(camera);
+	}
+}
+
+void World::updateProjectiles(float delta_time)
+{ 
+	for (int i = 0; i < projectiles.size(); ++i)
+	{
+		Projectile& p = projectiles[i];
+
+		// Move and dpply gravity to projectile
+
+		p.collider->model.translate(p.velocity * delta_time);
+
+		p.velocity.y -= 4.0f * delta_time;
+
+		// Check collisions
+
+		std::vector<sCollisionData> collisions;
+
+		for (auto e : root.children)
+		{
+			EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
+			if (!ec)
+				continue;
+
+			Vector3 colPoint;
+			Vector3 colNormal;
+
+			if (ec->mesh->testSphereCollision(ec->model, p.collider->model.getTranslation(), p.radius, colPoint, colNormal)) {
+				
+				onProjectileCollision(ec, i);
+				break;
+			}
+		}
+	}
+}
+
+void World::onProjectileCollision(EntityCollider* collider, int projectile_index)
+{
+	Projectile& p = projectiles[projectile_index];
+
+	std::cout << "COLLIDED WITH " << collider->name << std::endl;
+
+	delete p.collider;
+
+	projectiles.erase(projectiles.begin() + projectile_index);
 }

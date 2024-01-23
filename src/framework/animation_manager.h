@@ -10,7 +10,7 @@ public:
 
 	AnimationManager() {};
 
-	void update(float seconds_elapsed);
+	void update(float delta_time);
 
 	void playAnimation(const char* path);
 	void stopAnimation();

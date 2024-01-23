@@ -263,6 +263,13 @@ void Matrix44::translate(float x, float y, float z)
 	*this = T * *this;
 }
 
+void Matrix44::translate(const Vector3& delta)
+{
+	Matrix44 T;
+	T.setTranslation(delta);
+	*this = T * *this;
+}
+
 void Matrix44::rotate( float angle_in_rad, const Vector3& axis )
 {
 	Matrix44 R;

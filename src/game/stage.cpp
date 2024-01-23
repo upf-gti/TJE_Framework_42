@@ -159,11 +159,7 @@ void PlayStage::render()
 
 	camera->enable();
 
-	// Render entity players
-	world->player->render(camera);
-
-	// Render all scene tree
-	world->root.render(camera);
+	world->render();
 
 	pixelate->disable();
 
@@ -183,19 +179,12 @@ void PlayStage::render()
 	// renderMinimap();
 }
 
-void PlayStage::update(float seconds_elapsed)
+void PlayStage::update(float delta_time)
 {
 	World* world = World::get_instance();
-	world->update(seconds_elapsed);
+	world->update(delta_time);
 
-	Vector3 origin = world->camera->eye;
-	Vector3 direction = (world->camera->center - world->camera->eye);
-	Vector3 normal;
-	Vector3 collision;
-
-	world->testRayToScene(world->camera->center, direction.normalize(), collision, normal, true);
-
-	emitter.update(seconds_elapsed);
+	emitter.update(delta_time);
 }
 
 void PlayStage::renderMinimap()

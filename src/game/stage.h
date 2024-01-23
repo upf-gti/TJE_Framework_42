@@ -114,7 +114,7 @@ public:
 	}
 
 	void render() { if (current) current->render(); }
-	void update(float seconds_elapsed) { if (current) current->update(seconds_elapsed); }
+	void update(float delta_time) { if (current) current->update(delta_time); }
 
 	void onButtonPressed(eButtonId buttonId) { if (current) current->onButtonPressed(buttonId); }
 

@@ -2,7 +2,7 @@
 
 #include "game/game.h"
 
-void AnimationManager::update(float seconds_elapsed)
+void AnimationManager::update(float delta_time)
 {
     float time = Game::instance->time;
 
@@ -21,7 +21,7 @@ void AnimationManager::update(float seconds_elapsed)
 
         animation_states[target_state]->assignTime(time);
 
-        transition_counter += seconds_elapsed;
+        transition_counter += delta_time;
 
         if (transition_counter >= transition_time) {
             current_state = target_state;

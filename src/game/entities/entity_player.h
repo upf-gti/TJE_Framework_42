@@ -10,7 +10,7 @@ public:
 	EntityPlayer(Mesh* mesh, const Material& material, const std::string& name = "");
 	~EntityPlayer() {};
 
-	AnimationManager anim_states;
+	// AnimationManager anim_states;
 
 	// Vel in move the player
 	Vector3 velocity;
@@ -21,4 +21,6 @@ public:
 	// Methods overwritten from base class
 	void render(Camera* camera);
 	void update(float elapsed_time);
+
+	void shoot();
 };

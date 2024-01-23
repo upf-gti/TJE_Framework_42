@@ -53,6 +53,6 @@ public:
 	ParticleEmitter();
 	
 	void render();
-	void update(float seconds_elapsed);
+	void update(float delta_time);
 	void setTexture( const char* filename );
 };

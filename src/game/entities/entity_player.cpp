@@ -70,8 +70,10 @@ void EntityPlayer::render(Camera* camera)
 	}
 }
 
-void EntityPlayer::update(float seconds_elapsed)
+void EntityPlayer::update(float delta_time)
 {
+	// Get the new player velocity
+
 	float camera_yaw = World::get_instance()->camera_yaw;
 	Matrix44 mYaw;
 	mYaw.setRotation(camera_yaw, Vector3::UP);
@@ -108,14 +110,15 @@ void EntityPlayer::update(float seconds_elapsed)
 
 	velocity += move_dir;
 
-	// Fill collisions
+	// Check collisions with the world entities
+
 	std::vector<sCollisionData> collisions;
 
 	for (auto e : World::get_instance()->root.children)
 	{
 		EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
 		if (ec != nullptr)
-			ec->getCollisions(position + velocity * seconds_elapsed, collisions);
+			ec->getCollisions(position + velocity * delta_time, collisions);
 		// else es otra cos que no sea entity collider
 	}
 
@@ -134,7 +137,8 @@ void EntityPlayer::update(float seconds_elapsed)
 	}
 
 	// Update player's position
-	position += velocity * seconds_elapsed;
+
+	position += velocity * delta_time;
 
 	// Decrease velocity when not moving
 	velocity.x *= 0.5f;
@@ -143,6 +147,37 @@ void EntityPlayer::update(float seconds_elapsed)
 	model.setTranslation(position);
 	model.rotate(camera_yaw, Vector3::UP);
 
+	// Shoot projectiles
+
+	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE))
+		shoot();
+
 	// Update animation system
-	//anim_states.update(seconds_elapsed);
+	// anim_states.update(delta_time);
+}
+
+void EntityPlayer::shoot()
+{
+	World* world = World::get_instance();
+
+	Vector3 origin = world->camera->eye;
+	Vector3 direction = (world->camera->center - world->camera->eye);
+
+	// Get projectile direction and speed (combined in velocity)
+
+	float speed = 12.f;
+	Vector3 velocity = direction * speed;
+	
+	// Generate entity to shoot
+
+	Material projectile_material;
+	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+	projectile_material.Ks.set(0.f);
+
+	EntityCollider* entity_to_shoot = new EntityCollider(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
+	entity_to_shoot->model.setTranslation(origin);
+
+	float projectile_bb_radius = entity_to_shoot->mesh->radius;
+
+	world->addProjectile(entity_to_shoot, velocity, projectile_bb_radius);
 }

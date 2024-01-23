@@ -121,9 +121,9 @@ void ParticleEmitter::render()
 	glDisable(GL_BLEND);
 }
 
-void ParticleEmitter::update(float seconds_elapsed)
+void ParticleEmitter::update(float delta_time)
 {
-	emit_timer += seconds_elapsed;
+	emit_timer += delta_time;
 	if (emit_timer > emit_rate && active_particles < max_particles)
 	{
 		emit();
@@ -134,8 +134,8 @@ void ParticleEmitter::update(float seconds_elapsed)
 		if (!p.active)
 			continue;
 
-		 p.position += p.velocity * seconds_elapsed;
-		 p.ttl += seconds_elapsed;
+		 p.position += p.velocity * delta_time;
+		 p.ttl += delta_time;
 
 		// Kill particle if run out of time
 		if (p.ttl > max_ttl) {
