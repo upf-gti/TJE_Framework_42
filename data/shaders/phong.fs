@@ -15,7 +15,7 @@ uniform vec3 u_Ka;
 uniform vec3 u_Kd;
 uniform vec3 u_Ks;
 
-uniform sampler2D u_Kd_texture;
+uniform sampler2D u_texture;
 uniform sampler2D u_normals_texture;
 uniform vec2 u_maps;
 
@@ -50,9 +50,7 @@ vec4 applyLight()
 {
 	vec4 Kd = vec4(u_Kd, 1.0);
 
-	if(u_maps.x > 0.0) {
-		Kd = texture2D( u_Kd_texture, v_uv * u_tiling );
-	}
+	Kd = texture2D( u_texture, v_uv * u_tiling );
 
 	vec3 L = normalize(u_light_position  - v_world_position);
 	vec3 V = normalize(u_camera_position - v_world_position);
@@ -71,7 +69,7 @@ vec4 applyLight()
 	light += Kd.xyz * u_light_color * NdotL;
 
 	vec3 R = reflect(-L, N);	
-	float RdotV = pow(max(0.0,dot(R,V)), 20);
+	float RdotV = pow(max(0.0,dot(R,V)), 20.0);
 
 	light += u_Ks * u_light_color * RdotV;
 

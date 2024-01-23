@@ -7,7 +7,7 @@ varying vec4 v_color;
 
 uniform vec3 u_camera_position;
 uniform vec4 u_color;
-uniform samplerCube u_Kd_texture;
+uniform samplerCube u_texture;
 uniform sampler2D u_normals_texture;
 uniform float u_time;
 
@@ -30,5 +30,5 @@ void main()
 
 	vec3 R = reflect(V, N);
 
-	gl_FragColor = u_color * textureCube( u_Kd_texture, R );
+	gl_FragColor = u_color * textureCube( u_texture, R );
 }

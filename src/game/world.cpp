@@ -112,7 +112,9 @@ void World::checkCameraCollisions(Vector3& newEye)
 {
 	Vector3 origin = camera->center;
 	Vector3 direction = (newEye - camera->center);
-	testRayToScene(camera->center, direction.normalize(), newEye, Vector3(), true, direction.length());
+	Vector3 normal;
+
+	testRayToScene(camera->center, direction.normalize(), newEye, normal, true, direction.length());
 }
 
 void World::update(float seconds_elapsed)

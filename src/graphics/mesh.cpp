@@ -9,6 +9,7 @@
 #include <iostream>
 #include <limits>
 #include <sys/stat.h>
+#include <filesystem>
 
 #include "framework/camera.h"
 #include "texture.h"
@@ -236,7 +237,7 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 	enableBuffers(shader);
 
 	//draw call
-	if (submesh_id == -1 && materials.size() > 0) // if there's mesh mtl
+	if (submesh_id == -1 && !materials.empty()) // if there's mesh mtl
 	{
 		for (int i = 0; i < submeshes.size(); ++i) {
 			sSubmeshInfo& submesh = submeshes[i];
@@ -246,6 +247,8 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 					shader->setUniform("u_Ka", materials[dc.material].Ka);
 					shader->setUniform("u_Kd", materials[dc.material].Kd);
 					shader->setUniform("u_Ks", materials[dc.material].Ks);
+					shader->setUniform("u_texture", materials[dc.material].Kd_texture, 0);
+					shader->setUniform("u_maps", Vector2(!!materials[dc.material].Kd_texture, 0));
 				}
 				drawCall(primitive, i, j, num_instances);
 			}
@@ -1139,6 +1142,11 @@ bool Mesh::parseMTL(const char* filename)
 		{
 			info.Ks = Vector3((float)atof(tokens[1].c_str()), (float)atof(tokens[2].c_str()), (float)atof(tokens[3].c_str()));
 		}
+		else if (tokens[0] == "map_Kd")
+		{
+			std::filesystem::path mesh_path = std::filesystem::path(filename);
+			info.Kd_texture = Texture::Get((mesh_path.parent_path().string() + "/" + tokens[1]).c_str());
+		}
 		else if (tokens[0] == "newmtl") //material file
 		{
 			if (parsingMaterial) {
@@ -1337,7 +1345,7 @@ bool Mesh::loadOBJ(const char* filename)
 	}
 
 	// if the mtl is not specified in the obj but it's needed
-	if (!materials.size()) {
+	if (materials.empty()) {
 		std::string mesh_name = filename;
 		replace(mesh_name, ".obj", ".mtl");
 		if (!parseMTL(mesh_name.c_str()))

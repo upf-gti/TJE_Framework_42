@@ -52,7 +52,7 @@ void EntityPlayer::render(Camera* camera)
 	material.shader->setUniform("u_time", Game::instance->time);
 	material.shader->setUniform("u_maps", Vector2(!!material.diffuse, !!material.normals));
 
-	if (material.diffuse) material.shader->setUniform("u_Kd_texture", material.diffuse, 0);
+	if (material.diffuse) material.shader->setUniform("u_texture", material.diffuse, 0);
 	if (material.normals) material.shader->setUniform("u_normals_texture", material.normals, 1);
 
 	material.shader->setUniform("u_Ka", material.Ka);

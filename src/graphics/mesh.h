@@ -10,6 +10,7 @@
 class Shader; //for binding
 class Image; //for displace
 class Skeleton; //for skinned meshes
+class Texture;
 
 //version from 21/01/2024
 #define MESH_BIN_VERSION 12 //this is used to regenerate bins if the format changes
@@ -40,6 +41,7 @@ struct sMaterialInfo
 	Vector3 Ka;
 	Vector3 Kd;
 	Vector3 Ks;
+	Texture* Kd_texture;
 };
 
 class Mesh

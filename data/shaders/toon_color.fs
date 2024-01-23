@@ -12,7 +12,7 @@ uniform float u_tiling;
 
 // materials
 uniform vec3 u_Ka;
-uniform sampler2D u_Kd_texture;
+uniform sampler2D u_texture;
 uniform sampler2D u_normals_texture;
 uniform vec3 u_Ks;
 
@@ -45,7 +45,7 @@ vec3 perturbNormal( vec3 N, vec3 V, vec2 texcoord, vec3 normal_pixel ){
 
 vec3 applyLight()
 {
-	vec3 Kd = texture2D( u_Kd_texture, v_uv * u_tiling );
+	vec3 Kd = texture2D( u_texture, v_uv * u_tiling );
 
 	vec3 L = normalize(u_light_position  - v_world_position);
 	vec3 V = normalize(u_camera_position - v_world_position);

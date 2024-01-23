@@ -76,7 +76,6 @@ add_executable(${PROJECT_NAME} ${CG_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${DIR_SOURCES})
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${DIR_ROOT}")
 
@@ -111,7 +110,7 @@ set_property(TARGET libglew_static PROPERTY FOLDER "External/libglew_static")
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL OpenGL::GLU)
 
 # Properties
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 11)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED ON)
 
 message(STATUS "dir root: ${DIR_ROOT}")
