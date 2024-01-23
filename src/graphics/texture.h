@@ -68,7 +68,7 @@ public:
 	//textures manager
 	static std::map<std::string, Texture*> sTexturesLoaded;
 
-	GLuint texture_id; // GL id to identify the texture in opengl, every texture must have its own id
+	GLuint texture_id = 0; // GL id to identify the texture in opengl, every texture must have its own id
 	float width;
 	float height;
 	float depth;	//Optional for 3dTexture or 2dTexture array

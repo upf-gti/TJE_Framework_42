@@ -1,10 +1,10 @@
 #pragma once
 
-#include "framework/entities/entity_mesh.h"
+#include "framework/entities/entity_collider.h"
 
 enum eEnemyStates { ENEMY_IDLE, ENEMY_WALK, ENEMY_RUN, ENEMY_SHOOT };
 
-class EntityEnemy : public EntityMesh {
+class EntityEnemy : public EntityCollider {
 
 public:
 	EntityEnemy() {};

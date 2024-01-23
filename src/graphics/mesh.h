@@ -41,7 +41,7 @@ struct sMaterialInfo
 	Vector3 Ka;
 	Vector3 Kd;
 	Vector3 Ks;
-	Texture* Kd_texture;
+	Texture* Kd_texture = nullptr;
 };
 
 class Mesh

@@ -50,7 +50,9 @@ vec4 applyLight()
 {
 	vec4 Kd = vec4(u_Kd, 1.0);
 
-	Kd = texture2D( u_texture, v_uv * u_tiling );
+	if(u_maps.x > 0.0) {
+		Kd = texture2D( u_texture, v_uv * u_tiling );
+	}
 
 	vec3 L = normalize(u_light_position  - v_world_position);
 	vec3 V = normalize(u_camera_position - v_world_position);

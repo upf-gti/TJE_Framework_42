@@ -12,6 +12,7 @@
 #include "entities/entity_enemy.h"
 #include <algorithm>
 #include <fstream>
+#include <string>
 
 World* World::instance = nullptr;
 
@@ -145,7 +146,9 @@ bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& c
 	Vector3 tmpCol;
 	bool has_collided = false;
 
-	auto resolve_closest = [&]() {
+	auto resolve_closest = [&](EntityCollider* ec) {
+
+		std::cout << ec->name << std::endl;
 
 		has_collided = true;
 		float new_distance = tmpCol.distance(ray_origin);
@@ -167,7 +170,7 @@ bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& c
 			if (result)
 			{
 				if (!get_closest) return true;
-				resolve_closest();
+				resolve_closest(ec);
 			}
 		}
 		else { // Instanced mesh
@@ -177,7 +180,7 @@ bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& c
 					continue;
 
 				if (!get_closest) return true;
-				resolve_closest();
+				resolve_closest(ec);
 			}
 		}
 	}
@@ -190,20 +193,11 @@ bool World::parseScene(const char* filename)
 	// You could fill the map manually to add shader and texture for each mesh
 	// If the mesh is not in the map, you can use the MTL file to render its colors
 
-	Material floor_mat;
-	floor_mat.diffuse = Texture::Get("data/textures/grass.tga");
-	floor_mat.normals = Texture::Get("data/textures/grass_normals.tga");
-	floor_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	floor_mat.tiling = 20.f;
-	floor_mat.Ks.set(0.f);
-
-	Material water_mat;
-	water_mat.diffuse = Texture::Get("landscape");
-	water_mat.normals = Texture::Get("data/textures/water_normalmap.tga");
-	water_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/reflection.fs");
-
-	meshes_to_load["meshes/Floor.obj"] = { floor_mat };
-	meshes_to_load["meshes/Water.obj"] = { water_mat };
+	Material enemy0_mat;
+	enemy0_mat.diffuse = Texture::Get("data/textures/grass.tga");
+	//enemy0_mat.normals = Texture::Get("data/textures/grass_normals.tga");
+	enemy0_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+	enemy0_mat.Ks.set(0.f);
 
 	std::cout << " + Scene loading: " << filename << "..." << std::endl;
 
@@ -245,13 +239,30 @@ bool World::parseScene(const char* filename)
 		mesh_name = "data/" + data.first;
 		sRenderData& render_data = data.second;
 
-		// No transforms, anything to do here
+		// No transforms, nothing to do here
 		if (render_data.models.empty())
 			continue;
 
-		Mesh* mesh = Mesh::Get(mesh_name.c_str());
+
 		Material mat = render_data.material;
-		EntityCollider* new_entity = new EntityCollider(mesh, mat);
+		EntityMesh* new_entity;
+
+		size_t enemy_0 = data.first.find("@enemy_0");
+		size_t enemy_1 = data.first.find("@enemy_1");
+		if (enemy_0 != std::string::npos) {
+			Mesh* mesh = Mesh::Get("data/meshes/enemy_0/enemy_0.obj");
+			new_entity = new EntityEnemy(mesh, enemy0_mat);
+		} else
+		if (enemy_1 != std::string::npos) {
+			Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
+			new_entity = new EntityEnemy(mesh, enemy0_mat);
+		}
+		else {
+			Mesh* mesh = Mesh::Get(mesh_name.c_str());
+			new_entity = new EntityCollider(mesh, mat);
+		}
+
+		new_entity->name = data.first;
 
 		// Create instanced entity
 		if (render_data.models.size() > 1) {

@@ -247,7 +247,15 @@ void Mesh::render(unsigned int primitive, int submesh_id, int num_instances)
 					shader->setUniform("u_Ka", materials[dc.material].Ka);
 					shader->setUniform("u_Kd", materials[dc.material].Kd);
 					shader->setUniform("u_Ks", materials[dc.material].Ks);
-					shader->setUniform("u_texture", materials[dc.material].Kd_texture, 0);
+
+					if (materials[dc.material].Kd_texture && materials[dc.material].Kd_texture->texture_id != 0) {
+						shader->setUniform("u_texture", materials[dc.material].Kd_texture, 0);
+					}
+					else {
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D, 0);
+					}
+
 					shader->setUniform("u_maps", Vector2(!!materials[dc.material].Kd_texture, 0));
 				}
 				drawCall(primitive, i, j, num_instances);

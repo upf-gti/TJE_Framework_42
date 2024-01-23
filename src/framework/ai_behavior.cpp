@@ -60,8 +60,11 @@ bool AIBehavior::canSeeTarget()
     float angle = 1.f - clamp(ref->fov * DEG2RAD / M_PI, 0.f, 1.f);
     if (toTarget.dot(enemyFront) > angle) {
 
+        Vector3 collision;
+        Vector3 normal;
+
         // Check obstacles
-        return !world->testRayToScene(origin, toTarget, Vector3(), Vector3(), false, distance);
+        return !world->testRayToScene(origin, toTarget, collision, normal, false, distance);
     }
 
     return false;

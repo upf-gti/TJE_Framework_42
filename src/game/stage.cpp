@@ -188,6 +188,13 @@ void PlayStage::update(float seconds_elapsed)
 	World* world = World::get_instance();
 	world->update(seconds_elapsed);
 
+	Vector3 origin = world->camera->eye;
+	Vector3 direction = (world->camera->center - world->camera->eye);
+	Vector3 normal;
+	Vector3 collision;
+
+	world->testRayToScene(world->camera->center, direction.normalize(), collision, normal, true);
+
 	emitter.update(seconds_elapsed);
 }
 
