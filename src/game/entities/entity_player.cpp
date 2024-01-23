@@ -11,24 +11,25 @@ EntityPlayer::EntityPlayer()
 {
 	Material player_mat;
 	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-	player_mat.diffuse = Texture::Get("data/textures/texture.tga");
+	player_mat.diffuse = Texture::Get("data/meshes/player/survivorMaleB.png");
 	player_mat.Ks = Vector3(0.0f);
 
 	name = "player";
 	mesh = Mesh::Get("data/meshes/player/player.obj");
 	material = player_mat;
 
-	setLayer(eCollisionFilter::PLAYER);
-}
+	// Make the character animated
 
-EntityPlayer::EntityPlayer(Mesh* mesh, const Material& material, const std::string& name) :
-	EntityCollider(mesh, material, name)
-{
-	//anim_states.addAnimationState("data/animations/timmy/timmy_idle.skanim", ePlayerStates::PLAYER_IDLE);
-	//anim_states.addAnimationState("data/animations/timmy/timmy_walk.skanim", ePlayerStates::PLAYER_WALK);
-	//anim_states.addAnimationState("data/animations/timmy/timmy_run.skanim", ePlayerStates::PLAYER_RUN);
+	// animated = true;
 
-	//anim_states.goToState(ePlayerStates::PLAYER_IDLE);
+	if (animated)
+	{
+		mesh = Mesh::Get("data/meshes/character.MESH");
+
+		player_mat.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/texture.fs");
+
+		anim.playAnimation("data/animations/idle.skanim");
+	}
 
 	setLayer(eCollisionFilter::PLAYER);
 }
@@ -66,12 +67,19 @@ void EntityPlayer::render(Camera* camera)
 	material.shader->setUniform("u_tiling", material.tiling);
 	material.shader->setUniform("u_time", Game::instance->time);
 
+	material.shader->setUniform("u_maps", Vector2(!!material.diffuse, !!material.normals));
+
+	if (material.diffuse) material.shader->setUniform("u_texture", material.diffuse, 0);
+	if (material.normals) material.shader->setUniform("u_normals_texture", material.normals, 1);
+
 	material.shader->setUniform("u_Ka", material.Ka);
 	material.shader->setUniform("u_Kd", material.Kd);
 	material.shader->setUniform("u_Ks", material.Ks);
 
-	//mesh->renderAnimated(GL_TRIANGLES, &anim_states.getCurrentSkeleton());
-	mesh->render(GL_TRIANGLES);
+	if(animated)
+		mesh->renderAnimated(GL_TRIANGLES, &anim.getCurrentSkeleton());
+	else
+		mesh->render(GL_TRIANGLES);
 
 	// Disable shader
 	material.shader->disable();
@@ -83,6 +91,15 @@ void EntityPlayer::render(Camera* camera)
 
 void EntityPlayer::update(float delta_time)
 {
+	// DEBUG --------------
+	if (animated) {
+		anim.update(delta_time);
+	}
+	// ---------------------
+
+	if (World::get_instance()->freeCam)
+		return;
+
 	// Get the new player velocity
 
 	float camera_yaw = World::get_instance()->camera_yaw;
@@ -158,13 +175,16 @@ void EntityPlayer::update(float delta_time)
 	model.setTranslation(position);
 	model.rotate(camera_yaw, Vector3::UP);
 
+	// Update animation system
+
+	if (animated) {
+		anim.update(delta_time);
+	}
+
 	// Shoot projectiles
 
 	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE))
 		shoot();
-
-	// Update animation system
-	// anim_states.update(delta_time);
 }
 
 void EntityPlayer::shoot()

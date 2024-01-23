@@ -125,7 +125,7 @@ Shader* Shader::Get(const char* vsf, const char* psf, const char* macros)
 		return NULL;
 
 	Shader* sh = new Shader();
-	if (!sh->load( vsf,psf, macros ))
+	if (!sh->load(vsf, psf, macros))
 		return NULL;
 	s_Shaders[name] = sh;
 	return sh;

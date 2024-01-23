@@ -112,6 +112,9 @@ public:
 	static void ReloadAll();
 	static std::map<std::string,Shader*> s_Shaders;
 
+	const std::string& getVSName() { return vs_filename; }
+	const std::string& getFSName() { return ps_filename; }
+
 	//this is a way to load a single file that contains all the shaders 
 	//to know more about the file format, it is based in this https://github.com/jagenjo/rendeer.js/tree/master/guides#the-shaders but with tiny differences
 	static bool LoadAtlas(const char* filename);

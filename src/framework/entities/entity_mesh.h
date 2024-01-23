@@ -1,6 +1,7 @@
 #pragma once 
 
 #include "entity.h"
+#include "framework/animation_manager.h"
 
 class EntityMesh : public Entity {
 
@@ -16,11 +17,15 @@ public:
 	Mesh* mesh = nullptr;
 	Material material;
 
-	std::vector<sMeshLOD> meshLods;
+	// Animations
+	bool animated = false;
+	AnimationManager anim;
 
 	// Instancing
 	bool isInstanced = false;
 	std::vector<Matrix44> models;
+
+	std::vector<sMeshLOD> meshLods;
 
 	// Methods overwritten from base class
 	void render(Camera* camera);

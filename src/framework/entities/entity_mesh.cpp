@@ -73,6 +73,11 @@ void EntityMesh::render(Camera* camera)
 	material.shader->setUniform("u_tiling", material.tiling);
 	material.shader->setUniform("u_time", Game::instance->time);
 
+	material.shader->setUniform("u_maps", Vector2(!!material.diffuse, !!material.normals));
+
+	if (material.diffuse) material.shader->setUniform("u_texture", material.diffuse, 0);
+	if (material.normals) material.shader->setUniform("u_normals_texture", material.normals, 1);
+
 	if (!isInstanced) material.shader->setUniform("u_model", globalMatrix);
 
 	// By default values
@@ -92,6 +97,8 @@ void EntityMesh::render(Camera* camera)
 
 	if (isInstanced)
 		mesh->renderInstanced(GL_TRIANGLES, models.data(), models.size());
+	else if(animated)
+		mesh->renderAnimated(GL_TRIANGLES, &anim.getCurrentSkeleton());
 	else
 		currentLod->render(GL_TRIANGLES);
 

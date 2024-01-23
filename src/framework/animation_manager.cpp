@@ -77,5 +77,5 @@ Skeleton& AnimationManager::getCurrentSkeleton()
         return blended_skeleton;
     }
 
-    return animation_states[current_state]->skeleton;
+    return current_animation ? current_animation->skeleton : animation_states[current_state]->skeleton;
 }

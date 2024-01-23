@@ -1,4 +1,6 @@
 #include "framework/camera.h"
+#include "graphics/shader.h"
+#include "graphics/texture.h"
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
 #include "game/world.h"
@@ -7,6 +9,22 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, const std::string& name
 	EntityCollider(mesh, material, name) {
 
 	setLayer(eCollisionFilter::ENEMY);
+
+	// animated = true;
+
+	if (animated)
+	{
+
+		this->material.shader = Shader::Get("data/shaders/skinning.vs", material.shader->getFSName().c_str());
+
+		// Set new texture since skanims doesnt support loading mtl..
+		if (!mesh->materials.empty())
+			this->material.diffuse = mesh->materials.begin()->second.Kd_texture;
+
+		this->mesh = Mesh::Get("data/meshes/character.MESH");
+
+		anim.playAnimation("data/animations/crouch.skanim");
+	}
 }
 
 void EntityAI::update(float delta_time)
@@ -25,6 +43,10 @@ void EntityAI::update(float delta_time)
 	else
 	{
 
+	}
+
+	if (animated) {
+		anim.update(delta_time);
 	}
 }
 

@@ -124,8 +124,7 @@ void World::update(float delta_time)
 
 	root.update(delta_time);
 
-	if (!freeCam)
-		player->update(delta_time);
+	player->update(delta_time);
 
 	updateProjectiles(delta_time);
 } 
@@ -195,8 +194,6 @@ bool World::parseScene(const char* filename)
 	// If the mesh is not in the map, you can use the MTL file to render its colors
 
 	Material enemy0_mat;
-	enemy0_mat.diffuse = Texture::Get("data/textures/grass.tga");
-	//enemy0_mat.normals = Texture::Get("data/textures/grass_normals.tga");
 	enemy0_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
 	enemy0_mat.Ks.set(0.f);
 
