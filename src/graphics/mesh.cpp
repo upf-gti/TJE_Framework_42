@@ -1715,6 +1715,7 @@ Mesh* Mesh::Get(const char* filename)
 
 	Mesh* m = new Mesh();
 	std::string name = filename;
+	m->name = name;
 
 	//detect format
 	char file_format = 0;
@@ -1805,6 +1806,5 @@ Mesh* Mesh::Get(const char* filename)
 
 void Mesh::registerMesh( std::string name )
 {
-	this->name = name;
 	sMeshesLoaded[name] = this;
 }
