@@ -60,6 +60,17 @@ World::World()
 
 	freeCam = false;
 
+	{
+		Material wall_material;
+		wall_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+		wall_material.Ks.set(0.f);
+
+		wall_entity = new EntityCollider(Mesh::Get("data/meshes/wall/wall.obj"), wall_material, "wall");
+
+
+		addEntity(wall_entity);
+	}
+
 	// Audio::Play3D("data/audio/shot.wav", Vector3(), 1.f, true);
 }
 
@@ -127,6 +138,8 @@ void World::update(float delta_time)
 	player->update(delta_time);
 
 	updateProjectiles(delta_time);
+
+	updateWall(delta_time);
 } 
 
 void World::addWayPointFromScreenPos(const Vector2& coord)
@@ -283,6 +296,13 @@ bool World::parseScene(const char* filename)
 void World::addEntity(Entity* entity)
 {
 	root.addChild(entity);
+}
+
+// GAME METHODS
+
+void World::updateWall(const float delta_time) {
+	wall_entity->model.setTranslation(Vector3(0.0f, lerp(-1.0f, 0.0f, wall_health / ((float) MAX_HEALTH)), 0.0f));
+	std::cout << wall_entity->model.getTranslation().y << std::endl;
 }
 
 void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)

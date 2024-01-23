@@ -9,6 +9,8 @@ class EntityMesh;
 class EntityPlayer;
 class EntityCollider;
 
+#define MAX_HEALTH 10
+
 class World {
 
 	static World* instance;
@@ -61,6 +63,11 @@ public:
 	bool testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest = false, float max_ray_dist = 3.4e+38F, bool in_object_space = false);
 
 	// Game
+
+	EntityCollider* wall_entity = nullptr;
+	uint16_t		wall_health = 1;
+
+	void updateWall(const float delta_time);
 
 	struct Projectile {
 		EntityCollider* collider = nullptr;
