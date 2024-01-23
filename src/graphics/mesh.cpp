@@ -1525,12 +1525,12 @@ void Mesh::createPlane(float size)
 	vertices.push_back(Vector3(-size, 0, -size));
 
 	//all of them have the same normal
-	normals.push_back(Vector3(0, 1, 0));
-	normals.push_back(Vector3(0, 1, 0));
-	normals.push_back(Vector3(0, 1, 0));
-	normals.push_back(Vector3(0, 1, 0));
-	normals.push_back(Vector3(0, 1, 0));
-	normals.push_back(Vector3(0, 1, 0));
+	normals.push_back(Vector3::UP);
+	normals.push_back(Vector3::UP);
+	normals.push_back(Vector3::UP);
+	normals.push_back(Vector3::UP);
+	normals.push_back(Vector3::UP);
+	normals.push_back(Vector3::UP);
 
 	//texture coordinates
 	uvs.push_back(Vector2(1, 1));

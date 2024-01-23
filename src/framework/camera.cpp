@@ -7,7 +7,7 @@ Camera* Camera::current = NULL;
 
 Camera::Camera()
 {
-	lookAt( Vector3(0, 0, 0), Vector3(0, 0, -1), Vector3(0, 1, 0) );
+	lookAt( Vector3(0, 0, 0), Vector3(0, 0, -1), Vector3::UP);
 	setOrthographic(-100,100,-100, 100,-100,100);
 }
 
@@ -114,7 +114,7 @@ void Camera::lookAt(const Matrix44& m)
 {
 	this->eye = m * Vector3();
 	this->center = m * Vector3(0,0,-1);
-	this->up = m.rotateVector(Vector3(0, 1, 0));
+	this->up = m.rotateVector(Vector3::UP);
 }
 
 void Camera::extractFrustum()

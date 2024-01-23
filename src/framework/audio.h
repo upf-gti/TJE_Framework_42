@@ -31,9 +31,9 @@ public:
 	// Needs to be public in order for it to be read on the callback
 	std::unordered_map<uint32_t, AudioTrack> playing_tracks;
 
-	uint32_t play_audio(const char* audio_dir, const bool repeat_sound = false);
-
-	void stop_audio(const uint32_t track_id);
+	uint32_t play(const char* audio_dir, const bool repeat_sound = false);
+	
+	void stop(const uint32_t track_id);
 
 	void clean();
 };
