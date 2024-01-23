@@ -21,7 +21,7 @@ public:
 	//some globals
 	long frame;
     float time;
-	float elapsed_time;
+	float delta_time;
 	int fps;
 	bool must_exit;
 

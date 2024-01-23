@@ -2,7 +2,7 @@
 #include "game/world.h"
 #include "graphics/mesh.h"
 #include "game/entities/entity_player.h"
-#include "game/entities/entity_enemy.h"
+#include "game/entities/entity_ai.h"
 
 #include <iostream>
 
@@ -142,7 +142,7 @@ void AIBehavior::lookAtTarget(const Vector3& target, float delta_time)
     Vector3 origin = ref->model.getTranslation();
     origin.y = 0.f;
     float delta_yaw = ref->model.getYawRotationToAimTo(target);
-    ref->model.rotate(delta_yaw * delta_time * 4, Vector3(0.f, 1.f, 0.f));
+    ref->model.rotate(delta_yaw * delta_time * 4, Vector3::UP);
 }
 
 bool AIBehavior::hasAmmo()

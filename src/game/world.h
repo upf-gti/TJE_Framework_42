@@ -67,10 +67,11 @@ public:
 		Vector3 velocity;
 		float mass = 0.0f;
 		float radius = 0.0f;
+		uint8_t mask = 0;
 	} ;
 
 	std::vector<Projectile> projectiles;
-	void addProjectile(EntityCollider* collider, const Vector3& velocity, float radius);
+	void addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag);
 	void renderProjectiles();
 	void updateProjectiles(float delta_time);
 	void onProjectileCollision(EntityCollider* collider, int projectile_index);

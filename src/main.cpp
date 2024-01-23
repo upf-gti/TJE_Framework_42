@@ -147,10 +147,10 @@ void mainLoop()
 		//compute delta time
 		long last_time = now;
 		now = SDL_GetTicks();
-		double elapsed_time = (now - last_time) * 0.001; //0.001 converts from milliseconds to seconds
+		double delta_time = (now - last_time) * 0.001; //0.001 converts from milliseconds to seconds
 		double last_time_seconds = game->time;
         game->time = float(now * 0.001);
-		game->elapsed_time = static_cast<float>(elapsed_time);
+		game->delta_time = static_cast<float>(delta_time);
 		game->frame++;
 		frames_this_second++;
 		if (int(last_time_seconds *2) != int(game->time*2)) //next half second
@@ -160,7 +160,7 @@ void mainLoop()
 		}
 
 		//update game logic
-		game->update(elapsed_time); 
+		game->update(delta_time); 
 
 		//render frame
 		game->render();

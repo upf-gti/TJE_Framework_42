@@ -5,7 +5,7 @@
 
 enum eActions { SEARCH, ATTACK, FLEE };
 
-class EntityEnemy;
+class EntityAI;
 
 class WayPoint : public DijkstraNode
 {
@@ -30,7 +30,7 @@ class AIBehavior {
 
 public:
 
-	AIBehavior(EntityEnemy* e) { ref = e; };
+	AIBehavior(EntityAI* e) { ref = e; };
 	void update(float delta_time);
 
 	bool canSeeTarget();
@@ -40,7 +40,7 @@ public:
 	void shoot();
 
 private:
-	EntityEnemy* ref = nullptr;
+	EntityAI* ref = nullptr;
 
 	// Waypoints
 	bool walk_forwards = true;

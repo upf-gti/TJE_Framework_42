@@ -9,7 +9,7 @@
 #include "framework/entities/entity_collider.h"
 #include "framework/entities/entity_mesh.h"
 #include "entities/entity_player.h"
-#include "entities/entity_enemy.h"
+#include "entities/entity_ai.h"
 #include <algorithm>
 #include <fstream>
 #include <string>
@@ -25,7 +25,7 @@ World::World()
 
 	// Create our camera
 	camera = new Camera();
-	camera->lookAt(Vector3(0.f, 20.f, -20.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f)); //position the camera and point to 0,0,0
+	camera->lookAt(Vector3(0.f, 20.f, -20.f), Vector3(0.f, 0.f, 0.f), Vector3::UP); //position the camera and point to 0,0,0
 	camera->setPerspective(60.f, width / (float)height, 0.01f, 1000.f); //set the projection, we want to be perspective
 
 	// Configure 2d camera to render UI elements
@@ -52,15 +52,8 @@ World::World()
 		});
 
 	{
-		player = new EntityPlayer(
-			Mesh::Get("data/sphere.obj"),
-			player_mat
-		);
-
-		landscape = new EntityMesh(
-			Mesh::Get("data/meshes/cubemap/cubemap.ASE"),
-			landscape_cubemap
-		);
+		player = new EntityPlayer(Mesh::Get("data/sphere.obj"), player_mat, "player");
+		landscape = new EntityMesh(Mesh::Get("data/meshes/cubemap/cubemap.ASE"), landscape_cubemap, "landscape");
 	}
 
 	parseScene("data/myscene.scene");
@@ -85,8 +78,8 @@ void World::updateCamera(float delta_time)
 		//mouse input to rotate the cam
 		if (Input::isMousePressed(SDL_BUTTON_RIGHT)) //is left button pressed?
 		{
-			camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f, -1.0f, 0.0f));
-			camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector(Vector3(-1.0f, 0.0f, 0.0f)));
+			camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f, 1.0f, 0.0f));
+			camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector(Vector3(1.0f, 0.0f, 0.0f)));
 		}
 
 		//async input to move the camera around
@@ -264,11 +257,11 @@ bool World::parseScene(const char* filename)
 		size_t enemy_1 = data.first.find("@enemy_1");
 		if (enemy_0 != std::string::npos) {
 			Mesh* mesh = Mesh::Get("data/meshes/enemy_0/enemy_0.obj");
-			new_entity = new EntityEnemy(mesh, enemy0_mat);
+			new_entity = new EntityAI(mesh, enemy0_mat);
 		} else
 		if (enemy_1 != std::string::npos) {
 			Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
-			new_entity = new EntityEnemy(mesh, enemy0_mat);
+			new_entity = new EntityAI(mesh, enemy0_mat);
 		}
 		else {
 			Mesh* mesh = Mesh::Get(mesh_name.c_str());
@@ -300,13 +293,21 @@ void World::addEntity(Entity* entity)
 	root.addChild(entity);
 }
 
-void World::addProjectile(EntityCollider* collider, const Vector3& velocity, float radius)
+void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)
 {
+	Material projectile_material;
+	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+	projectile_material.Ks.set(0.f);
+
+	EntityCollider* entity_to_shoot = new EntityCollider(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
+	entity_to_shoot->model.setTranslation(origin);
+
 	Projectile p;
 
-	p.collider = collider;
+	p.collider = entity_to_shoot;
 	p.velocity = velocity;
-	p.radius = radius;
+	p.radius = p.collider->mesh->radius;
+	p.mask = flag;
 
 	projectiles.push_back(p);
 }
@@ -326,11 +327,16 @@ void World::updateProjectiles(float delta_time)
 	{
 		Projectile& p = projectiles[i];
 
-		// Move and dpply gravity to projectile
+		// Move and apply gravity to projectile
 
 		p.collider->model.translate(p.velocity * delta_time);
 
 		p.velocity.y -= 4.0f * delta_time;
+
+		// Decrease velocity in XZ 
+
+		p.velocity.x = lerp(p.velocity.x, 0.0f, 0.1f * delta_time);
+		p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
 
 		// Check collisions
 
@@ -342,13 +348,29 @@ void World::updateProjectiles(float delta_time)
 			if (!ec)
 				continue;
 
+			if (!(ec->layer & p.mask))
+				continue;
+
 			Vector3 colPoint;
 			Vector3 colNormal;
 
 			if (ec->mesh->testSphereCollision(ec->model, p.collider->model.getTranslation(), p.radius, colPoint, colNormal)) {
-				
 				onProjectileCollision(ec, i);
-				break;
+				return;
+			}
+		}
+
+		// Check player collision in case of ENEMY projectiles
+
+		if (p.mask & eCollisionFilter::PLAYER)
+		{
+			EntityCollider* player_collider = dynamic_cast<EntityCollider*>(player);
+
+			Vector3 colPoint;
+			Vector3 colNormal;
+
+			if (player_collider->mesh->testSphereCollision(player_collider->model, p.collider->model.getTranslation(), p.radius, colPoint, colNormal)) {
+				onProjectileCollision(player_collider, i);
 			}
 		}
 	}

@@ -1,21 +1,21 @@
 #include "entity_player.h"
-
 #include "graphics/mesh.h"
 #include "graphics/shader.h"
 #include "framework/camera.h"
 #include "framework/input.h"
-#include "framework/entities/entity_collider.h"
 #include "game/game.h"
 #include "game/world.h"
 
 EntityPlayer::EntityPlayer(Mesh* mesh, const Material& material, const std::string& name) :
-	EntityMesh(mesh, material, name)
+	EntityCollider(mesh, material, name)
 {
 	//anim_states.addAnimationState("data/animations/timmy/timmy_idle.skanim", ePlayerStates::PLAYER_IDLE);
 	//anim_states.addAnimationState("data/animations/timmy/timmy_walk.skanim", ePlayerStates::PLAYER_WALK);
 	//anim_states.addAnimationState("data/animations/timmy/timmy_run.skanim", ePlayerStates::PLAYER_RUN);
 
 	//anim_states.goToState(ePlayerStates::PLAYER_IDLE);
+
+	setLayer(eCollisionFilter::PLAYER);
 }
 
 void EntityPlayer::render(Camera* camera)
@@ -161,7 +161,7 @@ void EntityPlayer::shoot()
 	World* world = World::get_instance();
 
 	Vector3 origin = world->camera->eye;
-	Vector3 direction = (world->camera->center - world->camera->eye);
+	Vector3 direction = (world->camera->center - origin);
 
 	// Get projectile direction and speed (combined in velocity)
 
@@ -170,14 +170,5 @@ void EntityPlayer::shoot()
 	
 	// Generate entity to shoot
 
-	Material projectile_material;
-	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	projectile_material.Ks.set(0.f);
-
-	EntityCollider* entity_to_shoot = new EntityCollider(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
-	entity_to_shoot->model.setTranslation(origin);
-
-	float projectile_bb_radius = entity_to_shoot->mesh->radius;
-
-	world->addProjectile(entity_to_shoot, velocity, projectile_bb_radius);
+	world->addProjectile(origin, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO);
 }

@@ -20,7 +20,7 @@ EntityGUIElement::EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture, 
 	material.diffuse = texture;
 }
 
-void EntityGUIElement::update(float elapsed_time)
+void EntityGUIElement::update(float delta_time)
 {
 	Vector2 mouse_pos = Input::mouse_position;
 

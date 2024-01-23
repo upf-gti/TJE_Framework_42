@@ -30,7 +30,7 @@ public:
 	void onGamepadButtonUp(SDL_JoyButtonEvent event);*/
 
 	virtual void render()  {};
-	virtual void update(float elapsed_time)  {};
+	virtual void update(float delta_time)  {};
 };
 
 class MenuStage : public Stage {
@@ -46,7 +46,7 @@ public:
 
 	// Methods overwritten from base class
 	void render();
-	void update(float elapsed_time);
+	void update(float delta_time);
 
 	void onButtonPressed(eButtonId buttonId);
 
@@ -63,7 +63,7 @@ public:
 
 	// Methods overwritten from base class
 	void render();
-	void update(float elapsed_time);
+	void update(float delta_time);
 
 	void renderMinimap();
 	void renderSky();

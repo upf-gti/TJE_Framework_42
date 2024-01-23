@@ -72,12 +72,8 @@ void EntityMesh::render(Camera* camera)
 	material.shader->setUniform("u_light_position", Vector3(50.0f, 100.0f, 0.0f));
 	material.shader->setUniform("u_tiling", material.tiling);
 	material.shader->setUniform("u_time", Game::instance->time);
-	//material.shader->setUniform("u_maps", Vector2(!!material.diffuse, !!material.normals));
 
 	if (!isInstanced) material.shader->setUniform("u_model", globalMatrix);
-
-	//if (material.diffuse) material.shader->setUniform("u_texture", material.diffuse, 0);
-	//if (material.normals) material.shader->setUniform("u_normals_texture", material.normals, 1);
 
 	// By default values
 	material.shader->setUniform("u_Ka", material.Ka);
@@ -112,10 +108,10 @@ void EntityMesh::render(Camera* camera)
 	}
 }
 
-void EntityMesh::update(float elapsed_time)
+void EntityMesh::update(float delta_time)
 {
 	for (int i = 0; i < children.size(); ++i) {
-		children[i]->update(elapsed_time);
+		children[i]->update(delta_time);
 	}
 }
 

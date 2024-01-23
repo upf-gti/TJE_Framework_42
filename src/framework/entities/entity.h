@@ -13,8 +13,9 @@ enum eCollisionFilter {
 	NONE = 0,
 	WALL = 1 << 0,
 	FLOOR = 1 << 1,
+	PLAYER = 1 << 2,
+	ENEMY = 1 << 3,
 	SCENARIO = WALL | FLOOR,
-	CHARACTER = 1 << 2,
 	ALL = 0xFF
 };
 
@@ -90,7 +91,7 @@ public:
 	// Methods that should be overwritten
 	// by derived classes 
 	virtual void render(Camera* camera);
-	virtual void update(float elapsed_time);
+	virtual void update(float delta_time);
 
 	// Some useful methods
 	Matrix44 getGlobalMatrix();

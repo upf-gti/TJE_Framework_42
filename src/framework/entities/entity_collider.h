@@ -18,5 +18,7 @@ public:
 	float sphereRadius = 1.0f;
 	float playerHeight = 0.0f;
 
+	void setLayer(int layer) { this->layer = layer; }
+
 	void getCollisions(const Vector3& target_position, std::vector<sCollisionData>& collisions, eCollisionFilter filter = ALL);
 };

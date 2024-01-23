@@ -25,6 +25,6 @@ public:
 
 	// Methods overwritten from base class
 	void render(Camera* camera);
-	void update(float elapsed_time);
+	void update(float delta_time);
 	void update3D(Vector3 position3d);
 };

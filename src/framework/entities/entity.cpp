@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "game/stage.h"
 #include "framework/animation.h"
-#include "game/entities/entity_enemy.h"
+#include "game/entities/entity_ai.h"
 
 sEntityType Entity::entityTypes[32];
 
@@ -27,10 +27,10 @@ void Entity::render(Camera* camera)
 	}
 }
 
-void Entity::update(float elapsed_time)
+void Entity::update(float delta_time)
 {
 	for (int i = 0; i < children.size(); ++i) {
-		children[i]->update(elapsed_time);
+		children[i]->update(delta_time);
 	}
 }
 

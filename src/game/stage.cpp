@@ -66,9 +66,9 @@ void MenuStage::render()
 	}
 }
 
-void MenuStage::update(float elapsed_time)
+void MenuStage::update(float delta_time)
 {
-	root2d.update(elapsed_time);
+	root2d.update(delta_time);
 }
 
 void MenuStage::onButtonPressed(eButtonId buttonId)
@@ -136,7 +136,7 @@ void PlayStage::render()
 		Vector3 eye;
 		Vector3 center;
 
-		eye = current_player->getGlobalMatrix() * Vector3(0.f, 1.4f, 0.5f);
+		eye = current_player->getGlobalMatrix() * Vector3(0.f, 3.5f, 0.5f);
 		center = eye + front;
 
 		camera->lookAt(
