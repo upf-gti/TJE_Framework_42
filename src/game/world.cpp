@@ -129,18 +129,6 @@ void World::update(float delta_time)
 	updateProjectiles(delta_time);
 } 
 
-void World::addWayPointFromScreenPos(const Vector2& coord)
-{
-	// Unproject coords
-	Vector3 origin = camera->eye;
-	Vector3 direction = camera->getRayDirection(coord.x, coord.y, Game::instance->window_width, Game::instance->window_height);
-
-	// Get collision at 0,0,0 plane
-	Vector3 colPoint = RayPlaneCollision(Vector3(), Vector3(0, 1, 0), origin, direction);
-
-	waypoints.push_back(colPoint);
-}
-
 bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest, float max_ray_dist, bool in_object_space)
 {
 	float closest_dist = INFINITY;
@@ -249,11 +237,11 @@ bool World::parseScene(const char* filename)
 		size_t enemy_1 = data.first.find("@enemy_1");
 		if (enemy_0 != std::string::npos) {
 			Mesh* mesh = Mesh::Get("data/meshes/enemy_0/enemy_0.obj");
-			new_entity = new EntityAI(mesh, enemy0_mat);
+			new_entity = new EntityAI(mesh, enemy0_mat, AI_SHOOTER);
 		} else
 		if (enemy_1 != std::string::npos) {
 			Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
-			new_entity = new EntityAI(mesh, enemy0_mat);
+			new_entity = new EntityAI(mesh, enemy0_mat, AI_BREAKER);
 		}
 		else {
 			Mesh* mesh = Mesh::Get(mesh_name.c_str());
@@ -340,7 +328,7 @@ void World::updateProjectiles(float delta_time)
 			if (!ec)
 				continue;
 
-			if (!(ec->layer & p.mask))
+			if (!(ec->getLayer() & p.mask))
 				continue;
 
 			Vector3 colPoint;

@@ -53,7 +53,6 @@ public:
 
 	// AI
 	std::vector<Vector3> waypoints;
-	void addWayPointFromScreenPos(const Vector2& coord);
 
 	// Collisions
 	EntityMesh* collision_entity = nullptr;
