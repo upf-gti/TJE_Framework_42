@@ -46,34 +46,6 @@ void* getGLProcAddress(const char* name)
 	#define GetCurrentDir getcwd
 #endif
 
-std::string getPath()
-{
-    std::string fullpath;
-    // ----------------------------------------------------------------------------
-    // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
-#ifdef __APPLE__
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-    char path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-    {
-        // error!
-    }
-    CFRelease(resourcesURL);
-    chdir(path);
-    fullpath = path;
-#else
-	 char cCurrentPath[1024];
-	 if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
-		 return "";
-
-	cCurrentPath[sizeof(cCurrentPath) - 1] = '\0';
-	fullpath = cCurrentPath;
-
-#endif    
-    return fullpath;
-}
-
 bool readFile(const std::string& filename, std::string& content)
 {
 	content.clear();

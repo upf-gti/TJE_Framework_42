@@ -17,6 +17,7 @@
 #include "game/game.h"
 
 #include <iostream> //to output
+#include <fstream> //to output
 
 long last_time = 0; //this is used to calcule the elapsed time between frames
 
@@ -76,7 +77,6 @@ SDL_Window* createWindow(const char* caption, int width, int height, bool fullsc
 	int window_width, window_height;
 	SDL_GetWindowSize(window, &window_width, &window_height);
 	std::cout << " * Window size: " << window_width << " x " << window_height << std::endl;
-	std::cout << " * Path: " << getPath() << std::endl;
 	std::cout << std::endl;
 
 	return window;
