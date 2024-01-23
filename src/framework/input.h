@@ -83,6 +83,7 @@ public:
 	//keyboard
 	static bool isKeyPressed(int key_code) { return keystate[key_code] != 0; }
 	static bool wasKeyPressed(int key_code) { return keystate[key_code] != 0 && prev_keystate[key_code] == 0; }
+	static bool wasKeyReleased(int key_code) { return keystate[key_code] == 0 && prev_keystate[key_code] != 0; }
 
 	//gamepad state
 	static GamepadState gamepads[4];

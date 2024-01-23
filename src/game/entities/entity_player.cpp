@@ -31,6 +31,14 @@ EntityPlayer::EntityPlayer()
 		anim.playAnimation("data/animations/idle.skanim");
 	}
 
+	Material projectile_material;
+	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+	projectile_material.Ks.set(0.f);
+
+	projectile_to_shoot = new EntityMesh(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
+
+	projectile_to_shoot->model.setTranslation(model.getTranslation() + model.frontVector() + Vector3(0.0, 3.0, 1.5));
+
 	setLayer(eCollisionFilter::PLAYER);
 }
 
@@ -87,6 +95,10 @@ void EntityPlayer::render(Camera* camera)
 	for (int i = 0; i < children.size(); ++i) {
 		children[i]->render(camera);
 	}
+
+	if (projectile_respawn == projectile_respawn_seconds) {
+		projectile_to_shoot->render(camera);
+	}
 }
 
 void EntityPlayer::update(float delta_time)
@@ -99,6 +111,25 @@ void EntityPlayer::update(float delta_time)
 
 	if (World::get_instance()->freeCam)
 		return;
+
+	if (projectile_respawn == projectile_respawn_seconds) {
+		// Update projectile
+		Vector3 camera_front = (World::get_instance()->camera->center - World::get_instance()->camera->eye).normalize();
+		projectile_to_shoot->model.setTranslation(World::get_instance()->camera->eye + (1.25 - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.25f, 0.0));
+
+		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+			projectile_charge += delta_time;
+			projectile_charge = clamp(projectile_charge, 0.0f, 1.0f);
+		}
+	}
+	else 
+	if (projectile_respawn < projectile_respawn_seconds) {
+		projectile_respawn -= delta_time;
+
+		if (projectile_respawn <= 0.0f) {
+			projectile_respawn = projectile_respawn_seconds;
+		}
+	}
 
 	// Get the new player velocity
 
@@ -183,20 +214,23 @@ void EntityPlayer::update(float delta_time)
 
 	// Shoot projectiles
 
-	if (Input::wasKeyPressed(SDL_SCANCODE_SPACE))
+	if (Input::wasKeyReleased(SDL_SCANCODE_SPACE)) {
 		shoot();
+		projectile_charge = 0.0f;
+		projectile_respawn -= delta_time;
+	}
 }
 
 void EntityPlayer::shoot()
 {
 	World* world = World::get_instance();
 
-	Vector3 origin = world->camera->eye;
+	Vector3 origin = projectile_to_shoot->model.getTranslation();
 	Vector3 direction = (world->camera->center - origin);
 
 	// Get projectile direction and speed (combined in velocity)
 
-	float speed = 12.f;
+	float speed = 25.f * (projectile_charge + 0.1f);
 	Vector3 velocity = direction * speed;
 	
 	// Generate entity to shoot

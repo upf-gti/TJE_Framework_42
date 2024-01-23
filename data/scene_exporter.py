@@ -4,7 +4,7 @@ from bpy_extras.io_utils import axis_conversion
 import os
 
 filepath = bpy.path.abspath("//") + "myscene.scene"
-folderpath = bpy.path.abspath("//") + "meshes/"
+abs_folderpath = bpy.path.abspath("//")
 
 # Deselect all objects
 bpy.ops.object.select_all(action='DESELECT')
@@ -13,13 +13,38 @@ export_scale = 1.0
 
 with open(filepath, 'w') as f:
     
-    f.write("#MESH MODEL\n")
+    f.write("#NAME MODEL\n")
          
-    for object in context.visible_objects:    
-        if object.type != 'MESH':
-            continue
+    for object in context.visible_objects:
         
-        name = object.data.name + ".obj"
+        if object.type == 'MESH':
+
+            folderpath = "scene/" + object.data.name + "/"
+            abs_folderpath += folderpath
+
+            name = object.data.name + ".obj"
+
+            # Check whether the specified path exists or not
+            if not os.path.exists(abs_folderpath):
+            # Create a new directory because it does not exist
+                os.makedirs(abs_folderpath)
+
+            # Export OBJ
+            object.select_set(True)
+            print(folderpath+name)
+            bpy.ops.wm.obj_export(filepath=abs_folderpath+name, filter_glob="*.obj;*.mtl", path_mode="COPY",
+                export_selected_objects=True, export_triangulated_mesh=True, global_scale=export_scale)
+
+            object.select_set(False)
+
+
+        elif object.type == 'EMPTY':
+
+            folderpath = ""
+            name = object.name
+
+        else:
+            continue
 
         # Store original mat        
         original_mat = object.matrix_world.copy()
@@ -27,22 +52,11 @@ with open(filepath, 'w') as f:
         # Set identity to export in 0,0,0 and no rotations
         object.matrix_world.identity()
         
-        # Check whether the specified path exists or not
-        if not os.path.exists(folderpath):
-        # Create a new directory because it does not exist
-            os.makedirs(folderpath)
-
-        # Export OBJ
-        object.select_set(True)
-        bpy.ops.export_scene.obj(filepath=folderpath+name, filter_glob="*.obj;*.mtl", use_selection=True, use_triangles=True, 
-            global_scale=export_scale)
-        object.select_set(False)
-
         # Restore transform
         object.matrix_world = original_mat.copy()
         
         # Export object in scene file
-        f.write("meshes/" + name + " ")
+        f.write(folderpath + name + " ")
 
         round_val = 5
 

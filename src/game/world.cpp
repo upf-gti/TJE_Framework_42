@@ -321,14 +321,14 @@ void World::updateProjectiles(float delta_time)
 
 		// Move and apply gravity to projectile
 
-		p.collider->model.translate(p.velocity * delta_time);
+		p.velocity.y -= 9.8f * delta_time;
 
-		p.velocity.y -= 4.0f * delta_time;
+		p.collider->model.translate(p.velocity * delta_time);
 
 		// Decrease velocity in XZ 
 
-		p.velocity.x = lerp(p.velocity.x, 0.0f, 0.1f * delta_time);
-		p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
+		//p.velocity.x = lerp(p.velocity.x, 0.0f, 0.1f * delta_time);
+		//p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
 
 		// Check collisions
 
