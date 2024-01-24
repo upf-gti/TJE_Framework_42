@@ -7,7 +7,7 @@ class EntityGUIElement : public EntityMesh {
 public:
 
 	EntityGUIElement() {};
-	EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture = nullptr, eButtonId button_id = NoButton, const std::string& name = "");
+	EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture = nullptr, const Vector4& color = Vector4::WHITE, eButtonId button_id = NoButton, const std::string& name = "");
 	~EntityGUIElement() {};
 
 	Vector2 position;

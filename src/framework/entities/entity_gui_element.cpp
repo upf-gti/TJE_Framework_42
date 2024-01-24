@@ -7,7 +7,7 @@
 #include "game/game.h"
 #include "game/stage.h"
 
-EntityGUIElement::EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture, eButtonId button_id, const std::string& name)
+EntityGUIElement::EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture, const Vector4& color, eButtonId button_id, const std::string& name)
 {
 	position = pos;
 	this->size = size;
@@ -16,8 +16,9 @@ EntityGUIElement::EntityGUIElement(Vector2 pos, Vector2 size, Texture* texture, 
 	mesh = new Mesh();
 	mesh->createQuad(pos.x, pos.y, size.x, size.y, true);
 
-	material.shader = Shader::Get("data/shaders/basic_gui.vs", "data/shaders/texture.fs");
+	material.shader = Shader::Get("data/shaders/basic_gui.vs", texture ? "data/shaders/texture.fs" : "data/shaders/flat.fs");
 	material.diffuse = texture;
+	material.color = color;
 }
 
 void EntityGUIElement::update(float delta_time)
@@ -60,9 +61,12 @@ void EntityGUIElement::render(Camera* camera2d)
 	material.shader->setUniform("u_model", model);
 	material.shader->setUniform("u_viewprojection", viewProj);
 	material.shader->setUniform("u_color", material.color);
-	material.shader->setUniform("u_texture", material.diffuse, 0);
-	material.shader->setUniform("u_tiling", 1.0f);
 	material.shader->setUniform("u_time", Game::instance->time);
+
+	if (material.diffuse) {
+		material.shader->setUniform("u_texture", material.diffuse, 0);
+		material.shader->setUniform("u_tiling", 1.0f);
+	}
 
 	if (is3D)
 	{

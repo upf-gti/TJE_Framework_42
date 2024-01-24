@@ -162,6 +162,7 @@ public:
 	static Vector4 RED;
 	static Vector4 GREEN;
 	static Vector4 BLUE;
+	static Vector4 BLACK;
 };
 
 inline Vector4 operator * (const Vector4& a, float v) { return Vector4(a.x * v, a.y * v, a.z * v, a.w * v); }

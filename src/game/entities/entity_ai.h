@@ -24,7 +24,7 @@ class EntityAI : public EntityCollider {
 
 public:
 	EntityAI() {};
-	EntityAI(Mesh* mesh, const Material& material, uint8_t type = AI_SHOOTER, const std::string& name = "");;
+	EntityAI(Mesh* mesh, const Material& material, uint8_t type = AI_SHOOTER, const std::string& name = "");
 
 	~EntityAI();
 
