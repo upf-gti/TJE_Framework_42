@@ -34,6 +34,9 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 			shoot();
 		}, 60);
 	}
+
+	projectile_mesh = new Mesh();
+	projectile_mesh->createQuad(0, 0, 0.25, 0.25, false);
 }
 
 void EntityAI::update(float delta_time)
@@ -108,7 +111,7 @@ void EntityAI::shoot()
 	m.translate(offset);
 
 	world->addProjectile(m, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, 
-		Mesh::Get("data/meshes/projectiles/basic.obj"));
+		projectile_mesh, Texture::Get("data/meshes/projectiles/question_mark.png"));
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)
