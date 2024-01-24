@@ -88,7 +88,6 @@ uint32_t Audio::play(const char* audio_dir, const bool repeat_sound)
 	return track_id;
 }
 
-
 void Audio::stop(const uint32_t track_id)
 {
 	playing_tracks.erase(track_id);
