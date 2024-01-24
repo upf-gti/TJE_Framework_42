@@ -87,7 +87,7 @@ void main() {
 	float dist = length( u_camera_position - v_world_position);
 	
 	float fogMaxDist = 10.0;
-	float fogMinDist = 1.0;
+	float fogMinDist = 4.0;
 	float fog_factor = pow( clamp( 1.0 - (fogMaxDist / dist), 0.0, 1.0), fogMinDist );
 
 	final_color.rgb = mix( final_color.rgb, vec3(0.6, 0.6, 0.6), fog_factor );

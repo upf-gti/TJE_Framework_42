@@ -12,6 +12,9 @@
 
 #include "framework/entities/entity_gui_element.h"
 
+#include <iomanip>
+#include <sstream>
+
 ParticleEmitter emitter;
 
 StageManager* StageManager::instance = nullptr;
@@ -84,6 +87,68 @@ void MenuStage::onEnter(Stage* previousStage)
 {
 	SDL_ShowCursor(true);
 	Game::instance->mouse_locked = false;
+
+	SDL_SetRelativeMouseMode(SDL_FALSE);
+}
+
+/*
+	WinStage
+*/
+
+WinStage::WinStage()
+{
+	int width = Game::instance->window_width;
+	int height = Game::instance->window_height;
+
+	background = new EntityGUIElement(
+		Vector2(width / 2, height / 2),
+		Vector2(width, height),
+		Texture::Get("data/textures/gui/you_win.png")
+	);
+
+	root2d.addChild(background);
+}
+
+void WinStage::render()
+{
+	Vector4 bgColor = World::get_instance()->bgColor;
+	glClearColor(bgColor.x, bgColor.y, bgColor.z, bgColor.w);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	root2d.render(World::get_instance()->camera2D);
+}
+
+void WinStage::update(float delta_time)
+{
+	root2d.update(delta_time);
+	restart_countdown -= delta_time;
+
+	if (restart_countdown <= 0.0f) {
+		StageManager::get_instance()->goTo("menuStage");
+	}
+}
+
+// In case of using UIEntities for buttons use this..
+void WinStage::onButtonPressed(eButtonId buttonId)
+{
+	switch (buttonId) {
+	case PlayButton:
+		// ...
+		break;
+	case OptionsButton:
+		// ...
+		break;
+	case ExitButton:
+		// ...
+		break;
+	default:
+		break;
+	}
+}
+
+void WinStage::onEnter(Stage* previousStage)
+{
+	restart_countdown = 4.0f; // seconds
 }
 
 /*
@@ -101,6 +166,8 @@ PlayStage::PlayStage()
 
 void PlayStage::onEnter(Stage* previousStage)
 {
+	win_countdown = 60.0f;
+
 	bool freeCam = World::get_instance()->freeCam;
 	SDL_ShowCursor(freeCam);
 
@@ -145,6 +212,12 @@ void PlayStage::render()
 
 	vignetting->toViewport(Shader::Get("data/shaders/screen.vs", "data/shaders/vignetting.fs"));
 
+	std::stringstream stream;
+	stream << std::fixed << std::setprecision(2) << win_countdown;
+	std::string countdown_str = stream.str();
+
+	drawText(10, 10, countdown_str, Vector3(1, 0.4, 0.4), 8.0f);
+
 	glEnable(GL_DEPTH_TEST);
 
 	// Render map in different viewport
@@ -153,6 +226,12 @@ void PlayStage::render()
 
 void PlayStage::update(float delta_time)
 {
+	win_countdown -= delta_time;
+
+	if (win_countdown <= 0.0f) {
+		StageManager::get_instance()->goTo("winStage");
+	}
+
 	World* world = World::get_instance();
 	world->update(delta_time);
 

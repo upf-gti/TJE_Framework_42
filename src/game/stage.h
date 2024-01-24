@@ -53,7 +53,29 @@ public:
 	void onEnter(Stage* previousStage);
 };
 
+class WinStage : public Stage {
+
+public:
+	WinStage();
+
+	Entity root2d;
+
+	EntityGUIElement* background = nullptr;
+
+	float restart_countdown = 4.0f; // seconds
+
+	// Methods overwritten from base class
+	void render();
+	void update(float delta_time);
+
+	void onButtonPressed(eButtonId buttonId);
+
+	void onEnter(Stage* previousStage);
+};
+
 class PlayStage : public Stage {
+
+	float win_countdown = 60.0f; // seconds
 
 public:
 	PlayStage();
@@ -95,6 +117,7 @@ public:
 	{
 		stages["playStage"] = new PlayStage();
 		stages["menuStage"] = new MenuStage();
+		stages["winStage"] = new WinStage();
 	}
 
 	void goTo(const std::string& stageName)
