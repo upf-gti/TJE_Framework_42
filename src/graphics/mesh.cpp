@@ -1505,6 +1505,15 @@ void Mesh::createQuad(float center_x, float center_y, float w, float h, bool fli
 	normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
 	normals.push_back(Vector3(0.0f, 0.0f, 1.0f));
+
+	// bb
+
+	aabb_min = Vector3(center_x - w * 0.5f, center_y - h * 0.5f, 0.0f);
+	aabb_max = Vector3(center_x + w * 0.5f, center_y + h * 0.5f, 0.0f);
+
+	box.center.set(center_x, center_y, 0);
+	box.halfsize = aabb_max;
+	radius = (float)box.halfsize.length();
 }
 
 

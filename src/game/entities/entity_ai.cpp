@@ -163,8 +163,6 @@ bool EntityAI::onProjectileCollision(const Projectile& p)
 	hit_timer.set(anim.getCurrentAnimation()->duration);
 	was_hit = true;
 
-	//world_audio_player.play("data/sounds/surface_impact.wav");
-
 	return doDamage();
 }
 
