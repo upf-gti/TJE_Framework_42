@@ -22,7 +22,8 @@ class EntityAI : public EntityCollider {
 
 	Mesh* projectile_mesh = nullptr;
 
-	static std::vector<std::string> audios;
+	static std::vector<std::string> dudas_audios;
+	static std::vector<std::string> gracias_audios;
 
 public:
 	EntityAI() {};
