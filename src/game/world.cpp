@@ -129,6 +129,13 @@ void World::render()
 
 	// Render projectiles
 	renderProjectiles();
+
+	// Render transparent entities at the end
+	for (auto transparent_entity : transparent_entities) {
+		transparent_entity->render(camera);
+	}
+
+	transparent_entities.clear();
 }
 
 void World::update(float delta_time)
@@ -348,23 +355,23 @@ void World::updateEnemySpawner(float delta_time) {
 		}
 
 		// Limit the spawn increase to 10 enemies at max
-		enemy_spanw_count = min(enemy_spanw_count + 1u, 5u);
+		enemy_spanw_count = std::min(enemy_spanw_count + 1u, 5u);
 
 		enemy_spawner_timer->set(enemy_spawner_frequency);
 		// Limit the spawner frequency as 5 seconds
-		enemy_spawner_frequency = max(enemy_spawner_frequency - 1.0f, 5.0f);
+		enemy_spawner_frequency = std::max(enemy_spawner_frequency - 1.0f, 5.0f);
 	}
 }
 
 
-void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)
+void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture)
 {
 	Material projectile_material;
-	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	projectile_material.Ks.set(0.f);
+	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	projectile_material.diffuse = texture;
 
-	EntityCollider* entity_to_shoot = new EntityCollider(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
-	entity_to_shoot->model.setTranslation(origin);
+	EntityCollider* entity_to_shoot = new EntityCollider(mesh, projectile_material, "projectile");
+	entity_to_shoot->model = model;
 
 	Projectile p;
 
@@ -395,7 +402,7 @@ void World::updateProjectiles(float delta_time)
 
 		p.velocity.y -= 9.8f * delta_time;
 
-		p.collider->model.translate(p.velocity * delta_time);
+		p.collider->model.translateGlobal(p.velocity * delta_time);
 
 		// Decrease velocity in XZ 
 

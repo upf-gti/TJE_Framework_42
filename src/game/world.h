@@ -55,6 +55,8 @@ public:
 	void addEntity(Entity* entity);
 	void removeEntity(Entity* entity);
 
+	std::vector<Entity*> transparent_entities;
+
 	// AI
 	std::vector<Vector3> waypoints;
 
@@ -89,7 +91,8 @@ public:
 	} ;
 
 	std::vector<Projectile> projectiles;
-	void addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag);
+
+	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture);
 	void renderProjectiles();
 	void updateProjectiles(float delta_time);
 	void onProjectileCollision(EntityCollider* collider, int projectile_index);

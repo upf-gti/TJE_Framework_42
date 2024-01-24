@@ -104,7 +104,7 @@ void EntityAI::shoot(float delta_time)
 
 	// Generate entity to shoot
 
-	world->addProjectile(origin, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO);
+	world->addProjectile(model, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, Mesh::Get("data/meshes/projectiles/basic.obj"), nullptr);
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)

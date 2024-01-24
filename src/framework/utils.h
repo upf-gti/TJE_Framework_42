@@ -24,6 +24,9 @@ void drawGrid();
 bool drawText(float x, float y, std::string text, Vector3 c, float scale = 1);
 void drawMesh(Camera* camera, Matrix44 model, Mesh* mesh, Vector4 color, Texture* texture = nullptr, Shader* shader = nullptr);
 
+// ease functions
+double easeInCubic(double t);
+
 //check opengl errors
 bool checkGLErrors();
 
