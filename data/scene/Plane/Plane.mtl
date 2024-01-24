@@ -1,4 +1,4 @@
-# Blender 4.0.2 MTL File: 'test_level.blend'
+# Blender 4.0.1 MTL File: 'test_level.blend'
 # www.blender.org
 
 newmtl Material
@@ -9,4 +9,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd submenu_mark.png
+map_Kd concrete.png

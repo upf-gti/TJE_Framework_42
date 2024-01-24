@@ -134,53 +134,6 @@ void EntityPlayer::update(float delta_time)
 	if (World::get_instance()->freeCam)
 		return;
 
-	if (projectile_respawn < projectile_respawn_seconds) {
-		projectile_respawn -= delta_time;
-
-		if (projectile_respawn <= 0.0f) {
-			projectile_respawn = projectile_respawn_seconds;
-		}
-	}
-
-	if (projectile_respawn == projectile_respawn_seconds) {
-		// Update projectile
-		Vector3 camera_eye = World::get_instance()->camera->eye;
-		Vector3 camera_front = (World::get_instance()->camera->center - camera_eye).normalize();
-		Vector3 projectile_position = camera_eye + (1.0f - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.1f, 0.0);
-
-		projectile_to_shoot->model.setTranslation(projectile_position);
-		float yaw = projectile_to_shoot->model.getYawRotationToAimTo(camera_eye);
-		projectile_to_shoot->model.rotate(yaw, Vector3::UP);
-		projectile_to_shoot->model.rotate(projectile_charge, Vector3(1.0, 0.0, 0.0));
-
-		projectile_particles->model.setTranslation(projectile_position);
-
-		Matrix44 particles_rotation;
-		particles_rotation.rotate(delta_time * 6.0f, Vector3::UP);
-
-		Vector3 particles_position = particles_rotation.rotateVector(projectile_particles->getEmitPosition());
-		Vector3 particles_velocity = particles_rotation.rotateVector(projectile_particles->getEmitVelocity());
-		projectile_particles->setEmitPosition(particles_position);
-		projectile_particles->setEmitVelocity(particles_velocity);
-
-		projectile_particles->update(delta_time);
-
-		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-			projectile_charge_progress += delta_time * 0.8f;
-
-			projectile_charge = easeInCubic(projectile_charge_progress);
-
-			float random_factor = projectile_particles->getRandomFactor() + delta_time;
-
-			random_factor = clamp(random_factor, 0.01f, 0.4f);
-
-			projectile_particles->setRandomFactor(random_factor);
-
-			projectile_charge_progress = clamp(projectile_charge_progress, 0.0f, 1.0f);
-			projectile_charge = clamp(projectile_charge, 0.0f, 0.75f);
-		}
-	}
-
 	// Get the new player velocity
 
 	float camera_yaw = World::get_instance()->camera_yaw;
@@ -254,6 +207,53 @@ void EntityPlayer::update(float delta_time)
 	}
 
 	// Shoot projectiles
+
+	if (projectile_respawn < projectile_respawn_seconds) {
+		projectile_respawn -= delta_time;
+
+		if (projectile_respawn <= 0.0f) {
+			projectile_respawn = projectile_respawn_seconds;
+		}
+	}
+
+	if (projectile_respawn == projectile_respawn_seconds) {
+		// Update projectile
+		Vector3 camera_eye = World::get_instance()->camera->eye;
+		Vector3 camera_front = (World::get_instance()->camera->center - camera_eye).normalize();
+		Vector3 projectile_position = camera_eye + (1.0f - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.1f, 0.0);
+
+		projectile_to_shoot->model.setTranslation(projectile_position);
+		float yaw = projectile_to_shoot->model.getYawRotationToAimTo(camera_eye);
+		projectile_to_shoot->model.rotate(yaw, Vector3::UP);
+		projectile_to_shoot->model.rotate(projectile_charge, Vector3(1.0, 0.0, 0.0));
+
+		projectile_particles->model.setTranslation(projectile_position);
+
+		Matrix44 particles_rotation;
+		particles_rotation.rotate(delta_time * 6.0f, Vector3::UP);
+
+		Vector3 particles_position = particles_rotation.rotateVector(projectile_particles->getEmitPosition());
+		Vector3 particles_velocity = particles_rotation.rotateVector(projectile_particles->getEmitVelocity());
+		projectile_particles->setEmitPosition(particles_position);
+		projectile_particles->setEmitVelocity(particles_velocity);
+
+		projectile_particles->update(delta_time);
+
+		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+			projectile_charge_progress += delta_time * 0.8f;
+
+			projectile_charge = easeInCubic(projectile_charge_progress);
+
+			float random_factor = projectile_particles->getRandomFactor() + delta_time;
+
+			random_factor = clamp(random_factor, 0.01f, 0.4f);
+
+			projectile_particles->setRandomFactor(random_factor);
+
+			projectile_charge_progress = clamp(projectile_charge_progress, 0.0f, 1.0f);
+			projectile_charge = clamp(projectile_charge, 0.0f, 0.75f);
+		}
+	}
 
 	if (Input::wasKeyReleased(SDL_SCANCODE_SPACE)) {
 		shoot();

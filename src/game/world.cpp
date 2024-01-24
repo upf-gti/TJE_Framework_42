@@ -105,6 +105,23 @@ void World::updateCamera(float delta_time)
 
 		camera_yaw += camera_yaw_target - camera_yaw * 0.5f;
 		camera_pitch += camera_pitch_target - camera_pitch * 0.5f;
+
+		Matrix44 mYaw;
+		mYaw.setRotation(camera_yaw, Vector3::UP);
+		Matrix44 mPitch;
+		mPitch.setRotation(camera_pitch, Vector3(-1, 0, 0));
+		Vector3 front = (mPitch * mYaw).frontVector();
+		Vector3 eye;
+		Vector3 center;
+
+		eye = player->getGlobalMatrix() * Vector3(0.f, 3.0f, 0.3f);
+		center = eye + front;
+
+		camera->lookAt(
+			eye,
+			center,
+			Vector3::UP
+		);
 	}
 }
 
