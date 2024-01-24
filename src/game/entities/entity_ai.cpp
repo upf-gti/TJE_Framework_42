@@ -29,7 +29,7 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		// Add animation callbacks
 
 		anim.addCallback("data/animations/punch.skanim", [&](float t) {
-			World::get_instance()->hitTheWall();
+			World::get_instance()->hitTheWall(2);
 		}, 1.0f); // Using SECONDS as trigger indicator
 
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
