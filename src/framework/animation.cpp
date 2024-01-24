@@ -220,13 +220,12 @@ void Animation::operator = (Animation* anim)
 
 bool Animation::load(const char* filename)
 {
-	//struct stat stbuffer;
+	name = filename;
 
 	std::cout << " + Animation loading: " << filename << " ... ";
 	long time = getTime();
 
 	//char file_format = 0;
-	std::string name = filename;
 	std::string ext = name.substr(name.find_last_of(".") + 1);
 	if (ext == "abin" || ext == "ABIN")
 	{
@@ -519,7 +518,7 @@ void AnimationManager::update(float delta_time)
 	{
 		cb.time_elapsed += std::max(t - last_time, 0.0f);
 
-		if (current_animation != cb.animation)
+		if (current_animation->name != cb.animation_name)
 			continue;
 
 		int keyframe = cb.keyframe;
@@ -546,10 +545,13 @@ void AnimationManager::update(float delta_time)
 void AnimationManager::playAnimation(const char* path, bool loop, bool reset_time)
 {
 	if (current_animation) {
-		target_animation = Animation::Get(path);
+
+		target_animation = new Animation();
+		assert(target_animation->load(path) && "No animation found!");
 	}
 	else {
-		current_animation = Animation::Get(path);
+		current_animation = new Animation();
+		assert(current_animation->load(path) && "No animation found!");
 	}
 
 	transition_counter = 0.0f;
@@ -611,12 +613,12 @@ void AnimationManager::updateAnimation(float delta_time)
 
 void AnimationManager::addCallback(const std::string& filename, std::function<void(float)> callback, float time)
 {
-	callbacks.push_back({ Animation::Get(filename.c_str()), time, -1, callback });
+	callbacks.push_back({ filename, time, -1, callback });
 }
 
 void AnimationManager::addCallback(const std::string& filename, std::function<void(float)> callback, int keyframe)
 {
-	callbacks.push_back({ Animation::Get(filename.c_str()), -1.0f, keyframe, callback });
+	callbacks.push_back({ filename, -1.0f, keyframe, callback });
 }
 
 // STATES
@@ -685,4 +687,10 @@ Skeleton& AnimationManager::getCurrentSkeleton()
 	else {
 		return current_animation->skeleton;
 	}
+}
+
+void AnimationManager::destroy()
+{
+	delete current_animation;
+	delete target_animation;
 }

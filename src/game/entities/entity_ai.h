@@ -26,7 +26,7 @@ public:
 	EntityAI() {};
 	EntityAI(Mesh* mesh, const Material& material, uint8_t type = AI_SHOOTER, const std::string& name = "");;
 
-	~EntityAI() {};
+	~EntityAI();
 
 	uint8_t type = AI_SHOOTER;
 	
@@ -40,6 +40,6 @@ public:
 	void moveTo(const Vector3& target, float delta_time);
 
 	void shoot();
-	bool onProjectileCollision(const Projectile& p);
-	bool doDamage(float damage);
+	void onProjectileCollision(const Projectile& p);
+	void doDamage(float damage);
 };

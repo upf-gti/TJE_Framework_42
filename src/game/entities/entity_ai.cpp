@@ -26,6 +26,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		anim.playAnimation(type == AI_SHOOTER ? 
 			"data/animations/throw.skanim" : "data/animations/walk.skanim");
 
+		// Add animation callbacks
+
 		anim.addCallback("data/animations/punch.skanim", [&](float t) {
 			World::get_instance()->hitTheWall();
 		}, 1.0f); // Using SECONDS as trigger indicator
@@ -33,10 +35,19 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
 		}, 60); // Using KEYFRAMES as trigger indicator
+
+		anim.addCallback("data/animations/death.skanim", [&](float t) {
+			World::get_instance()->removeEntity(this);
+		}, 1.f);
 	}
 
 	projectile_mesh = new Mesh();
 	projectile_mesh->createQuad(0, 0, 0.25, 0.25, false);
+}
+
+EntityAI::~EntityAI()
+{
+	anim.destroy();
 }
 
 void EntityAI::update(float delta_time)
@@ -161,23 +172,19 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 	}
 }
 
-bool EntityAI::onProjectileCollision(const Projectile& p)
+void EntityAI::onProjectileCollision(const Projectile& p)
 {
-	anim.playAnimation("data/animations/hit.skanim", false);
 	hit_timer.set(anim.getCurrentAnimation()->duration);
 	was_hit = true;
 
-	return doDamage(p.damage);
+	doDamage(p.damage);
 }
 
-bool EntityAI::doDamage(float damage)
+void EntityAI::doDamage(float damage)
 {
 	health -= damage;
 
 	bool is_dead = health <= 0.0f;
 
-	// TODO: death animation
-	// anim.playAnimation("data/animations/death.skanim");
-
-	return is_dead;
+	anim.playAnimation(is_dead ? "data/animations/death.skanim" : "data/animations/hit.skanim", false);
 }
