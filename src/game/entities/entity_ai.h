@@ -24,6 +24,9 @@ class EntityAI : public EntityCollider {
 
 	Mesh* projectile_mesh = nullptr;
 
+	static std::vector<std::string> dudas_audios;
+	static std::vector<std::string> gracias_audios;
+
 public:
 	EntityAI() {};
 	EntityAI(Mesh* mesh, const Material& material, uint8_t type = AI_SHOOTER, const std::string& name = "");;
