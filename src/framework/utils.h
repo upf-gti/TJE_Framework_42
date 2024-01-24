@@ -77,6 +77,12 @@ public:
 		return false;
 	}
 
+	void reset()
+	{
+		init_time = 0.0f;
+		time_left = 0.0f;
+	}
+
 	void set(const float timer_duration)
 	{
 		time_left = timer_duration;

@@ -3,6 +3,7 @@
 #include "graphics/mesh.h"
 #include <cstring>
 #include <algorithm>
+#include <functional>
 
 class Camera;
 
@@ -57,6 +58,15 @@ public:
 //this function takes skeleton A and blends it with skeleton B and stores the result in result
 void blendSkeleton(Skeleton* a, Skeleton* b, float w, Skeleton* result, uint8 layer = 0xFF);
 
+struct AnimationCallback {
+
+	float time = -1.0f;
+	int keyframe = -1;
+	std::function<void(float)> callback;
+	float time_elapsed = 1e9f;
+	bool block_next = false;
+};
+
 //This class contains one animation loaded from a file (it also uses a skeleton to store the current snapshot)
 class Animation {
 public:
@@ -64,6 +74,7 @@ public:
 	Skeleton skeleton;
 
 	float duration;
+	float last_time = 0.0f;
 	float samples_per_second;
 	int num_animated_bones;
 	int num_keyframes;
@@ -86,7 +97,50 @@ public:
 	static std::map<std::string, Animation*> sAnimationsLoaded;
 	static Animation* Get(const char* filename);
 
+	std::vector<AnimationCallback> callbacks;
+	void addCallback(std::function<void(float)> callback, float time);
+	void addCallback(std::function<void(float)> callback, int keyframe);
+
 	//copy operator to copy the keyframes
 	void operator = (Animation* anim);
 };
 
+class AnimationManager {
+
+public:
+
+	AnimationManager() {};
+
+	void update(float delta_time);
+
+	void playAnimation(const char* path, bool loop = true, bool reset_time = true);
+	void stopAnimation();
+	void updateAnimation(float delta_time);
+
+	void addAnimationState(const char* path, int state);
+	void goToState(int state, float time = 0.f);
+	void updateStates(float delta_time);
+
+	Animation* getCurrentAnimation() { return target_animation ? target_animation : current_animation; };
+	Skeleton& getCurrentSkeleton();
+
+private:
+
+	const char* last_animation_loop = nullptr;
+
+	Animation* current_animation = nullptr;
+	Animation* target_animation = nullptr;
+	std::map<int, Animation*> animation_states;
+
+	float time = 0.0f;
+
+	bool playing_loop = true;
+
+	int current_state = -1;
+	int target_state = -1;
+
+	Skeleton blended_skeleton;
+
+	float transition_counter = 0.f;
+	float transition_time = 0.f;
+};

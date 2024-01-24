@@ -1,16 +1,24 @@
 #pragma once
 #include "framework/entities/entity.h"
-#include <map>
-
+#include "framework/utils.h"
 #include "graphics/mesh.h"
+
+#include <map>
 
 class Camera;
 class EntityMesh;
 class EntityPlayer;
 class EntityCollider;
-class Timer;
 
 #define MAX_HEALTH 10
+
+struct Projectile {
+	EntityCollider* collider = nullptr;
+	Vector3 velocity;
+	float mass = 0.0f;
+	float radius = 0.0f;
+	uint8_t mask = 0;
+};
 
 class World {
 
@@ -69,7 +77,7 @@ public:
 	uint16_t		wall_health = MAX_HEALTH;
 
 	// Enemy spawner
-	Timer *enemy_spawner_timer;
+	Timer enemy_spawner_timer;
 	uint16_t enemy_spanw_count = 1u;
 	float enemy_spawner_frequency = 10.0f;
 
@@ -79,14 +87,6 @@ public:
 	void hitTheWall();
 
 	void updateEnemySpawner(float delta_time);
-
-	struct Projectile {
-		EntityCollider* collider = nullptr;
-		Vector3 velocity;
-		float mass = 0.0f;
-		float radius = 0.0f;
-		uint8_t mask = 0;
-	} ;
 
 	std::vector<Projectile> projectiles;
 	void addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag);

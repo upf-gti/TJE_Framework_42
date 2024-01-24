@@ -3,8 +3,6 @@
 #include "graphics/texture.h"
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
-#include "game/world.h"
-#include "framework/utils.h"
 
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
@@ -12,10 +10,6 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 	setLayer(eCollisionFilter::ENEMY);
 
 	this->type = type;
-
-	this->name = "enemy_0"; // Choose based on the type
-
-	attack_timer = new Timer();
 
 	animated = true;
 
@@ -30,7 +24,15 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		this->mesh = Mesh::Get("data/meshes/character.MESH");
 
 		anim.playAnimation(type == AI_SHOOTER ? 
-			"data/animations/crouch.skanim" : "data/animations/walk.skanim");
+			"data/animations/throw.skanim" : "data/animations/walk.skanim");
+
+		Animation::Get("data/animations/punch.skanim")->addCallback([&](float t) {
+			World::get_instance()->hitTheWall();
+		}, 1.0f);
+
+		Animation::Get("data/animations/throw.skanim")->addCallback([&](float t) {
+			shoot();
+		}, 60);
 	}
 }
 
@@ -38,31 +40,44 @@ void EntityAI::update(float delta_time)
 {
 	World* world = World::get_instance();
 
+	if (animated) {
+		anim.update(delta_time);
+	}
+
+	// If hit, wait for the animation to end..
+
+	if (was_hit) {
+
+		if (hit_timer.update(delta_time)) {
+			hit_timer.reset();
+			was_hit = false;
+		}
+
+		return;
+	}
+
 	if (type == AI_SHOOTER)
 	{
-		shoot(delta_time);
+		World* world = World::get_instance();
+
+		Vector3 projectile_offset = Vector3(0.0f, 3.0f, 0.0f);
+		Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
+
+		lookAtTarget(target, delta_time);
 	}
 	else if (type == AI_BREAKER)
 	{
-		if (has_collided) {
-			if (attack_timer->update(delta_time)) {
-				float new_time = animated ? anim.getCurrentAnimation()->duration : 3.0f;
-				attack_timer->set(new_time); // Attack once per second
-				World::get_instance()->hitTheWall();
-			}
-
-		} else {
+		if (!has_collided) {
 			moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
 		}
 	}
-	// GOOD GUY
-	else
+	else if (type == AI_FLYING)
 	{
 
 	}
-
-	if (animated) {
-		anim.update(delta_time);
+	else
+	{
+		assert(0 && "SELECT AI TYPE!");
 	}
 }
 
@@ -74,27 +89,15 @@ void EntityAI::lookAtTarget(const Vector3& target, float delta_time)
 	model.rotate(delta_yaw * delta_time * 4.0f, Vector3::UP);
 }
 
-void EntityAI::shoot(float delta_time)
+void EntityAI::shoot()
 {
 	World* world = World::get_instance();
 
-	Vector3 projectile_offset = Vector3(0.0f, 3.0f, 0.0f);
-	Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
-
-	lookAtTarget(target, delta_time);
-
-	// Check if we can shoot ..
-
-	shoot_timer += delta_time;
-
-	if (shoot_timer < shooting_rate)
-		return;
+	Vector3 target = world->player->getGlobalMatrix().getTranslation() + Vector3(0.0f, 3.0f, 0.0f);
 
 	// Shoot!
 
-	shoot_timer = 0.0f;
-
-	Vector3 origin = model.getTranslation() + projectile_offset;
+	Vector3 origin = model* Vector3(-0.8f, 3.0f, 1.1f);
 	Vector3 direction = (target - origin);
 
 	// Get projectile direction and speed (combined in velocity)
@@ -142,7 +145,6 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 			has_collided = true;
 			if (animated) {
 				anim.playAnimation("data/animations/punch.skanim");
-				attack_timer->set(1.3f);
 			}
 			break;
 		}
@@ -155,12 +157,22 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 	}
 }
 
+bool EntityAI::onProjectileCollision(const Projectile& p)
+{
+	anim.playAnimation("data/animations/hit.skanim", false);
+	hit_timer.set(anim.getCurrentAnimation()->duration);
+	was_hit = true;
 
-bool EntityAI::hurt() {
+	return doDamage();
+}
+
+bool EntityAI::doDamage()
+{
 	health--;
 
 	bool is_dead = health <= 0u;
-	// TODO: feedback animation?
+
+	// TODO: death animation ??
 
 	return is_dead;
 }

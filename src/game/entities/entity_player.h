@@ -2,6 +2,8 @@
 
 #include "framework/entities/entity_collider.h"
 
+enum ePlayerStates { PLAYER_IDLE, PLAYER_WALK, PLAYER_RUN };
+
 class EntityPlayer : public EntityCollider {
 
 public:

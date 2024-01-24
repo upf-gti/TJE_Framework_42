@@ -1,7 +1,7 @@
 #pragma once 
 
 #include "entity.h"
-#include "framework/animation_manager.h"
+#include "framework/animation.h"
 
 class EntityMesh : public Entity {
 
