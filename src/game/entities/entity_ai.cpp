@@ -4,6 +4,7 @@
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
 #include "game/world.h"
+#include "framework/utils.h"
 
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
@@ -11,6 +12,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 	setLayer(eCollisionFilter::ENEMY);
 
 	this->type = type;
+
+	attack_timer = new Timer();
 
 	// animated = true;
 
@@ -39,7 +42,17 @@ void EntityAI::update(float delta_time)
 	}
 	else if (type == AI_BREAKER)
 	{
-		moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
+		bool at_wall = true;
+		if (at_wall) {
+			if (attack_timer->update(delta_time)) {
+				attack_timer->set(2.0f); // Attack once per second
+				World::get_instance()->hitTheWall();
+				std::cout << "Zombie hit the wall" << std::endl;
+			}
+
+		} else {
+			moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
+		}
 	}
 	// GOOD GUY
 	else

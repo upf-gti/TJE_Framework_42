@@ -53,5 +53,30 @@ char* fetchBufferVec3u(char* data, std::vector<Vector3u>& vector);
 char* fetchBufferVec4ub(char* data, std::vector<Vector4ub>& vector);
 char* fetchBufferVec4(char* data, std::vector<Vector4>& vector);
 
+class Timer {
+	float setted_time = 0.0f;
+	float time_left = 0.0f;
+public:
+	Timer() {};
 
+	Timer(const float timer_duration) {
+		set(timer_duration);
+	}
+
+	bool update(float delta_time) {
+		time_left -= delta_time;
+
+		if (time_left <= 0.0f) {
+			time_left = setted_time;
+			return true;
+		}
+
+		return false;
+	}
+
+	void set(const float timer_duration) {
+		time_left = timer_duration;
+		setted_time = timer_duration;
+	}
+};
 #endif

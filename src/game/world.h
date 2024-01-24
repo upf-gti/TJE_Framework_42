@@ -68,6 +68,10 @@ public:
 
 	void updateWall(const float delta_time);
 
+	void hitTheWall() {
+		wall_health--;
+	}
+
 	struct Projectile {
 		EntityCollider* collider = nullptr;
 		Vector3 velocity;

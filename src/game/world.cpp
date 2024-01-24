@@ -290,7 +290,6 @@ void World::addEntity(Entity* entity)
 
 void World::updateWall(const float delta_time) {
 	wall_entity->model.setTranslation(Vector3(0.0f, lerp(-1.0f, 0.0f, wall_health / ((float) MAX_HEALTH)), 0.0f));
-	std::cout << wall_entity->model.getTranslation().y << std::endl;
 }
 
 void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)

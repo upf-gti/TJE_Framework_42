@@ -2,6 +2,8 @@
 
 #include "framework/entities/entity_collider.h"
 
+class Timer;
+
 enum AITypes { AI_SHOOTER, AI_BREAKER, AI_GOOD_GUY };
 
 class EntityAI : public EntityCollider {
@@ -10,6 +12,8 @@ class EntityAI : public EntityCollider {
 	float shoot_timer	= 0.0f;
 
 	float walk_speed	= 4.0f;
+
+	Timer* attack_timer;
 
 public:
 	EntityAI() {};
