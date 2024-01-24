@@ -336,11 +336,11 @@ void World::updateWall(const float delta_time)
 	}
 }
 
-void World::hitTheWall()
+void World::hitTheWall(uint16_t damage)
 {
 	// std::cout << "Zombie hit the wall" << std::endl;
 
-	wall_health--;
+	wall_health -= damage;
 
 	PlayStage* play_stage = dynamic_cast<PlayStage*>(StageManager::get_instance()->current);
 	assert(play_stage);
@@ -463,7 +463,7 @@ void World::updateProjectiles(float delta_time)
 			Vector3 colNormal;
 
 			if (player_collider->mesh->testSphereCollision(player_collider->model, p.collider->model.getTranslation(), p.radius, colPoint, colNormal)) {
-				onProjectileCollision(player_collider, i);
+      				onProjectileCollision(player_collider, i);
 			}
 		}
 	}
@@ -476,8 +476,11 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 	// In case of enemies, make stuff on collide
 
 	EntityAI* ai_entity = dynamic_cast<EntityAI*>(collider);
+	EntityCollider* player_entity = dynamic_cast<EntityCollider*>(collider);
 	if (ai_entity) {
 		ai_entity->onProjectileCollision(p);
+	} else if (player_entity) {
+		hitTheWall(1u);
 	}
 
 	// Delete projectile

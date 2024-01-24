@@ -4,6 +4,19 @@
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
 
+std::vector<std::string> EntityAI::dudas_audios = {
+	"data/sounds/students/ayuda.wav",
+	"data/sounds/students/carrera.wav",
+	"data/sounds/students/crashea.wav",
+	"data/sounds/students/duda.wav",
+	"data/sounds/students/puntero.wav",
+};
+
+std::vector<std::string> EntityAI::gracias_audios = {
+	"data/sounds/students/gracias.wav",
+	"data/sounds/students/facil.wav",
+};
+
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
 
@@ -24,20 +37,29 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		this->mesh = Mesh::Get("data/meshes/character.MESH");
 
 		anim.playAnimation(type == AI_SHOOTER ? 
-			"data/animations/throw.skanim" : "data/animations/walk.skanim");
+			"data/animations/idle.skanim" : "data/animations/walk.skanim");
+
+		if (type == AI_SHOOTER) {
+			idle_timer.set(random(5.0f));
+		}
 
 		// Add animation callbacks
 
 		anim.addCallback("data/animations/punch.skanim", [&](float t) {
-			World::get_instance()->hitTheWall();
+			World::get_instance()->hitTheWall(2);
+			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
 		}, 1.0f); // Using SECONDS as trigger indicator
 
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
+			idle_timer.set(random(5.0f));
+			anim.playAnimation("data/animations/idle.skanim");
+			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
 		}, 60); // Using KEYFRAMES as trigger indicator
 
 		anim.addCallback("data/animations/death.skanim", [&](float t) {
 			World::get_instance()->removeEntity(this);
+			World::get_instance()->world_audio_player.play(gracias_audios[rand() % gracias_audios.size()].c_str(), false);
 		}, 1.f);
 	}
 
@@ -78,6 +100,10 @@ void EntityAI::update(float delta_time)
 		Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
 
 		lookAtTarget(target, delta_time);
+
+		if (idle_timer.update(delta_time)) {
+			anim.playAnimation("data/animations/throw.skanim");
+		}
 	}
 	else if (type == AI_BREAKER)
 	{
