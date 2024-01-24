@@ -64,6 +64,8 @@ public:
 
 	Skeleton skeleton;
 
+	std::string name;
+
 	float duration;
 	float samples_per_second;
 	int num_animated_bones;
@@ -93,7 +95,7 @@ public:
 
 struct AnimationCallback {
 
-	Animation* animation = nullptr;
+	std::string animation_name;
 	float time = -1.0f;
 	int keyframe = -1;
 	std::function<void(float)> callback;
@@ -146,4 +148,6 @@ public:
 
 	Animation* getCurrentAnimation() { return target_animation ? target_animation : current_animation; };
 	Skeleton& getCurrentSkeleton();
+
+	void destroy();
 };

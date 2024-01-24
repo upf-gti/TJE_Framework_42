@@ -162,6 +162,14 @@ void World::update(float delta_time)
 	updateWall(delta_time);
 
 	updateEnemySpawner(delta_time);
+
+	// Delete pending entities
+	for (auto e : entities_to_destroy) {
+		root.removeChild(e);
+		delete e;
+	}
+
+	entities_to_destroy.clear();
 } 
 
 bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest, float max_ray_dist, bool in_object_space)
@@ -310,7 +318,7 @@ void World::addEntity(Entity* entity)
 
 void World::removeEntity(Entity* entity)
 {
-	root.removeChild(entity);
+	entities_to_destroy.push_back(entity);
 }
 
 // GAME METHODS
@@ -461,12 +469,7 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 
 	EntityAI* ai_entity = dynamic_cast<EntityAI*>(collider);
 	if (ai_entity) {
-		
-		// Returns true if the enemy has died
-		if (ai_entity->onProjectileCollision(p)) {
-			root.removeChild(ai_entity);
-			delete ai_entity;
-		}
+		ai_entity->onProjectileCollision(p);
 	}
 
 	// Delete projectile

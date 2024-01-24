@@ -60,11 +60,13 @@ public:
 	void updateCamera(float delta_time);
 
 	// Scene
+
 	std::map<std::string, sRenderData> meshes_to_load;
 	bool parseScene(const char* filename);
 	void addEntity(Entity* entity);
 	void removeEntity(Entity* entity);
 
+	std::vector<Entity*> entities_to_destroy;
 	std::vector<Entity*> transparent_entities;
 
 	// AI

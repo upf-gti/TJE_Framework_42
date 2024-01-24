@@ -35,16 +35,6 @@ void EntityMesh::render(Camera* camera)
 	Vector3 sphere_center = globalMatrix * mesh->box.center;
 	Vector3 halfsize = globalMatrix * mesh->box.halfsize;
 
-	//if (isInstanced)
-	//{
-	//	for (const auto& m : models)
-	//		mesh->renderBounding(m);
-	//}
-	//else
-	//{
-	//	mesh->renderBounding(globalMatrix);
-	//}
-
 	// Discard objects whose bounding sphere is not inside the camera frustum
 	if ((!isInstanced && !camera->testBoxInFrustum(sphere_center, halfsize) ||
 		camera->eye.distance(sphere_center) > 5000.0f))
