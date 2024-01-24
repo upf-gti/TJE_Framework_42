@@ -4,6 +4,14 @@
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
 
+std::vector<std::string> EntityAI::audios = {
+	"data/sounds/students/ayuda.wav",
+	"data/sounds/students/carrera.wav",
+	"data/sounds/students/crashea.wav",
+	"data/sounds/students/duda.wav",
+	"data/sounds/students/puntero.wav",
+};
+
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
 
@@ -34,10 +42,12 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
+			World::get_instance()->world_audio_player.play(audios[rand() % audios.size()].c_str(), false);
 		}, 60); // Using KEYFRAMES as trigger indicator
 
 		anim.addCallback("data/animations/death.skanim", [&](float t) {
 			World::get_instance()->removeEntity(this);
+			World::get_instance()->world_audio_player.play("data/sounds/students/gracias.wav", false);
 		}, 1.f);
 	}
 

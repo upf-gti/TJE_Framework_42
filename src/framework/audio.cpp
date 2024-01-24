@@ -59,11 +59,16 @@ uint32_t Audio::play(const char* audio_dir, const bool repeat_sound)
 		AudioTrack* new_track = new AudioTrack();
 		new_track->repeat = repeat_sound;
 
-		SDL_AudioSpec audio_spec;
+		SDL_AudioSpec wav_spec;
 
 		// TODO: assert so it it not null
-		SDL_LoadWAV(audio_dir, &audio_spec, &(new_track->track_buffer), &(new_track->track_lenght));
+		SDL_LoadWAV(audio_dir, &wav_spec, &(new_track->track_buffer), &(new_track->track_lenght));
 
+		SDL_AudioSpec audio_spec;
+		audio_spec.freq = 48000;
+		audio_spec.format = AUDIO_S16LSB;
+		audio_spec.channels = 2;
+		audio_spec.samples = 4096;
 		audio_spec.callback = _audio_play_callback;
 		audio_spec.userdata = (void*)&playing_tracks;
 
