@@ -38,7 +38,7 @@ class ParticleEmitter : public Entity {
 	Texture* texture = nullptr;
 	int texture_grid = 2;
 	bool additive_blending = false;
-	bool animated_texture = true;	// animation tiles
+	bool animated_texture = false;	// animation tiles
 	bool sort_distance = true;
 
 	template<typename T>

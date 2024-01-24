@@ -80,7 +80,7 @@ public:
 	// Game
 	Audio world_audio_player;
 	EntityCollider* wall_entity = nullptr;
-	uint16_t		wall_health = MAX_HEALTH;
+	int16_t		wall_health = MAX_HEALTH;
 
 	// Enemy spawner
 	Timer enemy_spawner_timer;
