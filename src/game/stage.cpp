@@ -149,6 +149,8 @@ void WinStage::onButtonPressed(eButtonId buttonId)
 void WinStage::onEnter(Stage* previousStage)
 {
 	restart_countdown = 4.0f; // seconds
+
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 /*

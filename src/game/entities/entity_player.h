@@ -16,16 +16,19 @@ public:
 
 	float walk_speed = 2.f;
 
+	// Projectiles
+
 	const float projectile_respawn_seconds = 0.5f;
 
-	std::vector<Texture*> projectile_textures;
-	Mesh* projectile_mesh = nullptr;
-	EntityMesh* projectile_to_shoot = nullptr;
 	float projectile_charge = 0.0f;
 	float projectile_charge_progress = 0.0f;
 	float projectile_respawn = projectile_respawn_seconds;
 
-	ParticleEmitter* projectile_particles = nullptr;
+	std::vector<Texture*> projectile_textures;
+
+	Mesh* projectile_mesh					= nullptr;
+	EntityMesh* projectile_to_shoot			= nullptr;
+	ParticleEmitter* projectile_particles	= nullptr;
 
 	// Methods overwritten from base class
 	void render(Camera* camera);

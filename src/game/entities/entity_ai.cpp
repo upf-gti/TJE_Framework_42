@@ -26,13 +26,13 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		anim.playAnimation(type == AI_SHOOTER ? 
 			"data/animations/throw.skanim" : "data/animations/walk.skanim");
 
-		Animation::Get("data/animations/punch.skanim")->addCallback([&](float t) {
+		anim.addCallback("data/animations/punch.skanim", [&](float t) {
 			World::get_instance()->hitTheWall();
-		}, 1.0f);
+		}, 1.0f); // Using SECONDS as trigger indicator
 
-		Animation::Get("data/animations/throw.skanim")->addCallback([&](float t) {
+		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
-		}, 60);
+		}, 60); // Using KEYFRAMES as trigger indicator
 	}
 
 	projectile_mesh = new Mesh();

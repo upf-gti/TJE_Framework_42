@@ -36,20 +36,17 @@ World::World()
 	Material landscape_cubemap;
 	landscape_cubemap.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/cubemap.fs");
 	landscape_cubemap.diffuse = new Texture();
-	landscape_cubemap.diffuse->loadCubemap("landscape",
-		{
+	landscape_cubemap.diffuse->loadCubemap("landscape", {
 			"data/textures/skybox/right.png",
 			"data/textures/skybox/left.png",
 			"data/textures/skybox/bottom.png",
 			"data/textures/skybox/top.png",
 			"data/textures/skybox/front.png",
 			"data/textures/skybox/back.png"
-		});
+	});
 
-	{
-		player = new EntityPlayer();
-		landscape = new EntityMesh(Mesh::Get("data/meshes/cubemap/cubemap.ASE"), landscape_cubemap, "landscape");
-	}
+	player = new EntityPlayer();
+	landscape = new EntityMesh(Mesh::Get("data/meshes/cubemap/cubemap.ASE"), landscape_cubemap, "landscape");
 
 	parseScene("data/myscene.scene");
 
@@ -60,6 +57,7 @@ World::World()
 
 	freeCam = false;
 
+	// Add protection wall
 	{
 		Material wall_material;
 		wall_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
@@ -70,8 +68,6 @@ World::World()
 
 		addEntity(wall_entity);
 	}
-
-	// Audio::Play3D("data/audio/shot.wav", Vector3(), 1.f, true);
 }
 
 void World::updateCamera(float delta_time)
@@ -334,7 +330,7 @@ void World::updateWall(const float delta_time)
 void World::hitTheWall()
 {
 	wall_health--;
-	std::cout << "Zombie hit the wall" << std::endl;
+	// std::cout << "Zombie hit the wall" << std::endl;
 }
 
 void World::updateEnemySpawner(float delta_time)
@@ -349,14 +345,13 @@ void World::updateEnemySpawner(float delta_time)
 	Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
 
 	// Spawn enemies TODO: choose between enemy type
-	for (uint32_t i = 0u; i < enemy_spanw_count; i++) {
+	for (uint32_t i = 0u; i < enemy_spawn_count; i++) {
 
 		EntityAI* new_enemy = new EntityAI(mesh, enemy_material, random() > 0.5f ? AI_BREAKER : AI_SHOOTER);
 
 		// Select a random position inside a 5.0 radius
 		Vector2 position;
 		position.random(10.0f);
-		//position.y = -4.80535; // Set the height of the plane
 		position = position - 5.0f;
 		Vector2 pos_direction = position;
 		pos_direction.normalize();
@@ -367,18 +362,11 @@ void World::updateEnemySpawner(float delta_time)
 		new_enemy->model.translate(Vector3(position.x, 0.0f, position.y));
 
 		addEntity(new_enemy);
-
 	}
 
-	std::cout << "new enemies" << std::endl;
-
-	// Limit the spawn increase to 10 enemies at max
-	enemy_spanw_count = std::min(enemy_spanw_count + 1u, 5u);
-
+	// Limit the spawn increase to 5 enemies at max
+	enemy_spawn_count = std::min(enemy_spawn_count + 1u, 5u);
 	enemy_spawner_timer.set(enemy_spawner_frequency);
-
-	// Limit the spawner frequency as 5 seconds
-	enemy_spawner_frequency = std::max(enemy_spawner_frequency - 1.0f, 5.0f);
 }
 
 void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture, float damage)
