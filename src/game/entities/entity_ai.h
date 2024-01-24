@@ -11,7 +11,7 @@ class EntityAI : public EntityCollider {
 	float shooting_rate = 5.0f; // Seconds
 	float shoot_timer	= 0.0f;
 
-	float walk_speed	= 1.2f;
+	float walk_speed	= 1.15f;
 	bool  has_collided	= false;
 	bool  was_hit		= false;
 

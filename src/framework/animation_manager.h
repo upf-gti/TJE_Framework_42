@@ -12,11 +12,12 @@ public:
 
 	void update(float delta_time);
 
-	void playAnimation(const char* path, bool loop = true);
+	void playAnimation(const char* path, bool loop = true, bool reset_time = true);
 	void stopAnimation();
 
 	void addAnimationState(const char* path, int state);
 	void goToState(int state, float time = 0.f);
+	void updateStates(float delta_time);
 
 	Animation* getCurrentAnimation() { return current_animation; };
 	Skeleton& getCurrentSkeleton();
@@ -25,6 +26,7 @@ private:
 
 	const char* last_animation_loop = nullptr;
 	Animation* current_animation = nullptr;
+	Animation* target_animation = nullptr;
 	std::map<int, Animation*> animation_states;
 
 	float time = 0.0f;

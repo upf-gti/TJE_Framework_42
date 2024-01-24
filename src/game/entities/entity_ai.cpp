@@ -24,7 +24,7 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		this->mesh = Mesh::Get("data/meshes/character.MESH");
 
 		anim.playAnimation(type == AI_SHOOTER ? 
-			"data/animations/crouch.skanim" : "data/animations/walk.skanim");
+			"data/animations/idle.skanim" : "data/animations/walk.skanim");
 	}
 }
 
@@ -117,6 +117,10 @@ void EntityAI::shoot(float delta_time)
 	// Generate entity to shoot
 
 	world->addProjectile(origin, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO);
+
+	// Play animation
+
+	anim.playAnimation("data/animations/throw.skanim", false);
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)

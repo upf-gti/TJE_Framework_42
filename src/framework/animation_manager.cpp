@@ -6,48 +6,58 @@ void AnimationManager::update(float delta_time)
 {
     time += delta_time;
 
-    // Single animation playing..
+    // Single animation playing, no states..
     if (current_animation)
     {
-        current_animation->assignTime(time, playing_loop);
-
         // Set previous loop in case there's any.. if not, leave action pose
-        if (!playing_loop && time >= current_animation->duration && last_animation_loop) {
-            playAnimation(last_animation_loop);
+        if (!playing_loop && time >= (current_animation->duration - transition_time) 
+            && last_animation_loop && !target_animation) {
+            
+            playAnimation(last_animation_loop, true, false);
         }
 
-        return;
+        current_animation->assignTime(time, playing_loop);
     }
 
-    // Completely in target state
-    animation_states[current_state]->assignTime(time);
+    if (target_animation) {
 
-    // Transitioning to target state
-    if (target_state != -1) {
+        float f = target_animation->duration / current_animation->duration;
+        if (f < 1.0f) f = 1.0f;
 
-        animation_states[target_state]->assignTime(time);
+        current_animation->assignTime(time, playing_loop);
+        target_animation->assignTime(time * f, playing_loop);
 
         transition_counter += delta_time;
 
         if (transition_counter >= transition_time) {
-            current_state = target_state;
-            target_state = -1;
+            current_animation = target_animation;
+            target_animation = nullptr;
             return;
         }
 
         blendSkeleton(
-            &animation_states[current_state]->skeleton,  
-            &animation_states[target_state]->skeleton, 
+            &current_animation->skeleton,
+            &target_animation->skeleton,
             transition_counter / transition_time,
             &blended_skeleton);
     }
 }
 
-void AnimationManager::playAnimation(const char* path, bool loop)
+void AnimationManager::playAnimation(const char* path, bool loop, bool reset_time)
 {
-    current_animation = Animation::Get(path);
-    time = 0.0f;
+    if (current_animation) {
+        target_animation = Animation::Get(path);
+    } else {
+        current_animation = Animation::Get(path);
+    }
+
+    transition_counter = 0.0f;
+    transition_time = 0.35f;
     playing_loop = loop;
+
+    if (reset_time) {
+        time = 0.0f;
+    }
 
     if (loop) {
         last_animation_loop = path;
@@ -57,6 +67,7 @@ void AnimationManager::playAnimation(const char* path, bool loop)
 void AnimationManager::stopAnimation()
 {
     current_animation = nullptr;
+    target_animation = nullptr;
     last_animation_loop = nullptr;
 }
 
@@ -84,11 +95,42 @@ void AnimationManager::goToState(int state, float time)
     target_state = state;
 }
 
+void AnimationManager::updateStates(float delta_time)
+{
+    // Completely in target state
+    animation_states[current_state]->assignTime(time);
+
+    // Transitioning to target state
+    if (target_state != -1) {
+
+        animation_states[target_state]->assignTime(time);
+
+        transition_counter += delta_time;
+
+        if (transition_counter >= transition_time) {
+            current_state = target_state;
+            target_state = -1;
+            return;
+        }
+
+        blendSkeleton(
+            &animation_states[current_state]->skeleton,
+            &animation_states[target_state]->skeleton,
+            transition_counter / transition_time,
+            &blended_skeleton);
+    }
+}
+
 Skeleton& AnimationManager::getCurrentSkeleton()
 {
-    if (target_state != -1) {
+    if (target_animation || (target_state != -1)) {
         return blended_skeleton;
     }
 
-    return current_animation ? current_animation->skeleton : animation_states[current_state]->skeleton;
+    if (current_state!= -1) {
+        return animation_states[current_state]->skeleton;
+    }
+    else {
+        return current_animation->skeleton;
+    }
 }
