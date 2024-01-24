@@ -84,6 +84,7 @@ void MenuStage::onEnter(Stage* previousStage)
 {
 	SDL_ShowCursor(true);
 	Game::instance->mouse_locked = false;
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 /*

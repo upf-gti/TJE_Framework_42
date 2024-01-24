@@ -210,37 +210,6 @@ void Animation::assignTime(float t, bool loop, bool interpolate, uint8 layers)
 	}
 
 	skeleton.updateGlobalMatrices();
-	 
-	//check callbacks
-
-	for (AnimationCallback& cb : callbacks)
-	{
-		int keyframe = cb.keyframe;
-
-		if (cb.time != -1.0f) {
-			float v = samples_per_second * cb.time;
-			keyframe = (int)clamp(floor(v), 0.0f, (float)(num_keyframes - 1));
-		}
-
-		cb.time_elapsed += std::max(t - last_time, 0.0f);
-
-		if (index == keyframe && cb.time_elapsed > (1.0f / samples_per_second)) {
-			cb.callback(t);
-			cb.time_elapsed = 0.0f;
-		}
-	}
-
-	last_time = t;
-}
-
-void Animation::addCallback(std::function<void(float)> callback, float time)
-{
-	callbacks.push_back({ time, -1, callback });
-}
-
-void Animation::addCallback(std::function<void(float)> callback, int keyframe)
-{
-	callbacks.push_back({ -1.0f, keyframe, callback });
 }
 
 void Animation::operator = (Animation* anim)
@@ -533,6 +502,44 @@ void AnimationManager::update(float delta_time)
 
 	updateAnimation(delta_time);
 
+	// Check callbacks for current animation
+
+	float t = time;
+
+	if (playing_loop)
+	{
+		t = fmod(t, current_animation->duration);
+		if (t < 0)
+			t = current_animation->duration + t;
+	}
+	else
+		t = clamp(t, 0.0f, current_animation->duration - (1.0f / current_animation->samples_per_second));
+
+	for (AnimationCallback& cb : callbacks)
+	{
+		cb.time_elapsed += std::max(t - last_time, 0.0f);
+
+		if (current_animation != cb.animation)
+			continue;
+
+		int keyframe = cb.keyframe;
+
+		if (cb.time != -1.0f) {
+			float v = current_animation->samples_per_second * cb.time;
+			keyframe = (int)clamp(floor(v), 0.0f, (float)(current_animation->num_keyframes - 1));
+		}
+
+		float v = current_animation->samples_per_second * t;
+		int index = (int)clamp(floor(v), 0.0f, (float)(current_animation->num_keyframes - 1));
+
+		if (index == keyframe && cb.time_elapsed > (1.0f / current_animation->samples_per_second)) {
+			cb.callback(t);
+			cb.time_elapsed = 0.0f;
+		}
+	}
+
+	last_time = t;
+
 	updateStates(delta_time);
 }
 
@@ -598,6 +605,18 @@ void AnimationManager::updateAnimation(float delta_time)
 			transition_counter / transition_time,
 			&blended_skeleton);
 	}
+}
+
+// CALLBACKS
+
+void AnimationManager::addCallback(const std::string& filename, std::function<void(float)> callback, float time)
+{
+	callbacks.push_back({ Animation::Get(filename.c_str()), time, -1, callback });
+}
+
+void AnimationManager::addCallback(const std::string& filename, std::function<void(float)> callback, int keyframe)
+{
+	callbacks.push_back({ Animation::Get(filename.c_str()), -1.0f, keyframe, callback });
 }
 
 // STATES

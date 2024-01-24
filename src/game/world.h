@@ -82,7 +82,7 @@ public:
 
 	// Enemy spawner
 	Timer enemy_spawner_timer;
-	uint16_t enemy_spanw_count = 1u;
+	uint16_t enemy_spawn_count = 1u;
 	float enemy_spawner_frequency = 10.0f;
 
 	const float safe_from_spawn_radius = 15.0f;
