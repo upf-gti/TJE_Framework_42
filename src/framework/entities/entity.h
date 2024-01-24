@@ -12,10 +12,9 @@ class Camera;
 enum eCollisionFilter {
 	NONE = 0,
 	WALL = 1 << 0,
-	FLOOR = 1 << 1,
+	SCENARIO = 1 << 1,
 	PLAYER = 1 << 2,
 	ENEMY = 1 << 3,
-	SCENARIO = WALL | FLOOR,
 	ALL = 0xFF
 };
 

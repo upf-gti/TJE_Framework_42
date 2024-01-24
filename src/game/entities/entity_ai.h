@@ -11,9 +11,10 @@ class EntityAI : public EntityCollider {
 	float shooting_rate = 5.0f; // Seconds
 	float shoot_timer	= 0.0f;
 
-	float walk_speed	= 4.0f;
+	float walk_speed	= 1.5f;
+	bool  has_collided	= false;
 
-	Timer* attack_timer;
+	Timer* attack_timer = nullptr;
 
 public:
 	EntityAI() {};

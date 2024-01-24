@@ -4,7 +4,7 @@
 
 void AnimationManager::update(float delta_time)
 {
-    float time = Game::instance->time;
+    time += delta_time;
 
     // Single animation playing..
     if (current_animation)
@@ -40,6 +40,7 @@ void AnimationManager::update(float delta_time)
 void AnimationManager::playAnimation(const char* path)
 {
     current_animation = Animation::Get(path);
+    time = 0.0f;
 }
 
 void AnimationManager::stopAnimation()

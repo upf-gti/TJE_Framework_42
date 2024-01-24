@@ -17,12 +17,15 @@ public:
 	void addAnimationState(const char* path, int state);
 	void goToState(int state, float time = 0.f);
 
+	Animation* getCurrentAnimation() { return current_animation; };
 	Skeleton& getCurrentSkeleton();
 
 private:
 
 	Animation* current_animation = nullptr;
 	std::map<int, Animation*> animation_states;
+
+	float time = 0.0f;
 
 	int current_state = -1;
 	int target_state = -1;

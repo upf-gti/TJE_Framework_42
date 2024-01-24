@@ -1,8 +1,7 @@
 /*  by Javi Agenjo 2013 UPF  javi.agenjo@gmail.com
 	This contains several functions that can be useful when programming your game.
 */
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <string>
 #include <sstream>
@@ -54,29 +53,33 @@ char* fetchBufferVec4ub(char* data, std::vector<Vector4ub>& vector);
 char* fetchBufferVec4(char* data, std::vector<Vector4>& vector);
 
 class Timer {
-	float setted_time = 0.0f;
+
+	float init_time = 0.0f;
 	float time_left = 0.0f;
+
 public:
 	Timer() {};
 
-	Timer(const float timer_duration) {
+	Timer(const float timer_duration)
+	{
 		set(timer_duration);
 	}
 
-	bool update(float delta_time) {
+	bool update(float delta_time)
+	{
 		time_left -= delta_time;
 
 		if (time_left <= 0.0f) {
-			time_left = setted_time;
+			time_left = init_time;
 			return true;
 		}
 
 		return false;
 	}
 
-	void set(const float timer_duration) {
+	void set(const float timer_duration)
+	{
 		time_left = timer_duration;
-		setted_time = timer_duration;
+		init_time = timer_duration;
 	}
 };
-#endif

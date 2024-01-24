@@ -15,11 +15,10 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 	attack_timer = new Timer();
 
-	// animated = true;
+	animated = true;
 
 	if (animated)
 	{
-
 		this->material.shader = Shader::Get("data/shaders/skinning.vs", material.shader->getFSName().c_str());
 
 		// Set new texture since skanims doesnt support loading mtl..
@@ -28,7 +27,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 		this->mesh = Mesh::Get("data/meshes/character.MESH");
 
-		anim.playAnimation("data/animations/crouch.skanim");
+		anim.playAnimation(type == AI_SHOOTER ? 
+			"data/animations/crouch.skanim" : "data/animations/walk.skanim");
 	}
 }
 
@@ -42,12 +42,11 @@ void EntityAI::update(float delta_time)
 	}
 	else if (type == AI_BREAKER)
 	{
-		bool at_wall = true;
-		if (at_wall) {
+		if (has_collided) {
 			if (attack_timer->update(delta_time)) {
-				attack_timer->set(2.0f); // Attack once per second
+				float new_time = animated ? anim.getCurrentAnimation()->duration : 3.0f;
+				attack_timer->set(new_time); // Attack once per second
 				World::get_instance()->hitTheWall();
-				std::cout << "Zombie hit the wall" << std::endl;
 			}
 
 		} else {
@@ -114,7 +113,42 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 
 	lookAtTarget(target, delta_time);
 
-	// Check if we can shoot ..
+	// Nothing to do if he's already there..
 
-	model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
+	if (has_collided)
+		return;
+
+	// Get the final pos and check if it's viable to move
+
+	Matrix44 new_transform = model;
+	new_transform.translate(walk_speed * delta_time);
+
+	Vector3 center = new_transform.getTranslation();
+
+	for (auto e : World::get_instance()->root.children)
+	{
+		EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
+		if (!ec || !(ec->getLayer() & eCollisionFilter::WALL))
+			continue;
+
+		Vector3 colPoint;
+		Vector3 colNormal;
+
+		// Check collisions with WALLS
+
+		if (ec->mesh->testSphereCollision(ec->model, center, sphereRadius, colPoint, colNormal)) {
+			has_collided = true;
+			if (animated) {
+				anim.playAnimation("data/animations/punch.skanim");
+				attack_timer->set(1.3f);
+			}
+			break;
+		}
+	}
+
+	// Move to the target position!
+
+	if (!has_collided) {
+		model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
+	}
 }

@@ -67,10 +67,7 @@ public:
 	uint16_t		wall_health = MAX_HEALTH;
 
 	void updateWall(const float delta_time);
-
-	void hitTheWall() {
-		wall_health--;
-	}
+	void hitTheWall();
 
 	struct Projectile {
 		EntityCollider* collider = nullptr;

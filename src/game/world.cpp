@@ -1,13 +1,13 @@
 #include "world.h"
-
 #include "framework/camera.h"
+#include "framework/input.h"
+#include "framework/entities/entity_collider.h"
+#include "framework/entities/entity_mesh.h"
 #include "graphics/mesh.h"
 #include "graphics/texture.h"
 #include "graphics/shader.h"
-#include "framework/input.h"
-#include "game.h"
-#include "framework/entities/entity_collider.h"
-#include "framework/entities/entity_mesh.h"
+#include "game/game.h"
+#include "game/stage.h"
 #include "entities/entity_player.h"
 #include "entities/entity_ai.h"
 #include <algorithm>
@@ -66,7 +66,7 @@ World::World()
 		wall_material.Ks.set(0.f);
 
 		wall_entity = new EntityCollider(Mesh::Get("data/meshes/wall/wall.obj"), wall_material, "wall");
-
+		wall_entity->setLayer(eCollisionFilter::WALL);
 
 		addEntity(wall_entity);
 	}
@@ -288,8 +288,22 @@ void World::addEntity(Entity* entity)
 
 // GAME METHODS
 
-void World::updateWall(const float delta_time) {
-	wall_entity->model.setTranslation(Vector3(0.0f, lerp(-1.0f, 0.0f, wall_health / ((float) MAX_HEALTH)), 0.0f));
+void World::updateWall(const float delta_time)
+{
+	float hp = wall_health / ((float)MAX_HEALTH);
+	wall_entity->model.setTranslation(Vector3(0.0f, lerp(-1.0f, 0.0f, hp), 0.0f));
+
+	if (hp <= 0.0f)
+	{
+		// Game lost!!
+		StageManager::get_instance()->goTo("menuStage");
+	}
+}
+
+void World::hitTheWall()
+{
+	wall_health--;
+	std::cout << "Zombie hit the wall" << std::endl;
 }
 
 void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)
@@ -338,8 +352,6 @@ void World::updateProjectiles(float delta_time)
 		//p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
 
 		// Check collisions
-
-		std::vector<sCollisionData> collisions;
 
 		for (auto e : root.children)
 		{

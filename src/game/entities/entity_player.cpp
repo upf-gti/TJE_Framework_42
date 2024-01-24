@@ -159,14 +159,6 @@ void EntityPlayer::update(float delta_time)
 	move_dir.normalize();
 	move_dir *= speed_mult;
 
-	//float move_speed = move_dir.length();
-	//if (move_speed < 0.1f)
-	//	anim_states.goToState(ePlayerStates::PLAYER_IDLE, 0.5f);
-	//else if (move_speed < 2.0f)
-	//	anim_states.goToState(ePlayerStates::PLAYER_WALK, 0.5f);
-	//else
-	//	anim_states.goToState(ePlayerStates::PLAYER_RUN, 0.5f);
-
 	velocity += move_dir;
 
 	// Check collisions with the world entities
@@ -178,7 +170,6 @@ void EntityPlayer::update(float delta_time)
 		EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
 		if (ec != nullptr)
 			ec->getCollisions(position + velocity * delta_time, collisions);
-		// else es otra cos que no sea entity collider
 	}
 
 	for (const sCollisionData& collision : collisions) {
@@ -235,5 +226,5 @@ void EntityPlayer::shoot()
 	
 	// Generate entity to shoot
 
-	world->addProjectile(origin, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO);
+	world->addProjectile(origin, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL);
 }
