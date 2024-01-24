@@ -363,7 +363,7 @@ void World::updateEnemySpawner(float delta_time)
 	// Spawn enemies TODO: choose between enemy type
 	for (uint32_t i = 0u; i < enemy_spawn_count; i++) {
 
-		EntityAI* new_enemy = new EntityAI(mesh, enemy_material, random() > 0.5f ? AI_BREAKER : AI_SHOOTER);
+		EntityAI* new_enemy = new EntityAI(mesh, enemy_material, random(1.0f) > 0.5f ? AI_BREAKER : AI_SHOOTER);
 
 		// Select a random position inside a 5.0 radius
 		Vector2 position;
