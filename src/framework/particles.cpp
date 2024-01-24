@@ -4,19 +4,13 @@
 #include "graphics/shader.h"
 #include "graphics/mesh.h"
 #include "graphics/texture.h"
+#include "framework/camera.h"
 #include "camera.h"
 #include "utils.h"
 #include "input.h"
 
 ParticleEmitter::ParticleEmitter()
 {
-	colors.push_back(Vector4(0.1, 0.1, 0.1, 0));
-	colors.push_back(Vector4(0.85, 0.85, 0.85, 1));
-	colors.push_back(Vector4(1, 1, 1, 0));
-
-	sizes.push_back(0);
-	sizes.push_back(1);
-
 	particles.resize(max_particles);
 }
 
@@ -25,7 +19,57 @@ void ParticleEmitter::setTexture(const char* filename)
 	texture = Texture::Get(filename);
 }
 
-void ParticleEmitter::render()
+void ParticleEmitter::setTexture(Texture* texture)
+{
+	this->texture = texture;
+}
+
+void ParticleEmitter::setEmitPosition(const Vector3& position)
+{
+	emit_position = position;
+}
+
+void ParticleEmitter::setEmitVelocity(const Vector3& velocity)
+{
+	emit_velocity = velocity;
+}
+
+void ParticleEmitter::setColorsCurve(std::vector<Vector4>& colors)
+{
+	this->colors = colors;
+}
+
+void ParticleEmitter::setSizesCurve(std::vector<float>& sizes)
+{
+	this->sizes = sizes;
+}
+
+void ParticleEmitter::setMaxParticles(int max_particles)
+{
+	this->max_particles = max_particles;
+}
+
+void ParticleEmitter::setRandomFactor(float random_factor)
+{
+	this->random_factor = random_factor;
+}
+
+Vector3 ParticleEmitter::getEmitPosition()
+{
+	return emit_position;
+}
+
+Vector3 ParticleEmitter::getEmitVelocity()
+{
+	return emit_velocity;
+}
+
+float ParticleEmitter::getRandomFactor()
+{
+	return random_factor;
+}
+
+void ParticleEmitter::render(Camera* camera)
 {
 	assert(texture && "No texture in emitter!");
 
@@ -34,8 +78,7 @@ void ParticleEmitter::render()
 
 	if (sort_distance)
 	{
-		std::sort(particles.begin(), particles.end(), [](const sParticle& a, const sParticle& b) {
-			Camera* camera = Camera::current;
+		std::sort(particles.begin(), particles.end(), [&](const sParticle& a, const sParticle& b) {
 			return a.position.distance(camera->eye) > b.position.distance(camera->eye);
 		});
 	}
@@ -59,8 +102,6 @@ void ParticleEmitter::render()
 
 		Vector4 color = sample<Vector4>(nt, colors.size(), &colors[0]);
 		float size = sample<float>(nt, sizes.size(), &sizes[0]);
-
-		Camera* camera = Camera::current;
 		
 		Vector3 right = camera->getLocalVector(Vector3(1, 0, 0));
 		Vector3 top = camera->getLocalVector(Vector3::UP);
@@ -102,6 +143,7 @@ void ParticleEmitter::render()
 
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 
 	if (additive_blending)
 	{
@@ -134,7 +176,8 @@ void ParticleEmitter::update(float delta_time)
 		if (!p.active)
 			continue;
 
-		 p.position += p.velocity * delta_time;
+		Vector3 random_velocity = Vector3(random(random_factor, -random_factor * 0.5f), random(random_factor, -random_factor * 0.5f), random(random_factor, -random_factor * 0.5f));
+		 p.position += (p.velocity + random_velocity) * delta_time;
 		 p.ttl += delta_time;
 
 		// Kill particle if run out of time
@@ -143,6 +186,14 @@ void ParticleEmitter::update(float delta_time)
 			active_particles--;
 		}
 	}
+}
+
+void ParticleEmitter::clearParticles()
+{
+	particles.clear();
+	particles.resize(max_particles);
+	emit_timer = 0.0f;
+	active_particles = 0;
 }
 
 void ParticleEmitter::emit()
@@ -158,8 +209,8 @@ void ParticleEmitter::emit()
 		p.id = last_id++;
 		p.ttl = 0.f;
 		p.active = true;
-		p.position.set(0.f, 0.f, 0.f);
-		p.velocity.set(0.f, 1.f, 0.f);
+		p.position = emit_position;
+		p.velocity = emit_velocity;
 		active_particles++;
 		break;
 	}

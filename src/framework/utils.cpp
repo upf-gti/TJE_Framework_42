@@ -207,6 +207,11 @@ void drawMesh(Camera* camera, Matrix44 model, Mesh* mesh, Vector4 color, Texture
 	shader->disable();
 }
 
+double easeInCubic(double t)
+{
+	return t * t * t;
+}
+
 std::vector<std::string> tokenize(const std::string& source, const char* delimiters, bool process_strings)
 {
 	std::vector<std::string> tokens;

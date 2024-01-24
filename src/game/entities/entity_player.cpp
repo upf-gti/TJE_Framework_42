@@ -32,12 +32,39 @@ EntityPlayer::EntityPlayer()
 	}
 
 	Material projectile_material;
-	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
-	projectile_material.Ks.set(0.f);
+	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 
-	projectile_to_shoot = new EntityMesh(Mesh::Get("data/meshes/projectiles/basic.obj"), projectile_material, "projectile");
+	projectile_textures = {
+		Texture::Get("data/textures/attacks/assembly.png"),
+		Texture::Get("data/textures/attacks/assert.png"),
+		Texture::Get("data/textures/attacks/javascript.png"),
+		Texture::Get("data/textures/attacks/shaders.png"),
+		Texture::Get("data/textures/attacks/templates.png"),
+		Texture::Get("data/textures/attacks/visualstudio.png"),
+	};
+	
+	projectile_mesh = new Mesh();
+	projectile_mesh->createQuad(0, 0, 0.25, 0.25, false);
+
+	projectile_to_shoot = new EntityMesh(projectile_mesh, projectile_material, "projectile");
+	projectile_to_shoot->material.diffuse = projectile_textures[rand() % projectile_textures.size()];
 
 	projectile_to_shoot->model.setTranslation(model.getTranslation() + model.frontVector() + Vector3(0.0, 3.0, 1.5));
+
+	projectile_particles = new ParticleEmitter();
+	projectile_particles->setTexture(projectile_to_shoot->material.diffuse);
+	projectile_particles->setMaxParticles(600);
+	projectile_particles->setEmitPosition(Vector3(0.1, 0.0, 0.0));
+	projectile_particles->setEmitVelocity(Vector3(0.0, 0.0, 0.075));
+	projectile_particles->setRandomFactor(0.04f);
+
+	std::vector<float> sizes = {
+		0.001f,
+		0.01f,
+		0.0f
+	};
+
+	projectile_particles->setSizesCurve(sizes);
 
 	setLayer(eCollisionFilter::PLAYER);
 }
@@ -98,6 +125,7 @@ void EntityPlayer::render(Camera* camera)
 
 	if (projectile_respawn == projectile_respawn_seconds) {
 		projectile_to_shoot->render(camera);
+		World::get_instance()->transparent_entities.push_back(projectile_particles);
 	}
 }
 
@@ -112,22 +140,50 @@ void EntityPlayer::update(float delta_time)
 	if (World::get_instance()->freeCam)
 		return;
 
-	if (projectile_respawn == projectile_respawn_seconds) {
-		// Update projectile
-		Vector3 camera_front = (World::get_instance()->camera->center - World::get_instance()->camera->eye).normalize();
-		projectile_to_shoot->model.setTranslation(World::get_instance()->camera->eye + (1.0f - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.25f, 0.0));
-
-		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
-			projectile_charge += delta_time;
-			projectile_charge = clamp(projectile_charge, 0.0f, 0.75f);
-		}
-	}
-	else 
 	if (projectile_respawn < projectile_respawn_seconds) {
 		projectile_respawn -= delta_time;
 
 		if (projectile_respawn <= 0.0f) {
 			projectile_respawn = projectile_respawn_seconds;
+		}
+	}
+
+	if (projectile_respawn == projectile_respawn_seconds) {
+		// Update projectile
+		Vector3 camera_eye = World::get_instance()->camera->eye;
+		Vector3 camera_front = (World::get_instance()->camera->center - camera_eye).normalize();
+		Vector3 projectile_position = camera_eye + (1.0f - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.1f, 0.0);
+
+		projectile_to_shoot->model.setTranslation(projectile_position);
+		float yaw = projectile_to_shoot->model.getYawRotationToAimTo(camera_eye);
+		projectile_to_shoot->model.rotate(yaw, Vector3::UP);
+		projectile_to_shoot->model.rotate(projectile_charge, Vector3(1.0, 0.0, 0.0));
+
+		projectile_particles->model.setTranslation(projectile_position);
+
+		Matrix44 particles_rotation;
+		particles_rotation.rotate(delta_time * 6.0f, Vector3::UP);
+
+		Vector3 particles_position = particles_rotation.rotateVector(projectile_particles->getEmitPosition());
+		Vector3 particles_velocity = particles_rotation.rotateVector(projectile_particles->getEmitVelocity());
+		projectile_particles->setEmitPosition(particles_position);
+		projectile_particles->setEmitVelocity(particles_velocity);
+
+		projectile_particles->update(delta_time);
+
+		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+			projectile_charge_progress += delta_time * 0.8f;
+
+			projectile_charge = easeInCubic(projectile_charge_progress);
+
+			float random_factor = projectile_particles->getRandomFactor() + delta_time;
+
+			random_factor = clamp(random_factor, 0.01f, 0.4f);
+
+			projectile_particles->setRandomFactor(random_factor);
+
+			projectile_charge_progress = clamp(projectile_charge_progress, 0.0f, 1.0f);
+			projectile_charge = clamp(projectile_charge, 0.0f, 0.75f);
 		}
 	}
 
@@ -207,8 +263,15 @@ void EntityPlayer::update(float delta_time)
 
 	if (Input::wasKeyReleased(SDL_SCANCODE_SPACE)) {
 		shoot();
+		projectile_charge_progress = 0.0f;
 		projectile_charge = 0.0f;
 		projectile_respawn -= delta_time;
+		projectile_particles->clearParticles();
+		projectile_particles->setRandomFactor(0.04f);
+		projectile_particles->setEmitPosition(Vector3(0.1, 0.0, 0.0));
+		projectile_particles->setEmitVelocity(Vector3(0.0, 0.0, 0.075));
+		projectile_to_shoot->material.diffuse = projectile_textures[rand() % projectile_textures.size()];
+		projectile_particles->setTexture(projectile_to_shoot->material.diffuse);
 	}
 }
 
@@ -216,8 +279,11 @@ void EntityPlayer::shoot()
 {
 	World* world = World::get_instance();
 
+	Vector3 camera_eye = World::get_instance()->camera->eye;
+	Vector3 camera_front = (World::get_instance()->camera->center - camera_eye).normalize();
+
 	Vector3 origin = projectile_to_shoot->model.getTranslation();
-	Vector3 direction = (world->camera->center - origin);
+	Vector3 direction = camera_front;
 
 	// Get projectile direction and speed (combined in velocity)
 
@@ -226,5 +292,5 @@ void EntityPlayer::shoot()
 	
 	// Generate entity to shoot
 
-	world->addProjectile(origin, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL);
+	world->addProjectile(projectile_to_shoot->model, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL, projectile_mesh, projectile_to_shoot->material.diffuse);
 }

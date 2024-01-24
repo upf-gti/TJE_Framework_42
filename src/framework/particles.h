@@ -4,6 +4,7 @@
 #include "framework/entities/entity.h"
 
 class Texture;
+class Camera;
 
 struct sParticle {
 
@@ -15,7 +16,7 @@ struct sParticle {
 	bool active = false;
 };
 
-class ParticleEmitter : Entity {
+class ParticleEmitter : public Entity {
 
 	int max_particles = 300;
 	int active_particles = 0;
@@ -23,13 +24,17 @@ class ParticleEmitter : Entity {
 
 	// Properties of the emitter
 	int last_id = 0;
-	float emit_rate = 2.3f;
+	float emit_rate = 0.01f;
 	float emit_timer = 0.f;
+
+	Vector3 emit_position = {};
+	Vector3 emit_velocity = Vector3(0.0f, 0.2f, 0.0f);
+	float random_factor = 0.0f;
 
 	// Properties of the particles
 	float max_ttl = 3.f;
-	std::vector<Vector4> colors;
-	std::vector<float> sizes;
+	std::vector<Vector4> colors = { Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
+	std::vector<float> sizes = { 0.5f };
 	Texture* texture = nullptr;
 	int texture_grid = 2;
 	bool additive_blending = false;
@@ -52,7 +57,26 @@ public:
 	
 	ParticleEmitter();
 	
-	void render();
+	void render(Camera* camera) override;
 	void update(float delta_time);
+
+	void clearParticles();
+
 	void setTexture( const char* filename );
+	void setTexture( Texture* texture );
+
+	void setEmitPosition(const Vector3& position);
+	void setEmitVelocity(const Vector3& velocity);
+
+	void setColorsCurve(std::vector<Vector4>& colors);
+	void setSizesCurve(std::vector<float>& sizes);
+
+	void setMaxParticles(int max_particles);
+
+	void setRandomFactor(float random_factor);
+
+	Vector3 getEmitPosition();
+	Vector3 getEmitVelocity();
+	float getRandomFactor();
+
 };

@@ -222,7 +222,7 @@ void Animation::assignTime(float t, bool loop, bool interpolate, uint8 layers)
 			keyframe = (int)clamp(floor(v), 0.0f, (float)(num_keyframes - 1));
 		}
 
-		cb.time_elapsed += max(t - last_time, 0.0f);
+		cb.time_elapsed += std::max(t - last_time, 0.0f);
 
 		if (index == keyframe && cb.time_elapsed > (1.0f / samples_per_second)) {
 			cb.callback(t);

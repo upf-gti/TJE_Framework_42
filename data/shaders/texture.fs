@@ -12,5 +12,11 @@ uniform float u_tiling;
 void main()
 {
 	vec2 uv = v_uv;
-	gl_FragColor = u_color * texture2D( u_texture, uv * u_tiling );
+	vec4 color = texture2D( u_texture, uv * u_tiling );
+
+	if (color.a < 0.1) {
+		discard;
+	}
+
+	gl_FragColor = u_color * color;
 }

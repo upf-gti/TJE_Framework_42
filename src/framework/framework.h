@@ -253,6 +253,7 @@ class Matrix44
 
 		//transform using global coordinates
 		void translateGlobal(float x, float y, float z);
+		void translateGlobal(const Vector3& v);
 		void rotateGlobal( float angle_in_rad, const Vector3& axis  );
 
 		//create a transformation matrix from scratch
@@ -267,7 +268,7 @@ class Matrix44
 
 		float getYawRotationToAimTo(const Vector3& position);
 
-		void lookAt(Vector3& eye, Vector3& center, Vector3& up);
+		void lookAt(const Vector3& eye, const Vector3& center, const Vector3& up);
 		void perspective(float fov, float aspect, float near_plane, float far_plane);
 		void ortho(float left, float right, float bottom, float top, float near_plane, float far_plane);
 

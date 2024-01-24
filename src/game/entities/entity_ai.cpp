@@ -107,7 +107,7 @@ void EntityAI::shoot()
 
 	// Generate entity to shoot
 
-	world->addProjectile(origin, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO);
+	world->addProjectile(model, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, Mesh::Get("data/meshes/projectiles/basic.obj"), nullptr);
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)
@@ -162,6 +162,8 @@ bool EntityAI::onProjectileCollision(const Projectile& p)
 	anim.playAnimation("data/animations/hit.skanim", false);
 	hit_timer.set(anim.getCurrentAnimation()->duration);
 	was_hit = true;
+
+	//world_audio_player.play("data/sounds/surface_impact.wav");
 
 	return doDamage();
 }

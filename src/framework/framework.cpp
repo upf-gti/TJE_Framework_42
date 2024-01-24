@@ -242,6 +242,13 @@ Vector3 Matrix44::rotateVector(const Vector3& v) const
 	return (*this * Vector4(v,0.0)).sV4Data.xyz;
 }
 
+void Matrix44::translateGlobal(const Vector3& v)
+{
+	Matrix44 T;
+	T.setTranslation(v);
+	*this = *this * T;
+}
+
 void Matrix44::translateGlobal(float x, float y, float z)
 {
 	Matrix44 T;
@@ -405,7 +412,7 @@ float Matrix44::getYawRotationToAimTo(const Vector3& position)
 	return angle;
 }
 
-void Matrix44::lookAt(Vector3& eye, Vector3& center, Vector3& up)
+void Matrix44::lookAt(const Vector3& eye, const Vector3& center, const Vector3& up)
 {
 	Vector3 front = (center - eye);
 	front.normalize();

@@ -2,6 +2,7 @@
 #include "framework/entities/entity.h"
 #include "framework/utils.h"
 #include "graphics/mesh.h"
+#include "framework/audio.h"
 
 #include <map>
 
@@ -63,6 +64,8 @@ public:
 	void addEntity(Entity* entity);
 	void removeEntity(Entity* entity);
 
+	std::vector<Entity*> transparent_entities;
+
 	// AI
 	std::vector<Vector3> waypoints;
 
@@ -72,7 +75,7 @@ public:
 	bool testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest = false, float max_ray_dist = 3.4e+38F, bool in_object_space = false);
 
 	// Game
-
+	Audio world_audio_player;
 	EntityCollider* wall_entity = nullptr;
 	uint16_t		wall_health = MAX_HEALTH;
 
@@ -89,7 +92,8 @@ public:
 	void updateEnemySpawner(float delta_time);
 
 	std::vector<Projectile> projectiles;
-	void addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag);
+
+	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture);
 	void renderProjectiles();
 	void updateProjectiles(float delta_time);
 	void onProjectileCollision(EntityCollider* collider, int projectile_index);
