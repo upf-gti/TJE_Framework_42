@@ -11,7 +11,7 @@ class EntityMesh;
 class EntityPlayer;
 class EntityCollider;
 
-#define MAX_HEALTH 10
+#define MAX_HEALTH 20
 
 struct Projectile {
 	EntityCollider* collider = nullptr;
@@ -90,7 +90,7 @@ public:
 	const float safe_from_spawn_radius = 15.0f;
 
 	void updateWall(const float delta_time);
-	void hitTheWall();
+	void hitTheWall(uint16_t damage);
 
 	void updateEnemySpawner(float delta_time);
 
