@@ -115,11 +115,11 @@ void EntityPlayer::update(float delta_time)
 	if (projectile_respawn == projectile_respawn_seconds) {
 		// Update projectile
 		Vector3 camera_front = (World::get_instance()->camera->center - World::get_instance()->camera->eye).normalize();
-		projectile_to_shoot->model.setTranslation(World::get_instance()->camera->eye + (1.25 - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.25f, 0.0));
+		projectile_to_shoot->model.setTranslation(World::get_instance()->camera->eye + (1.0f - projectile_charge) * camera_front + Vector3(0.0, -projectile_charge * 0.25f, 0.0));
 
 		if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
 			projectile_charge += delta_time;
-			projectile_charge = clamp(projectile_charge, 0.0f, 1.0f);
+			projectile_charge = clamp(projectile_charge, 0.0f, 0.75f);
 		}
 	}
 	else 
@@ -230,7 +230,7 @@ void EntityPlayer::shoot()
 
 	// Get projectile direction and speed (combined in velocity)
 
-	float speed = 25.f * (projectile_charge + 0.1f);
+	float speed = 25.f * (projectile_charge + 0.5f);
 	Vector3 velocity = direction * speed;
 	
 	// Generate entity to shoot
