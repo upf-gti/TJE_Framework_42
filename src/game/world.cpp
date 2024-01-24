@@ -391,9 +391,15 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 {
 	Projectile& p = projectiles[projectile_index];
 
-	std::cout << "COLLIDED WITH " << collider->name << std::endl;
+	// In case of enemies, make stuff on collide
+
+	EntityAI* ai_entity = dynamic_cast<EntityAI*>(collider);
+	if (ai_entity) {
+		ai_entity->onProjectileCollision(p);
+	}
+
+	// Delete projectile
 
 	delete p.collider;
-
 	projectiles.erase(projectiles.begin() + projectile_index);
 }

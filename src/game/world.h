@@ -11,6 +11,14 @@ class EntityCollider;
 
 #define MAX_HEALTH 10
 
+struct Projectile {
+	EntityCollider* collider = nullptr;
+	Vector3 velocity;
+	float mass = 0.0f;
+	float radius = 0.0f;
+	uint8_t mask = 0;
+};
+
 class World {
 
 	static World* instance;
@@ -68,14 +76,6 @@ public:
 
 	void updateWall(const float delta_time);
 	void hitTheWall();
-
-	struct Projectile {
-		EntityCollider* collider = nullptr;
-		Vector3 velocity;
-		float mass = 0.0f;
-		float radius = 0.0f;
-		uint8_t mask = 0;
-	} ;
 
 	std::vector<Projectile> projectiles;
 	void addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag);

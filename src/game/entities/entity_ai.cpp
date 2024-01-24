@@ -3,8 +3,6 @@
 #include "graphics/texture.h"
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
-#include "game/world.h"
-#include "framework/utils.h"
 
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
@@ -12,8 +10,6 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 	setLayer(eCollisionFilter::ENEMY);
 
 	this->type = type;
-
-	attack_timer = new Timer();
 
 	animated = true;
 
@@ -36,6 +32,28 @@ void EntityAI::update(float delta_time)
 {
 	World* world = World::get_instance();
 
+	if (animated) {
+		anim.update(delta_time);
+	}
+
+	// If hit, wait for the animation to end..
+
+	if (was_hit) {
+
+		if (hit_timer.update(delta_time)) {
+			hit_timer.reset();
+			was_hit = false;
+
+			if (has_collided) {
+				attack_timer.set(1.3f);
+			}
+		}
+
+		return;
+	}
+
+	// In other case, do each case:
+
 	if (type == AI_SHOOTER)
 	{
 		shoot(delta_time);
@@ -43,9 +61,9 @@ void EntityAI::update(float delta_time)
 	else if (type == AI_BREAKER)
 	{
 		if (has_collided) {
-			if (attack_timer->update(delta_time)) {
+			if (attack_timer.update(delta_time)) {
 				float new_time = animated ? anim.getCurrentAnimation()->duration : 3.0f;
-				attack_timer->set(new_time); // Attack once per second
+				attack_timer.set(new_time); // Attack once per second
 				World::get_instance()->hitTheWall();
 			}
 
@@ -56,11 +74,7 @@ void EntityAI::update(float delta_time)
 	// GOOD GUY
 	else
 	{
-
-	}
-
-	if (animated) {
-		anim.update(delta_time);
+		// Follow A to B path??
 	}
 }
 
@@ -140,15 +154,22 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 			has_collided = true;
 			if (animated) {
 				anim.playAnimation("data/animations/punch.skanim");
-				attack_timer->set(1.3f);
+				attack_timer.set(1.3f);
 			}
 			break;
 		}
 	}
 
-	// Move to the target position!
+	// Move to the target position!	
 
 	if (!has_collided) {
 		model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
 	}
+}
+
+void EntityAI::onProjectileCollision(const Projectile& p)
+{
+	anim.playAnimation("data/animations/hit.skanim", false);
+	hit_timer.set(anim.getCurrentAnimation()->duration);
+	was_hit = true;
 }

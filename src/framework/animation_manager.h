@@ -12,8 +12,9 @@ public:
 
 	void update(float delta_time);
 
-	void playAnimation(const char* path);
+	void playAnimation(const char* path, bool loop = true);
 	void stopAnimation();
+
 	void addAnimationState(const char* path, int state);
 	void goToState(int state, float time = 0.f);
 
@@ -22,10 +23,13 @@ public:
 
 private:
 
+	const char* last_animation_loop = nullptr;
 	Animation* current_animation = nullptr;
 	std::map<int, Animation*> animation_states;
 
 	float time = 0.0f;
+
+	bool playing_loop = true;
 
 	int current_state = -1;
 	int target_state = -1;

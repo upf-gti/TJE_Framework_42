@@ -9,7 +9,13 @@ void AnimationManager::update(float delta_time)
     // Single animation playing..
     if (current_animation)
     {
-        current_animation->assignTime(time);
+        current_animation->assignTime(time, playing_loop);
+
+        // Set previous loop in case there's any.. if not, leave action pose
+        if (!playing_loop && time >= current_animation->duration && last_animation_loop) {
+            playAnimation(last_animation_loop);
+        }
+
         return;
     }
 
@@ -37,15 +43,21 @@ void AnimationManager::update(float delta_time)
     }
 }
 
-void AnimationManager::playAnimation(const char* path)
+void AnimationManager::playAnimation(const char* path, bool loop)
 {
     current_animation = Animation::Get(path);
     time = 0.0f;
+    playing_loop = loop;
+
+    if (loop) {
+        last_animation_loop = path;
+    }
 }
 
 void AnimationManager::stopAnimation()
 {
     current_animation = nullptr;
+    last_animation_loop = nullptr;
 }
 
 void AnimationManager::addAnimationState(const char* path, int state)
