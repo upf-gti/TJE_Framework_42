@@ -3,6 +3,7 @@
 #include <map>
 
 #include "graphics/mesh.h"
+#include "framework/audio.h"
 
 class Camera;
 class EntityMesh;
@@ -64,7 +65,7 @@ public:
 	bool testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest = false, float max_ray_dist = 3.4e+38F, bool in_object_space = false);
 
 	// Game
-
+	Audio world_audio_player;
 	EntityCollider* wall_entity = nullptr;
 	uint16_t		wall_health = MAX_HEALTH;
 

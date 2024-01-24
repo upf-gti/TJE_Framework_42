@@ -348,11 +348,11 @@ void World::updateEnemySpawner(float delta_time) {
 		}
 
 		// Limit the spawn increase to 10 enemies at max
-		enemy_spanw_count = min(enemy_spanw_count + 1u, 5u);
+		enemy_spanw_count = std::min(enemy_spanw_count + 1u, 5u);
 
 		enemy_spawner_timer->set(enemy_spawner_frequency);
 		// Limit the spawner frequency as 5 seconds
-		enemy_spawner_frequency = max(enemy_spawner_frequency - 1.0f, 5.0f);
+		enemy_spawner_frequency = std::max(enemy_spawner_frequency - 1.0f, 5.0f);
 	}
 }
 
@@ -374,6 +374,8 @@ void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_
 	p.mask = flag;
 
 	projectiles.push_back(p);
+
+	world_audio_player.play("data/sounds/throw.wav");
 }
 
 void World::renderProjectiles()
@@ -455,5 +457,7 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 			removeEntity(enemy);
 			delete enemy;
 		}
+
+		//world_audio_player.play("data/sounds/surface_impact.wav");
 	}
 }
