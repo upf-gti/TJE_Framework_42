@@ -36,7 +36,7 @@ bool UI::addButton(Vector2 position, Vector2 size, const char* name)
 
 	shader->enable();
 
-	shader->setUniform("u_color", isHovered ? Vector4::RED : Vector4::WHITE);
+	shader->setUniform("u_color", isHovered ? Vector4::GRAY : Vector4::WHITE);
 	shader->setUniform("u_model", Matrix44());
 	shader->setUniform("u_viewprojection", World::get_instance()->camera2D->viewprojection_matrix);
 	shader->setUniform("u_texture", texture, 0);

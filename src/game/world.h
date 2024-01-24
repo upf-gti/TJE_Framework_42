@@ -94,7 +94,7 @@ public:
 
 	std::vector<Projectile> projectiles;
 
-	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture, float damage = 1.0f);
+	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture = nullptr, float damage = 1.0f);
 	void renderProjectiles();
 	void updateProjectiles(float delta_time);
 	void onProjectileCollision(EntityCollider* collider, int projectile_index);

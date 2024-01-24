@@ -51,7 +51,7 @@ struct Material {
 	Texture* diffuse = nullptr;
 	Texture* normals = nullptr;
 
-	Vector3 Ka = Vector3(0.1f);
+	Vector3 Ka = Vector3(0.5f);
 	Vector3 Kd = Vector3(1.0f);
 	Vector3 Ks = Vector3(0.2f);
 

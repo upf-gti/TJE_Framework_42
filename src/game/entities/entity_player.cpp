@@ -41,6 +41,8 @@ EntityPlayer::EntityPlayer()
 		Texture::Get("data/textures/attacks/shaders.png"),
 		Texture::Get("data/textures/attacks/templates.png"),
 		Texture::Get("data/textures/attacks/visualstudio.png"),
+		Texture::Get("data/textures/attacks/heap_corruption.png"),
+		Texture::Get("data/textures/attacks/exe_not_found.png")
 	};
 	
 	projectile_mesh = new Mesh();

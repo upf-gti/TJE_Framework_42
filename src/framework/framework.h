@@ -158,6 +158,7 @@ public:
 	void set(float v) { this->x = v; this->y = v; this->z = v; this->w = v; }
 
 	static Vector4 WHITE;
+	static Vector4 GRAY;
 	static Vector4 RED;
 	static Vector4 GREEN;
 	static Vector4 BLUE;

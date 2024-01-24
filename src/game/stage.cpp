@@ -28,26 +28,10 @@ MenuStage::MenuStage()
 	background = new EntityGUIElement(
 		Vector2(width / 2, height / 2),
 		Vector2(width, height),
-		Texture::Get("data/textures/gui/ambulance.tga")
-	);
-
-	optionsButton = new EntityGUIElement(
-		Vector2(width / 2, 300),
-		Vector2(200, 60),
-		Texture::Get("data/textures/gui/optionsButton.tga"),
-		eButtonId::OptionsButton
-	);
-
-	exitButton = new EntityGUIElement(
-		Vector2(width / 2, 400),
-		Vector2(200, 60),
-		Texture::Get("data/textures/gui/exitButton.tga"),
-		eButtonId::ExitButton
+		Texture::Get("data/textures/gui/menu.png")
 	);
 
 	root2d.addChild(background);
-	root2d.addChild(optionsButton);
-	root2d.addChild(exitButton);
 }
 
 void MenuStage::render()
@@ -58,11 +42,18 @@ void MenuStage::render()
 
 	root2d.render(World::get_instance()->camera2D);
 
-	int width = Game::instance->window_width;
+	float width = (float)Game::instance->window_width;
+	float margin = 24.0f;
+	float posY = 500.0f;
 
-	if (UI::addButton(Vector2(width / 2, 200), Vector2(200, 60), "data/textures/gui/playButton.tga"))
+	if (UI::addButton(Vector2(width * 0.5f - buttonSize.x * 0.5 - margin, posY), buttonSize, "data/textures/gui/playButton.png"))
 	{
 		StageManager::get_instance()->goTo("playStage");
+	}
+
+	if (UI::addButton(Vector2(width * 0.5f + buttonSize.x * 0.5f + margin, posY), buttonSize, "data/textures/gui/exitButton.png"))
+	{
+		Game::instance->must_exit = true;
 	}
 }
 
@@ -71,16 +62,18 @@ void MenuStage::update(float delta_time)
 	root2d.update(delta_time);
 }
 
+// In case of using UIEntities for buttons use this..
 void MenuStage::onButtonPressed(eButtonId buttonId)
 {
 	switch (buttonId) {
 	case PlayButton:
-		StageManager::get_instance()->goTo("playStage");
+		// ...
 		break;
 	case OptionsButton:
+		// ...
 		break;
 	case ExitButton:
-		Game::instance->must_exit = true;
+		// ...
 		break;
 	default:
 		break;

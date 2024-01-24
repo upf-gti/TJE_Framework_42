@@ -41,8 +41,8 @@ public:
 	Entity root2d;
 
 	EntityGUIElement* background = nullptr;
-	EntityGUIElement* optionsButton = nullptr;
-	EntityGUIElement* exitButton = nullptr;
+
+	Vector2 buttonSize = Vector2(200.0f, 60.0f);
 
 	// Methods overwritten from base class
 	void render();

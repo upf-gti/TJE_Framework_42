@@ -34,7 +34,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	glEnable(GL_DEPTH_TEST); //check the occlusions using the Z buffer
 
 	// set initial stage
-	StageManager::get_instance()->goTo("playStage");
+	StageManager::get_instance()->goTo("menuStage");
 }
 
 //what to do when the image has to be draw

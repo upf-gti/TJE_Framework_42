@@ -93,7 +93,8 @@ void EntityAI::shoot()
 
 	// Shoot!
 
-	Vector3 origin = model* Vector3(-0.8f, 3.0f, 1.1f);
+	Vector3 offset(-0.8f, 3.0f, 1.1f);
+	Vector3 origin = model * offset;
 	Vector3 direction = (target - origin);
 
 	// Get projectile direction and speed (combined in velocity)
@@ -103,7 +104,11 @@ void EntityAI::shoot()
 
 	// Generate entity to shoot
 
-	world->addProjectile(model, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, Mesh::Get("data/meshes/projectiles/basic.obj"), nullptr);
+	Matrix44 m = model;
+	m.translate(offset);
+
+	world->addProjectile(m, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, 
+		Mesh::Get("data/meshes/projectiles/basic.obj"));
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)
