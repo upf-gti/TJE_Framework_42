@@ -18,6 +18,8 @@ class EntityAI : public EntityCollider {
 
 	Timer hit_timer;
 
+	Timer idle_timer;
+
 	float health = ENEMY_HEALTH;
 
 	Mesh* projectile_mesh = nullptr;

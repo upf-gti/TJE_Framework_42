@@ -24,7 +24,11 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		this->mesh = Mesh::Get("data/meshes/character.MESH");
 
 		anim.playAnimation(type == AI_SHOOTER ? 
-			"data/animations/throw.skanim" : "data/animations/walk.skanim");
+			"data/animations/idle.skanim" : "data/animations/walk.skanim");
+
+		if (type == AI_SHOOTER) {
+			idle_timer.set(random(5.0f));
+		}
 
 		// Add animation callbacks
 
@@ -34,6 +38,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
+			idle_timer.set(random(5.0f));
+			anim.playAnimation("data/animations/idle.skanim");
 		}, 60); // Using KEYFRAMES as trigger indicator
 
 		anim.addCallback("data/animations/death.skanim", [&](float t) {
@@ -78,6 +84,10 @@ void EntityAI::update(float delta_time)
 		Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
 
 		lookAtTarget(target, delta_time);
+
+		if (idle_timer.update(delta_time)) {
+			anim.playAnimation("data/animations/throw.skanim");
+		}
 	}
 	else if (type == AI_BREAKER)
 	{
