@@ -117,27 +117,6 @@ void PlayStage::render()
 	float camera_pitch = world->camera_pitch;
 
 	Camera* camera = world->camera;
-	Entity* current_player = world->player;
-
-	if (!freeCam) {
-
-		Matrix44 mYaw;
-		mYaw.setRotation(camera_yaw, Vector3::UP);
-		Matrix44 mPitch;
-		mPitch.setRotation(camera_pitch, Vector3(-1, 0, 0));
-		Vector3 front = (mPitch * mYaw).frontVector();
-		Vector3 eye;
-		Vector3 center;
-
-		eye = current_player->getGlobalMatrix() * Vector3(0.f, 3.0f, 0.3f);
-		center = eye + front;
-
-		camera->lookAt(
-			eye,
-			center,
-			Vector3::UP
-		);
-	}
 
 	pixelate->enable();
 
