@@ -8,6 +8,7 @@ class Camera;
 class EntityMesh;
 class EntityPlayer;
 class EntityCollider;
+class Timer;
 
 #define MAX_HEALTH 10
 
@@ -52,6 +53,7 @@ public:
 	std::map<std::string, sRenderData> meshes_to_load;
 	bool parseScene(const char* filename);
 	void addEntity(Entity* entity);
+	void removeEntity(Entity* entity);
 
 	// AI
 	std::vector<Vector3> waypoints;
@@ -66,8 +68,17 @@ public:
 	EntityCollider* wall_entity = nullptr;
 	uint16_t		wall_health = MAX_HEALTH;
 
+	// Enemy spawner
+	Timer *enemy_spawner_timer;
+	uint16_t enemy_spanw_count = 1u;
+	float enemy_spawner_frequency = 10.0f;
+
+	const float safe_from_spawn_radius = 15.0f;
+
 	void updateWall(const float delta_time);
 	void hitTheWall();
+
+	void updateEnemySpawner(float delta_time);
 
 	struct Projectile {
 		EntityCollider* collider = nullptr;

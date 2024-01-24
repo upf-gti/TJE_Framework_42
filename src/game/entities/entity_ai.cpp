@@ -13,6 +13,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 	this->type = type;
 
+	this->name = "enemy_0"; // Choose based on the type
+
 	attack_timer = new Timer();
 
 	animated = true;
@@ -151,4 +153,14 @@ void EntityAI::moveTo(const Vector3& target, float delta_time)
 	if (!has_collided) {
 		model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
 	}
+}
+
+
+bool EntityAI::hurt() {
+	health--;
+
+	bool is_dead = health <= 0u;
+	// TODO: feedback animation?
+
+	return is_dead;
 }

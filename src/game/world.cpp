@@ -72,6 +72,8 @@ World::World()
 	}
 
 	// Audio::Play3D("data/audio/shot.wav", Vector3(), 1.f, true);
+
+	enemy_spawner_timer = new Timer();
 }
 
 void World::updateCamera(float delta_time)
@@ -140,6 +142,8 @@ void World::update(float delta_time)
 	updateProjectiles(delta_time);
 
 	updateWall(delta_time);
+
+	updateEnemySpawner(delta_time);
 } 
 
 bool World::testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest, float max_ray_dist, bool in_object_space)
@@ -286,6 +290,11 @@ void World::addEntity(Entity* entity)
 	root.addChild(entity);
 }
 
+void World::removeEntity(Entity* entity)
+{
+	root.removeChild(entity);
+}
+
 // GAME METHODS
 
 void World::updateWall(const float delta_time)
@@ -305,6 +314,48 @@ void World::hitTheWall()
 	wall_health--;
 	std::cout << "Zombie hit the wall" << std::endl;
 }
+
+
+void World::updateEnemySpawner(float delta_time) {
+	if (enemy_spawner_timer->update(delta_time)) {
+
+		Material enemy_material;
+		enemy_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
+		enemy_material.Ks.set(0.f);
+
+		Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
+
+		// Spawn enemies TODO: choose between enemy type
+		for (uint32_t i = 0u; i < enemy_spanw_count; i++) {
+			EntityAI* new_enemy = new EntityAI(mesh, enemy_material, AI_BREAKER);
+
+			// Select a random position inside a 5.0 radius
+			Vector2 position;
+			position.random(10.0f);
+			//position.y = -4.80535; // Set the height of the plane
+			position = position - 5.0f;
+			Vector2 pos_direction = position;
+			pos_direction.normalize();
+
+			// Push it away the spawn radius of the center
+			position = position + (pos_direction * safe_from_spawn_radius);
+
+			new_enemy->model.translate(Vector3(position.x, 0.0f, position.y));
+
+			addEntity(new_enemy);
+
+			std::cout << "new enemies" << std::endl;
+		}
+
+		// Limit the spawn increase to 10 enemies at max
+		enemy_spanw_count = min(enemy_spanw_count + 1u, 5u);
+
+		enemy_spawner_timer->set(enemy_spawner_frequency);
+		// Limit the spawner frequency as 5 seconds
+		enemy_spawner_frequency = max(enemy_spawner_frequency - 1.0f, 5.0f);
+	}
+}
+
 
 void World::addProjectile(const Vector3& origin, const Vector3& velocity, uint8_t flag)
 {
@@ -396,4 +447,13 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 	delete p.collider;
 
 	projectiles.erase(projectiles.begin() + projectile_index);
+
+   	if (collider->name.find("enemy_") != std::string::npos) {
+		EntityAI* enemy = static_cast<EntityAI*>(collider);
+
+		if (enemy->hurt()) {
+			removeEntity(enemy);
+			delete enemy;
+		}
+	}
 }

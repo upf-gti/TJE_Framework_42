@@ -50,7 +50,7 @@ public:
 
 	void set(float x, float y) { this->x = x; this->y = y; }
 
-	Vector2& normalize() { *this *= (float)length(); return *this; }
+	Vector2& normalize() { *this *= 1.0f /(float)length(); return *this; }
 
 	float distance(const Vector2& v);
 	void random(float range);
