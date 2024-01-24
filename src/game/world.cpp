@@ -381,6 +381,8 @@ void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_
 	p.mask = flag;
 
 	projectiles.push_back(p);
+
+	world_audio_player.play("data/sounds/throw.wav");
 }
 
 void World::renderProjectiles()
@@ -462,5 +464,7 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 			removeEntity(enemy);
 			delete enemy;
 		}
+
+		//world_audio_player.play("data/sounds/surface_impact.wav");
 	}
 }
