@@ -10,7 +10,7 @@
 EntityPlayer::EntityPlayer()
 {
 	Material player_mat;
-	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	player_mat.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
 	player_mat.diffuse = Texture::Get("data/meshes/player/survivorMaleB.png");
 	player_mat.Ks = Vector3(0.0f);
 
@@ -26,7 +26,7 @@ EntityPlayer::EntityPlayer()
 	{
 		mesh = Mesh::Get("data/meshes/character.MESH");
 
-		player_mat.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/texture.fs");
+		player_mat.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.fs");
 
 		anim.playAnimation("data/animations/idle.skanim");
 	}
@@ -131,12 +131,6 @@ void EntityPlayer::render(Camera* camera)
 
 void EntityPlayer::update(float delta_time)
 {
-	// DEBUG --------------
-	if (animated) {
-		anim.update(delta_time);
-	}
-	// ---------------------
-
 	if (World::get_instance()->freeCam)
 		return;
 
@@ -292,5 +286,6 @@ void EntityPlayer::shoot()
 	
 	// Generate entity to shoot
 
-	world->addProjectile(projectile_to_shoot->model, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL, projectile_mesh, projectile_to_shoot->material.diffuse);
+	world->addProjectile(projectile_to_shoot->model, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL, 
+		projectile_mesh, projectile_to_shoot->material.diffuse, projectile_charge_progress * 10.f);
 }

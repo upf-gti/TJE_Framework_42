@@ -364,7 +364,7 @@ void World::updateEnemySpawner(float delta_time)
 	enemy_spawner_frequency = std::max(enemy_spawner_frequency - 1.0f, 5.0f);
 }
 
-void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture)
+void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture, float damage)
 {
 	Material projectile_material;
 	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
@@ -377,7 +377,8 @@ void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_
 
 	p.collider = entity_to_shoot;
 	p.velocity = velocity;
-	p.radius = p.collider->mesh->radius;
+ 	p.radius = p.collider->mesh->radius;
+	p.damage = damage;
 	p.mask = flag;
 
 	projectiles.push_back(p);
@@ -455,7 +456,12 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 
 	EntityAI* ai_entity = dynamic_cast<EntityAI*>(collider);
 	if (ai_entity) {
-		ai_entity->onProjectileCollision(p);
+		
+		// Returns true if the enemy has died
+		if (ai_entity->onProjectileCollision(p)) {
+			root.removeChild(ai_entity);
+			delete ai_entity;
+		}
 	}
 
 	// Delete projectile

@@ -71,10 +71,6 @@ void EntityAI::update(float delta_time)
 			moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
 		}
 	}
-	else if (type == AI_FLYING)
-	{
-
-	}
 	else
 	{
 		assert(0 && "SELECT AI TYPE!");
@@ -163,16 +159,17 @@ bool EntityAI::onProjectileCollision(const Projectile& p)
 	hit_timer.set(anim.getCurrentAnimation()->duration);
 	was_hit = true;
 
-	return doDamage();
+	return doDamage(p.damage);
 }
 
-bool EntityAI::doDamage()
+bool EntityAI::doDamage(float damage)
 {
-	health--;
+	health -= damage;
 
-	bool is_dead = health <= 0u;
+	bool is_dead = health <= 0.0f;
 
-	// TODO: death animation ??
+	// TODO: death animation
+	// anim.playAnimation("data/animations/death.skanim");
 
 	return is_dead;
 }

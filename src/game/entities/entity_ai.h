@@ -6,9 +6,9 @@
 
 class Timer;
 
-enum AITypes { AI_SHOOTER, AI_BREAKER, AI_FLYING };
+enum AITypes { AI_SHOOTER, AI_BREAKER };
 
-#define ENEMY_HEALTH 2u
+#define ENEMY_HEALTH 15.0f
 
 class EntityAI : public EntityCollider {
 
@@ -18,7 +18,7 @@ class EntityAI : public EntityCollider {
 
 	Timer hit_timer;
 
-	uint8_t	health = ENEMY_HEALTH;
+	float health = ENEMY_HEALTH;
 
 public:
 	EntityAI() {};
@@ -39,5 +39,5 @@ public:
 
 	void shoot();
 	bool onProjectileCollision(const Projectile& p);
-	bool doDamage();
+	bool doDamage(float damage);
 };

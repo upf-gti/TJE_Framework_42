@@ -18,6 +18,7 @@ struct Projectile {
 	Vector3 velocity;
 	float mass = 0.0f;
 	float radius = 0.0f;
+	float damage = 1.0f;
 	uint8_t mask = 0;
 };
 
@@ -93,7 +94,7 @@ public:
 
 	std::vector<Projectile> projectiles;
 
-	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture);
+	void addProjectile(const Matrix44& model, const Vector3& velocity, uint8_t flag, Mesh* mesh, Texture* texture, float damage = 1.0f);
 	void renderProjectiles();
 	void updateProjectiles(float delta_time);
 	void onProjectileCollision(EntityCollider* collider, int projectile_index);
