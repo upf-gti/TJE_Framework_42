@@ -8,6 +8,7 @@
 #include "graphics/render_to_texture.h"
 
 class EntityGUIElement;
+class EntityGUIHUD;
 
 class Stage {
 
@@ -79,6 +80,9 @@ class PlayStage : public Stage {
 
 public:
 	PlayStage();
+
+	EntityGUIHUD* wall_hud = nullptr;
+	EntityGUIHUD* wall_hud_back = nullptr;
 
 	RenderToTexture* pixelate = nullptr;
 	RenderToTexture* vignetting = nullptr;

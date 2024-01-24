@@ -9,6 +9,7 @@
 #include "game/stage.h"
 #include "entities/entity_player.h"
 #include "entities/entity_ai.h"
+#include "entities/entity_ui_hud.h"
 
 #include <algorithm>
 #include <fstream>
@@ -337,8 +338,15 @@ void World::updateWall(const float delta_time)
 
 void World::hitTheWall(uint16_t damage)
 {
-	wall_health -= damage;
 	// std::cout << "Zombie hit the wall" << std::endl;
+
+	wall_health -= damage;
+
+	PlayStage* play_stage = dynamic_cast<PlayStage*>(StageManager::get_instance()->current);
+	assert(play_stage);
+
+	float hp = wall_health / ((float)MAX_HEALTH);
+	play_stage->wall_hud->setValue(hp);
 }
 
 void World::updateEnemySpawner(float delta_time)

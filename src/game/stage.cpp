@@ -1,5 +1,4 @@
 #include "stage.h"
-
 #include "game.h"
 #include "graphics/shader.h"
 #include "framework/input.h"
@@ -9,8 +8,7 @@
 #include "framework/utils.h"
 #include "framework/particles.h"
 #include "game/entities/entity_player.h"
-
-#include "framework/entities/entity_gui_element.h"
+#include "game/entities/entity_ui_hud.h"
 
 #include <iomanip>
 #include <sstream>
@@ -164,6 +162,26 @@ PlayStage::PlayStage()
 
 	vignetting = new RenderToTexture();
 	vignetting->create(Game::instance->window_width, Game::instance->window_height);
+
+	int width = Game::instance->window_width;
+	int height = Game::instance->window_height;
+
+	float margin = 24.f;
+	Vector2 wall_hud_size(36.0f, height * 0.5f + 12.f);
+
+	wall_hud_back = new EntityGUIHUD(
+		Vector2(width - wall_hud_size.x * 0.5f - margin, wall_hud_size.y * 0.5 + margin),
+		wall_hud_size,
+		Vector4::BLACK
+	);
+
+	margin = 30.f;
+	wall_hud_size = Vector2(24.f, height * 0.5f);
+
+	wall_hud = new EntityGUIHUD(
+		Vector2(width - wall_hud_size.x * 0.5f - margin, wall_hud_size.y * 0.5 + margin),
+		wall_hud_size
+	);
 }
 
 void PlayStage::onEnter(Stage* previousStage)
@@ -222,8 +240,13 @@ void PlayStage::render()
 
 	glEnable(GL_DEPTH_TEST);
 
-	// Render map in different viewport
-	// renderMinimap();
+
+	// Render HUD on top of the rest
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	wall_hud_back->render(World::get_instance()->camera2D);
+	wall_hud->render(World::get_instance()->camera2D);
 }
 
 void PlayStage::update(float delta_time)
