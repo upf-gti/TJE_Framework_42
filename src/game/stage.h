@@ -26,9 +26,6 @@ public:
 	virtual void onResize(int width, int height) {};
 	virtual void onMouseButtonDown(SDL_MouseButtonEvent event) {};
 	virtual void onMouseButtonUp(SDL_MouseButtonEvent event) {};
-	/*void onKeyUp(SDL_KeyboardEvent event);
-	void onGamepadButtonDown(SDL_JoyButtonEvent event);
-	void onGamepadButtonUp(SDL_JoyButtonEvent event);*/
 
 	virtual void render()  {};
 	virtual void update(float delta_time)  {};

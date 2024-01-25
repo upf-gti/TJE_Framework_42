@@ -18,19 +18,6 @@ EntityPlayer::EntityPlayer()
 	mesh = Mesh::Get("data/meshes/player/player.obj");
 	material = player_mat;
 
-	// Make the character animated
-
-	// animated = true;
-
-	if (animated)
-	{
-		mesh = Mesh::Get("data/meshes/character.MESH");
-
-		player_mat.shader = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.fs");
-
-		anim.playAnimation("data/animations/idle.skanim");
-	}
-
 	Material projectile_material;
 	projectile_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 
@@ -113,10 +100,7 @@ void EntityPlayer::render(Camera* camera)
 	material.shader->setUniform("u_Kd", material.Kd);
 	material.shader->setUniform("u_Ks", material.Ks);
 
-	if(animated)
-		mesh->renderAnimated(GL_TRIANGLES, &anim.getCurrentSkeleton());
-	else
-		mesh->render(GL_TRIANGLES);
+	mesh->render(GL_TRIANGLES);
 
 	// Disable shader
 	material.shader->disable();
@@ -201,12 +185,6 @@ void EntityPlayer::update(float delta_time)
 
 	model.setTranslation(position);
 	model.rotate(camera_yaw, Vector3::UP);
-
-	// Update animation system
-
-	if (animated) {
-		anim.update(delta_time);
-	}
 
 	// Shoot projectiles
 
