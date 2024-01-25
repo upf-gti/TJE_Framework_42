@@ -5,8 +5,6 @@
 #include "world.h"
 #include <map>
 
-#include "graphics/render_to_texture.h"
-
 class EntityGUIElement;
 class EntityGUIHUD;
 
@@ -36,40 +34,18 @@ class MenuStage : public Stage {
 public:
 	MenuStage();
 
-	Entity root2d;
-
 	EntityGUIElement* background = nullptr;
 
 	Vector2 buttonSize = Vector2(200.0f, 60.0f);
 
 	// Methods overwritten from base class
 	void render();
-	void update(float delta_time);
-
-	void onButtonPressed(eButtonId buttonId);
 
 	void onEnter(Stage* previousStage);
 };
 
-class WinStage : public Stage {
-
-public:
-	WinStage();
-
-	Entity root2d;
-
-	EntityGUIElement* background = nullptr;
-
-	float restart_countdown = 4.0f; // seconds
-
-	// Methods overwritten from base class
-	void render();
-	void update(float delta_time);
-
-	void onButtonPressed(eButtonId buttonId);
-
-	void onEnter(Stage* previousStage);
-};
+// WRITE HERE THE CODE TO DEFINE THE WIN STAGE!
+// ...
 
 class PlayStage : public Stage {
 
@@ -81,20 +57,14 @@ public:
 	EntityGUIHUD* wall_hud = nullptr;
 	EntityGUIHUD* wall_hud_back = nullptr;
 
-	RenderToTexture* pixelate = nullptr;
-	RenderToTexture* vignetting = nullptr;
-
 	// Methods overwritten from base class
 	void render();
 	void update(float delta_time);
 
-	void renderMinimap();
 	void renderSky();
-	void renderPath();
 
 	void onEnter(Stage* previousStage);
 	void onKeyDown(SDL_KeyboardEvent event);
-	void onMouseButtonUp(SDL_MouseButtonEvent event);
 	void onResize(int width, int height);
 };
 
@@ -118,7 +88,7 @@ public:
 	{
 		stages["playStage"] = new PlayStage();
 		stages["menuStage"] = new MenuStage();
-		stages["winStage"] = new WinStage();
+		// stages["winStage"] = new WinStage();
 	}
 
 	void goTo(const std::string& stageName)
