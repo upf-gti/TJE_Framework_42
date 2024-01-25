@@ -222,7 +222,7 @@ bool Animation::load(const char* filename)
 {
 	name = filename;
 
-	std::cout << " + Animation loading: " << filename << " ... ";
+	// std::cout << " + Animation loading: " << filename << " ... ";
 	long time = getTime();
 
 	//char file_format = 0;
@@ -546,10 +546,17 @@ void AnimationManager::playAnimation(const char* path, bool loop, bool reset_tim
 {
 	if (current_animation) {
 
+		if (target_animation)
+			delete target_animation;
+
 		target_animation = new Animation();
 		assert(target_animation->load(path) && "No animation found!");
 	}
 	else {
+
+		if (current_animation)
+			delete current_animation;
+
 		current_animation = new Animation();
 		assert(current_animation->load(path) && "No animation found!");
 	}
@@ -591,21 +598,21 @@ void AnimationManager::updateAnimation(float delta_time)
 
 	if (target_animation) {
 
-		target_animation->assignTime(time, playing_loop);
+		target_animation->assignTime(transition_counter, playing_loop);
 
 		transition_counter += delta_time;
-
-		if (transition_counter >= transition_time) {
-			current_animation = target_animation;
-			target_animation = nullptr;
-			return;
-		}
 
 		blendSkeleton(
 			&current_animation->skeleton,
 			&target_animation->skeleton,
 			transition_counter / transition_time,
 			&blended_skeleton);
+
+		if (transition_counter >= transition_time) {
+			current_animation = target_animation;
+			target_animation = nullptr;
+			return;
+		}
 	}
 }
 

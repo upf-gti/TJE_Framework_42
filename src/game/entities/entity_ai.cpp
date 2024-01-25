@@ -52,8 +52,8 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 
 		anim.addCallback("data/animations/throw.skanim", [&](float t) {
 			shoot();
-			idle_timer.set(random(5.0f));
 			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
+			idle_timer.set(3.f + random(3.f));
 		}, 60); // Using KEYFRAMES as trigger indicator
 
 		anim.addCallback("data/animations/death.skanim", [&](float t) {
@@ -63,7 +63,7 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 	}
 
 	projectile_mesh = new Mesh();
-	projectile_mesh->createQuad(0, 0, 0.25, 0.25, false);
+	projectile_mesh->createQuad(0.0f, 0.0f, 0.25f, 0.25f, false);
 }
 
 EntityAI::~EntityAI()
@@ -102,6 +102,7 @@ void EntityAI::update(float delta_time)
 
 		if (idle_timer.update(delta_time)) {
 			anim.playAnimation("data/animations/throw.skanim", false);
+			idle_timer.set(1e10f); // stop timer basically..
 		}
 	}
 	else if (type == AI_BREAKER)
