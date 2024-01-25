@@ -550,7 +550,9 @@ void AnimationManager::playAnimation(const char* path, bool loop, bool reset_tim
 			delete target_animation;
 
 		target_animation = new Animation();
-		assert(target_animation->load(path) && "No animation found!");
+		if (!target_animation->load(path) && "No animation found!") {
+			assert(0);
+		}
 	}
 	else {
 
@@ -558,7 +560,9 @@ void AnimationManager::playAnimation(const char* path, bool loop, bool reset_tim
 			delete current_animation;
 
 		current_animation = new Animation();
-		assert(current_animation->load(path) && "No animation found!");
+		if (!current_animation->load(path) && "No animation found!") {
+			assert(0);
+		}
 	}
 
 	transition_counter = 0.0f;
