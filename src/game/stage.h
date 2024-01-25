@@ -44,7 +44,7 @@ public:
 	void onEnter(Stage* previousStage);
 };
 
-// WRITE HERE THE CODE TO DEFINE THE WIN STAGE!
+// FILL THE GAPS! WRITE HERE THE CODE TO DEFINE THE WIN STAGE!
 // ...
 
 class PlayStage : public Stage {

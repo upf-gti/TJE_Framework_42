@@ -41,7 +41,7 @@ void MenuStage::render()
 
 	background->render(World::get_instance()->camera2D);
 
-	// WRITE HERE THE CODE TO RENDER THE "PLAY" AND "EXIT" BUTTONS
+	// FILL THE GAPS! WRITE HERE THE CODE TO RENDER THE "PLAY" AND "EXIT" BUTTONS
 	// (You can use "data/textures/gui/playButton.png" and "data/textures/gui/exitButton.png" as source for the images)
 	// (The button of the size is in the MenuStage header (.h))
 	// ...
@@ -59,7 +59,7 @@ void MenuStage::onEnter(Stage* previousStage)
 	WinStage
 */
 
-// WRITE HERE THE CODE TO IMPLEMENT THE WIN STAGE!
+// FILL THE GAPS! WRITE HERE THE CODE TO IMPLEMENT THE WIN STAGE!
 // (You can use "data/textures/gui/you_win.png" as background)
 // ...
 

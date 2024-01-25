@@ -248,7 +248,7 @@ void World::removeEntity(Entity* entity)
 
 void World::updateWall(float delta_time)
 {
-	// WRITE HERE THE CODE TO UPDATE THE WALL POSITION WHEN IS HIT BY SOMETHING
+	// FILL THE GAPS! WRITE HERE THE CODE TO UPDATE THE WALL POSITION WHEN IS HIT BY SOMETHING
 	// AND LEAVE THE PLAY STAGE WHEN THE WALL IS COMPLETELY DESTROYED
 	// (Use the attributes wall_entity and wall_health)
 	// ...
@@ -324,7 +324,7 @@ void World::addProjectile(const Matrix44& model, const Vector3& velocity, uint8_
 
 void World::renderProjectiles()
 {
-	// WRITE HERE THE CODE TO RENDER ALL THE PROJECTILES (COLLIDER ENTITIES)
+	// FILL THE GAPS! WRITE HERE THE CODE TO RENDER ALL THE PROJECTILES (COLLIDER ENTITIES)
 	// ...
 }
 

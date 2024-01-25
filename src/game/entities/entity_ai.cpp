@@ -4,18 +4,18 @@
 #include "game/entities/entity_ai.h"
 #include "game/entities/entity_player.h"
 
-std::vector<std::string> EntityAI::dudas_audios = {
-	"data/sounds/students/ayuda.wav",
-	"data/sounds/students/carrera.wav",
-	"data/sounds/students/crashea.wav",
-	"data/sounds/students/duda.wav",
-	"data/sounds/students/puntero.wav",
-};
-
-std::vector<std::string> EntityAI::gracias_audios = {
-	"data/sounds/students/gracias.wav",
-	"data/sounds/students/facil.wav",
-};
+//std::vector<std::string> EntityAI::dudas_audios = {
+//	"data/sounds/students/ayuda.wav",
+//	"data/sounds/students/carrera.wav",
+//	"data/sounds/students/crashea.wav",
+//	"data/sounds/students/duda.wav",
+//	"data/sounds/students/puntero.wav",
+//};
+//
+//std::vector<std::string> EntityAI::gracias_audios = {
+//	"data/sounds/students/gracias.wav",
+//	"data/sounds/students/facil.wav",
+//};
 
 EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std::string& name) :
 	EntityCollider(mesh, material, name) {
@@ -39,27 +39,27 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		anim.playAnimation(type == AI_SHOOTER ? 
 			"data/animations/idle.skanim" : "data/animations/walk.skanim");
 
-		if (type == AI_SHOOTER) {
+		/*if (type == AI_SHOOTER) {
 			idle_timer.set(random(5.0f));
-		}
+		}*/
 
 		// Add animation callbacks
 
-		anim.addCallback("data/animations/punch.skanim", [&](float t) {
-			World::get_instance()->hitTheWall(2.0f);
-			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
-		}, 1.0f); // Using SECONDS as trigger indicator
+		//anim.addCallback("data/animations/punch.skanim", [&](float t) {
+		//	World::get_instance()->hitTheWall(2.0f);
+		//	World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
+		//}, 1.0f); // Using SECONDS as trigger indicator
 
-		anim.addCallback("data/animations/throw.skanim", [&](float t) {
-			shoot();
-			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
-			idle_timer.set(3.f + random(3.f));
-		}, 70); // Using KEYFRAMES as trigger indicator
+		//anim.addCallback("data/animations/throw.skanim", [&](float t) {
+		//	shoot();
+		//	World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
+		//	idle_timer.set(3.f + random(3.f));
+		//}, 70); // Using KEYFRAMES as trigger indicator
 
-		anim.addCallback("data/animations/death.skanim", [&](float t) {
-			World::get_instance()->removeEntity(this);
-			World::get_instance()->world_audio_player.play(gracias_audios[rand() % gracias_audios.size()].c_str(), false);
-		}, 1.f);
+		//anim.addCallback("data/animations/death.skanim", [&](float t) {
+		//	World::get_instance()->removeEntity(this);
+		//	World::get_instance()->world_audio_player.play(gracias_audios[rand() % gracias_audios.size()].c_str(), false);
+		//}, 1.f);
 	}
 
 	projectile_mesh = new Mesh();
@@ -81,7 +81,7 @@ void EntityAI::update(float delta_time)
 
 	// If hit, wait for the animation to end..
 
-	if (was_hit) {
+	/*if (was_hit) {
 
 		if (hit_timer.update(delta_time)) {
 			hit_timer.reset();
@@ -89,27 +89,27 @@ void EntityAI::update(float delta_time)
 		}
 
 		return;
-	}
+	}*/
 
 	if (type == AI_SHOOTER)
 	{
-		World* world = World::get_instance();
+		//World* world = World::get_instance();
 
-		Vector3 projectile_offset = Vector3(0.0f, 3.0f, 0.0f);
-		Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
+		//Vector3 projectile_offset = Vector3(0.0f, 3.0f, 0.0f);
+		//Vector3 target = world->player->getGlobalMatrix().getTranslation() + projectile_offset;
 
-		lookAtTarget(target, delta_time);
+		//lookAtTarget(target, delta_time);
 
-		if (idle_timer.update(delta_time)) {
-			anim.playAnimation("data/animations/throw.skanim", false);
-			idle_timer.set(1e10f); // stop timer basically..
-		}
+		//if (idle_timer.update(delta_time)) {
+		//	anim.playAnimation("data/animations/throw.skanim", false);
+		//	idle_timer.set(1e10f); // stop timer basically..
+		//}
 	}
 	else if (type == AI_BREAKER)
 	{
-		if (!has_collided) {
+		/*if (!has_collided) {
 			moveTo(world->player->getGlobalMatrix().getTranslation(), delta_time);
-		}
+		}*/
 	}
 	else
 	{
@@ -127,90 +127,89 @@ void EntityAI::lookAtTarget(const Vector3& target, float delta_time)
 
 void EntityAI::shoot()
 {
-	World* world = World::get_instance();
+	//World* world = World::get_instance();
 
-	Vector3 target = world->player->getGlobalMatrix().getTranslation() + Vector3(0.0f, 3.0f, 0.0f);
+	//Vector3 target = world->player->getGlobalMatrix().getTranslation() + Vector3(0.0f, 3.0f, 0.0f);
 
-	// Shoot!
+	//// Shoot!
 
-	Vector3 offset(-0.8f, 3.0f, 1.1f);
-	Vector3 origin = model * offset;
-	Vector3 direction = (target - origin);
+	//Vector3 offset(-0.8f, 3.0f, 1.1f);
+	//Vector3 origin = model * offset;
+	//Vector3 direction = (target - origin);
 
-	// Get projectile direction and speed (combined in velocity)
+	//// Get projectile direction and speed (combined in velocity)
 
-	float speed = 2.f;
-	Vector3 velocity = direction * speed;
+	//float speed = 2.f;
+	//Vector3 velocity = direction * speed;
 
-	// Generate entity to shoot
+	//// Generate entity to shoot
 
-	Matrix44 m = model;
-	m.translate(offset);
+	//Matrix44 m = model;
+	//m.translate(offset);
 
-	world->addProjectile(m, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, 
-		projectile_mesh, Texture::Get("data/meshes/projectiles/question_mark.png"));
+	//world->addProjectile(m, velocity, eCollisionFilter::PLAYER | eCollisionFilter::SCENARIO, 
+	//	projectile_mesh, Texture::Get("data/meshes/projectiles/question_mark.png"));
 }
 
 void EntityAI::moveTo(const Vector3& target, float delta_time)
 {
-	World* world = World::get_instance();
+	//World* world = World::get_instance();
 
-	// Set rotation first...
+	//// Set rotation first...
 
-	lookAtTarget(target, delta_time);
+	//lookAtTarget(target, delta_time);
 
-	// Nothing to do if he's already there..
+	//// Nothing to do if he's already there..
 
-	if (has_collided)
-		return;
+	//if (has_collided)
+	//	return;
 
-	// Get the final pos and check if it's viable to move
+	//// Get the final pos and check if it's viable to move
 
-	Matrix44 new_transform = model;
-	new_transform.translate(walk_speed * delta_time);
+	//Matrix44 new_transform = model;
+	//new_transform.translate(walk_speed * delta_time);
 
-	Vector3 center = new_transform.getTranslation();
+	//Vector3 center = new_transform.getTranslation();
 
-	for (auto e : World::get_instance()->root.children)
-	{
-		EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
-		if (!ec || !(ec->getLayer() & eCollisionFilter::WALL))
-			continue;
+	//for (auto e : World::get_instance()->root.children)
+	//{
+	//	EntityCollider* ec = dynamic_cast<EntityCollider*>(e);
+	//	if (!ec || !(ec->getLayer() & eCollisionFilter::WALL))
+	//		continue;
 
-		Vector3 colPoint;
-		Vector3 colNormal;
+	//	Vector3 colPoint;
+	//	Vector3 colNormal;
 
-		// Check collisions with WALLS
+	//	// Check collisions with WALLS
 
-		if (ec->mesh->testSphereCollision(ec->model, center, sphereRadius, colPoint, colNormal)) {
-			has_collided = true;
-			if (animated) {
-				anim.playAnimation("data/animations/punch.skanim");
-			}
-			break;
-		}
-	}
+	//	if (ec->mesh->testSphereCollision(ec->model, center, sphereRadius, colPoint, colNormal)) {
+	//		has_collided = true;
+	//		if (animated) {
+	//			anim.playAnimation("data/animations/punch.skanim");
+	//		}
+	//		break;
+	//	}
+	//}
 
-	// Move to the target position!
+	//// Move to the target position!
 
-	if (!has_collided) {
-		model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
-	}
+	//if (!has_collided) {
+	//	model.translate(Vector3(0.0f, 0.0f, walk_speed * delta_time));
+	//}
 }
 
 void EntityAI::onProjectileCollision(const Projectile& p)
 {
-	hit_timer.set(anim.getCurrentAnimation()->duration);
+	/*hit_timer.set(anim.getCurrentAnimation()->duration);
 	was_hit = true;
-
-	doDamage(p.damage);
+	doDamage(p.damage);*/
 }
 
 void EntityAI::doDamage(float damage)
 {
-	health -= damage;
+	/*health -= damage;
 
 	bool is_dead = health <= 0.0f;
 
-	anim.playAnimation(is_dead ? "data/animations/death.skanim" : "data/animations/hit.skanim", false);
+	anim.playAnimation(is_dead ? "data/animations/death.skanim" : "data/animations/hit.skanim", false);*/
 }

@@ -93,7 +93,7 @@ void EntityPlayer::update(float delta_time)
 
 	Vector3 move_dir;
 
-	// WRITE HERE THE CODE TO MOVE THE PLAYER USING THE INPUT!
+	// FILL THE GAPS! WRITE HERE THE CODE TO MOVE THE PLAYER USING THE INPUT!
 	// if (Input::isKeyPressed(SDL_SCANCODE_W)) {
 	//		...
 	// }
@@ -253,20 +253,19 @@ void EntityPlayer::updateProjectilesStuff()
 
 void EntityPlayer::shoot()
 {
-	//World* world = World::get_instance();
+	// FILL THE GAPS! THIS CODE SHOULD ADD A NEW PROJECTILE TO THE WORLD
 
-	//Vector3 camera_eye = World::get_instance()->camera->eye;
-	//Vector3 camera_front = (World::get_instance()->camera->center - camera_eye).normalize();
+	World* world = World::get_instance();
 
-	//Vector3 origin = projectile_to_shoot->model.getTranslation();
-	//Vector3 direction = camera_front;
+	// Vector3 camera_eye = ...;
+	// Vector3 camera_front = ...;
 
-	//// Get projectile direction and speed (combined in velocity)
+	// Get projectile direction and speed (combined in velocity)
 
-	//float speed = 25.f * (projectile_charge + 0.5f);
-	//Vector3 velocity = direction * speed;
-	//
-	//// Generate entity to shoot
+	float speed = 25.f * (projectile_charge + 0.5f);
+	// Vector3 velocity = camera_front * speed;
+	
+	// Generate entity to shoot
 
 	//world->addProjectile(projectile_to_shoot->model, velocity, eCollisionFilter::ENEMY | eCollisionFilter::SCENARIO | eCollisionFilter::WALL, 
 	//	projectile_mesh, projectile_to_shoot->material.diffuse, projectile_charge_progress * 10.f);
