@@ -33,14 +33,14 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	glEnable(GL_CULL_FACE); //render both sides of every triangle
 	glEnable(GL_DEPTH_TEST); //check the occlusions using the Z buffer
 
-	// set initial stage
-	StageManager::get_instance()->goTo("menuStage");
+	// Set initial stage
+	// StageManager::get_instance()->goTo("menuStage");
 }
 
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	StageManager::get_instance()->render();
+	// StageManager::get_instance()->render();
 
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
@@ -48,7 +48,7 @@ void Game::render(void)
 
 void Game::update(double delta_time)
 {
-	StageManager::get_instance()->update(delta_time);
+	// StageManager::get_instance()->update(delta_time);
 }
 
 //Keyboard event handler (sync input)
@@ -93,9 +93,3 @@ void Game::onResize(int width, int height)
 
 	StageManager::get_instance()->onResize(width, height);
 }
-
-void Game::onKeyUp(SDL_KeyboardEvent event) { }
-
-void Game::onGamepadButtonDown(SDL_JoyButtonEvent event) { }
-
-void Game::onGamepadButtonUp(SDL_JoyButtonEvent event) { }

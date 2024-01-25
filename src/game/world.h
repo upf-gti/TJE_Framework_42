@@ -52,8 +52,6 @@ public:
 	float camera_pitch_target = 0.0f;
 	float camera_speed = 0.001f;
 
-	bool freeCam = false;
-
 	void render();
 
 	void update(float delta_time);
@@ -69,14 +67,6 @@ public:
 	std::vector<Entity*> entities_to_destroy;
 	std::vector<Entity*> transparent_entities;
 
-	// AI
-	std::vector<Vector3> waypoints;
-
-	// Collisions
-	EntityMesh* collision_entity = nullptr;
-	void checkCameraCollisions(Vector3& newEye);
-	bool testRayToScene(Vector3 ray_origin, Vector3 ray_direction, Vector3& collision, Vector3& normal, bool get_closest = false, float max_ray_dist = 3.4e+38F, bool in_object_space = false);
-
 	// Game
 	Audio world_audio_player;
 
@@ -90,7 +80,7 @@ public:
 
 	const float safe_from_spawn_radius = 15.0f;
 
-	void updateWall(const float delta_time);
+	void updateWall(float delta_time);
 	void hitTheWall(float damage);
 
 	void updateEnemySpawner(float delta_time);

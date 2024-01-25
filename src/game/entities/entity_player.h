@@ -7,6 +7,9 @@ enum ePlayerStates { PLAYER_IDLE, PLAYER_WALK, PLAYER_RUN };
 
 class EntityPlayer : public EntityCollider {
 
+	void initProjectilesStuff();
+	void updateProjectilesStuff();
+
 public:
 	EntityPlayer();
 	~EntityPlayer() {};
