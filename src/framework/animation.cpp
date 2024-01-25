@@ -249,7 +249,7 @@ bool Animation::load(const char* filename)
 		}
 	}
 
-	std::cout << "[OK] Num. Bones: " << skeleton.num_bones << " Time: " << (getTime() - time) * 0.001 << "sec" << std::endl;
+	// std::cout << "[OK] Num. Bones: " << skeleton.num_bones << " Time: " << (getTime() - time) * 0.001 << "sec" << std::endl;
 	return true;
 }
 

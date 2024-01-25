@@ -188,6 +188,8 @@ int main(int argc, char **argv)
 	bool fullscreen = false; //change this to go fullscreen
 	Vector2 size(1280, 720);
 
+	srand(time(0));
+
 	if(fullscreen)
 		size = getDesktopSize(0);
 

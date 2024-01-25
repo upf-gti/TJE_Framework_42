@@ -46,7 +46,7 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 		// Add animation callbacks
 
 		anim.addCallback("data/animations/punch.skanim", [&](float t) {
-			World::get_instance()->hitTheWall(2);
+			World::get_instance()->hitTheWall(2.0f);
 			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
 		}, 1.0f); // Using SECONDS as trigger indicator
 
@@ -54,7 +54,7 @@ EntityAI::EntityAI(Mesh* mesh, const Material& material, uint8_t type, const std
 			shoot();
 			World::get_instance()->world_audio_player.play(dudas_audios[rand() % dudas_audios.size()].c_str(), false);
 			idle_timer.set(3.f + random(3.f));
-		}, 60); // Using KEYFRAMES as trigger indicator
+		}, 70); // Using KEYFRAMES as trigger indicator
 
 		anim.addCallback("data/animations/death.skanim", [&](float t) {
 			World::get_instance()->removeEntity(this);

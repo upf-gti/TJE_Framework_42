@@ -11,7 +11,7 @@ class EntityMesh;
 class EntityPlayer;
 class EntityCollider;
 
-#define MAX_HEALTH 20
+#define MAX_HEALTH 20.0f
 
 struct Projectile {
 	EntityCollider* collider = nullptr;
@@ -79,8 +79,9 @@ public:
 
 	// Game
 	Audio world_audio_player;
+
 	EntityCollider* wall_entity = nullptr;
-	int16_t		wall_health = MAX_HEALTH;
+	float			wall_health = MAX_HEALTH;
 
 	// Enemy spawner
 	Timer enemy_spawner_timer;
@@ -90,7 +91,7 @@ public:
 	const float safe_from_spawn_radius = 15.0f;
 
 	void updateWall(const float delta_time);
-	void hitTheWall(uint16_t damage);
+	void hitTheWall(float damage);
 
 	void updateEnemySpawner(float delta_time);
 

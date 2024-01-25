@@ -326,7 +326,7 @@ void World::removeEntity(Entity* entity)
 
 void World::updateWall(const float delta_time)
 {
-	float hp = wall_health / ((float)MAX_HEALTH);
+	float hp = wall_health / MAX_HEALTH;
 	wall_entity->model.setTranslation(Vector3(0.0f, lerp(-1.0f, 0.0f, hp), 0.0f));
 
 	if (hp <= 0.0f)
@@ -336,7 +336,7 @@ void World::updateWall(const float delta_time)
 	}
 }
 
-void World::hitTheWall(uint16_t damage)
+void World::hitTheWall(float damage)
 {
 	// std::cout << "Zombie hit the wall" << std::endl;
 
@@ -345,7 +345,7 @@ void World::hitTheWall(uint16_t damage)
 	PlayStage* play_stage = dynamic_cast<PlayStage*>(StageManager::get_instance()->current);
 	assert(play_stage);
 
-	float hp = wall_health / ((float)MAX_HEALTH);
+	float hp = wall_health / MAX_HEALTH;
 	play_stage->wall_hud->setValue(hp);
 }
 
@@ -358,24 +358,23 @@ void World::updateEnemySpawner(float delta_time)
 	enemy_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
 	enemy_material.Ks.set(0.f);
 
-	Mesh* mesh = Mesh::Get("data/meshes/enemy_1/enemy_1.obj");
-
-	// Spawn enemies TODO: choose between enemy type
 	for (uint32_t i = 0u; i < enemy_spawn_count; i++) {
 
-		EntityAI* new_enemy = new EntityAI(mesh, enemy_material, random(1.0f) > 0.5f ? AI_BREAKER : AI_SHOOTER);
+		uint8_t type = random(1.0f) > 0.5f ? AI_BREAKER : AI_SHOOTER;
+		Mesh* mesh = Mesh::Get(type == AI_SHOOTER ? "data/meshes/enemy_0/enemy_0.obj" : "data/meshes/enemy_1/enemy_1.obj");
 
-		// Select a random position inside a 5.0 radius
+		EntityAI* new_enemy = new EntityAI(mesh, enemy_material, type);
+
+		// Select a random position inside a 10.0 radius
 		Vector2 position;
 		position.random(10.0f);
-		position = position - 5.0f;
 		Vector2 pos_direction = position;
 		pos_direction.normalize();
 
 		// Push it away the spawn radius of the center
 		position = position + (pos_direction * safe_from_spawn_radius);
 
-		new_enemy->model.translate(Vector3(position.x, 0.0f, position.y));
+		new_enemy->model.setTranslation(Vector3(position.x, 0.0f, position.y));
 
 		addEntity(new_enemy);
 	}
@@ -430,8 +429,8 @@ void World::updateProjectiles(float delta_time)
 
 		// Decrease velocity in XZ 
 
-		//p.velocity.x = lerp(p.velocity.x, 0.0f, 0.1f * delta_time);
-		//p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
+		p.velocity.x = lerp(p.velocity.x, 0.0f, 0.1f * delta_time);
+		p.velocity.z = lerp(p.velocity.z, 0.0f, 0.1f * delta_time);
 
 		// Check collisions
 
@@ -476,11 +475,10 @@ void World::onProjectileCollision(EntityCollider* collider, int projectile_index
 	// In case of enemies, make stuff on collide
 
 	EntityAI* ai_entity = dynamic_cast<EntityAI*>(collider);
-	EntityCollider* player_entity = dynamic_cast<EntityCollider*>(collider);
 	if (ai_entity) {
 		ai_entity->onProjectileCollision(p);
-	} else if (player_entity) {
-		hitTheWall(1u);
+	} else if (p.mask & eCollisionFilter::PLAYER) {
+		hitTheWall(0.5f);
 	}
 
 	// Delete projectile
