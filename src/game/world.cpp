@@ -60,14 +60,14 @@ World::World()
 
 	// Add protection wall
 	{
-		Material wall_material;
+		/*Material wall_material;
 		wall_material.shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.fs");
 		wall_material.Ks.set(0.f);
 
 		wall_entity = new EntityCollider(Mesh::Get("data/meshes/wall/wall.obj"), wall_material, "wall");
 		wall_entity->setLayer(eCollisionFilter::WALL);
 
-		// addEntity(wall_entity);
+		addEntity(wall_entity);*/
 	}
 }
 
